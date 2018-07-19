@@ -3,13 +3,10 @@
         <apex:includeScript value="/support/console/41.0/integration.js"/>
         <apex:slds />
         
-        <script type="text/javascript">
-        
-            
+        <script type="text/javascript">                
             function setTabTitle() {
                 if(sforce.console.isInConsole()){
                     sforce.console.setTabTitle("{!Account.Name}");
-                        
                 }
             }
 
@@ -17,11 +14,9 @@
             window.onload = function() { 
                 if (previousOnload) { 
                     previousOnload();
-                }
+                }                
                 setTimeout(setTabTitle(), 500); 
             }
-            
-            
             
             function closeAccountTab() {
                 if (sforce.console.isInConsole()) {

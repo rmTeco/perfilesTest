@@ -313,7 +313,7 @@
     			</h3>
     			<div class="row paddingRight">		   					
 					<div class="btn-group pull-right" role="group" aria-label="...">	    					
-           				<apex:outputText rendered="{!canEdit}">
+           				<apex:outputText >
 	           				<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">
 		   						<span class="glyphicon glyphicon-plus icon-btn-left"></span>&nbsp;{!$Label.add_buttom} {!$Label.potential_business}
 		                    </button>
@@ -354,7 +354,7 @@
                             </div>
                             <div class= "col-md-3">
                                 <span class="hasOpportunityAndPotencial" style="margin-left:3px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                <span class="hasOpportunitySampleText">Ha sido asignado a una oportunidad existente y potencial.</span> 
+                                <span class="hasOpportunitySampleText">{!$Label.Ha_sido_asignado_a_una_oportunidad_existente_y_potencial}</span> 
                             </div>
                         </div>
                         
@@ -391,244 +391,266 @@
 	                            </tr>
 	                        </thead>
 	                        <tbody>
-	                            <apex:repeat value="{!regions}" var="item">
-	                                <apex:repeat value="{!item.Trends}" var="subitem">
-	                                    <tr id="{!subitem.id}" class="IndustryTrendsRow DraggableRow dataRow {!IF ( (subitem.Opportunities__R.size > 0) && (subitem.Potential_New_Business_Trend__R.size > 0), 'hasOpportunityAndPotencial', IF(subitem.Opportunities__R.size > 0 , 'hasOpportunity' , IF(subitem.Potential_New_Business_Trend__r.size > 0 , 'hasPotentialBussiness' , 'NotUsed')) )}"  onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">                                       
-	                                        <td class = " dataCell  ">
-                                            {!subitem.title__c}
-                                            </td>
+                                <apex:repeat value="{!regions}" var="item">
+                                    
+                                    <apex:repeat value="{!item.Trends}" var="subitem">
+                                        
+                                        <!--apex:outputText rendered="{!subitem.Opportunities__R != null && subitem.Potential_New_Business_Trend__R != null}"-->
+                                            <tr id="{!subitem.id}" class="IndustryTrendsRow DraggableRow dataRow {!IF ( (subitem.Opportunities__R.size > 0) && (subitem.Potential_New_Business_Trend__R.size > 0), 'hasOpportunityAndPotencial', IF(subitem.Opportunities__R.size > 0 , 'hasOpportunity' , IF(subitem.Potential_New_Business_Trend__r.size > 0 , 'hasPotentialBussiness' , 'NotUsed')) )}"  onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">                                       
+                                                <td class = " dataCell  ">
+                                                    {!subitem.title__c}
+                                                </td>
+                                                <td>
+                                                    <span class="lessSpan">
+                                                        <apex:outputText value="{!Left(subitem.SCP_Certa_GC__Trend__c,50)}"/>
+                                                        <apex:outputText rendered="{!LEN(subitem.SCP_Certa_GC__Trend__c) > 50}">
+                                                            ...
+                                                            <button class="btn btn-default btn-xs showMore" style="float:right;">
+                                                                <span class="glyphicon glyphicon-zoom-in icon-btn-left"></span>&nbsp;{!$Label.show_more}
+                                                            </button>
+                                                        </apex:outputText>
+                                                    </span>
+                                                    <span class="moreSpan" style="float:right;display:none;">								
+                                                        <apex:outputField value="{!subitem.SCP_Certa_GC__Trend__c}"/>												
+                                                        <button class="btn btn-default btn-xs showLess" style="float:right;">
+                                                            <span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
+                                                        </button>
+                                                    </span>	                                                    
+                                                </td>		                                                                                       
+                                                <td class=" dataCell  ">
+                                                    {!subitem.type__c}
+                                                </td>
+                                                <td class=" dataCell  ">
+                                                    {!item.region.name}
+                                                </td>
+                                                <td class="TdLink" >
+                                                    <apex:repeat value="{!subitem.Potential_New_Business_Trend__r}" var="npb">
+                                                        <div class="PopupHolder">
+                                                            <span class="label label-success label-warning">{!npb.Potential_New_Business__r.Name}</span>
+                                                            <div class="individualPalette lookupHoverDetail lookupHoverDetailOverridable" style="display:none; visibility:visible; position:absolute; top:auto; left:auto;">
+                                                                <div class="Custom50Block topRight"><div class="bPageBlock secondaryPalette">
+                                                                    <div class="pbHeader">
+                                                                        <table border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
+                                                                            <tr>
+                                                                                <td class="pbTitle" colspan="2"><h2 class="mainTitle">{!$Label.Potential_New_Business}</h2></td>			                                                                
+                                                                            </tr>
+                                                                            </tbody></table>
+                                                                    </div>
+                                                                    <div class="pbBody">
+                                                                        <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
+                                                                            <tr>
+                                                                                <td class="labelCol last">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</td>
+                                                                                <td class="dataCol last">{!npb.Potential_new_Business__r.Potential_new_Business__c}</td>
+                                                                            </tr>
+                                                                            </tbody></table>
+                                                                    </div>
+                                                                    <div class="pbFooter secondaryPalette">
+                                                                        <div class="bg"></div>
+                                                                    </div>
+                                                                    </div></div>
+                                                            </div>
+                                                        </div>
+                                                    </apex:repeat>
+                                                </td>
+                                            </tr>
+                                        <!--/apex:outputText-->
+                                        
+                                    </apex:repeat>
+                                    
+                                </apex:repeat>
+                                <apex:repeat value="{!globalStrategicInitiatives}" var="subitem">
+                                    
+                                    
+                                    <!--apex:outputText rendered="{!subitem.Opportunities__R != null && subitem.Potential_New_Business_Strategic_Ini__r != null}"-->
+                                        <tr id="{!subitem.id}" class="StrategicInitiativeRow DraggableRow dataRow {!IF ( (subitem.Opportunities__R.size > 0) && (subitem.Potential_New_Business_Strategic_Ini__r.size > 0), 'hasOpportunityAndPotencial', IF(subitem.Opportunities__R.size > 0 , 'hasOpportunity' , IF(subitem.Potential_New_Business_Strategic_Ini__r.size > 0 , 'hasPotentialBussiness' , 'NotUsed')) )}"  onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">                                   
                                             <td>
-	                                            <span class="lessSpan">
-		                        					<apex:outputText value="{!Left(subitem.SCP_Certa_GC__Trend__c,50)}"/>
-													<apex:outputText rendered="{!LEN(subitem.SCP_Certa_GC__Trend__c) > 50}">
-														...
-														<button class="btn btn-default btn-xs showMore" style="float:right;">
-															<span class="glyphicon glyphicon-zoom-in icon-btn-left"></span>&nbsp;{!$Label.show_more}
-														</button>
-													</apex:outputText>
-												</span>
-												<span class="moreSpan" style="float:right;display:none;">								
-													<apex:outputField value="{!subitem.SCP_Certa_GC__Trend__c}"/>												
-													<button class="btn btn-default btn-xs showLess" style="float:right;">
-														<span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
-													</button>
-												</span>	                                                    
-	                                        </td>		                                                                                       
-	                                        <td class=" dataCell  ">
-                                                {!subitem.type__c}
-	                                        </td>
-	                                        <td class=" dataCell  ">
-	                                            {!item.region.name}
-	                                        </td>
-	                                        <td class="TdLink" >
-	                                            <apex:repeat value="{!subitem.Potential_New_Business_Trend__r}" var="npb">
-	                                            	<div class="PopupHolder">
-				                                        <span class="label label-success label-warning">{!npb.Potential_New_Business__r.Name}</span>
-				                                            <div class="individualPalette lookupHoverDetail lookupHoverDetailOverridable" style="display:none; visibility:visible; position:absolute; top:auto; left:auto;">
-				                                                <div class="Custom50Block topRight"><div class="bPageBlock secondaryPalette">
-				                                                    <div class="pbHeader">
-				                                                        <table border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
-				                                                            <tr>
-				                                                                <td class="pbTitle" colspan="2"><h2 class="mainTitle">{!$Label.Potential_New_Business}</h2></td>			                                                                
-				                                                            </tr>
-				                                                        </tbody></table>
-				                                                    </div>
-				                                                    <div class="pbBody">
-				                                                        <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
-				                                                            <tr>
-				                                                                <td class="labelCol last">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</td>
-				                                                                <td class="dataCol last">{!npb.Potential_new_Business__r.Potential_new_Business__c}</td>
-				                                                            </tr>
-				                                                        </tbody></table>
-				                                                    </div>
-				                                                    <div class="pbFooter secondaryPalette">
-				                                                        <div class="bg"></div>
-				                                                    </div>
-				                                                </div></div>
-				                                            </div>
-				                                    	</div>
-	                                            </apex:repeat>
-	                                        </td>
-	                                    </tr>
-	                                </apex:repeat>
-	                            </apex:repeat>
-	                            <apex:repeat value="{!globalStrategicInitiatives}" var="subitem">
-	                               <tr id="{!subitem.id}" class="StrategicInitiativeRow DraggableRow dataRow {!IF ( (subitem.Opportunities__R.size > 0) && (subitem.Potential_New_Business_Strategic_Ini__r.size > 0), 'hasOpportunityAndPotencial', IF(subitem.Opportunities__R.size > 0 , 'hasOpportunity' , IF(subitem.Potential_New_Business_Strategic_Ini__r.size > 0 , 'hasPotentialBussiness' , 'NotUsed')) )}"  onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">                                   
-	                                   <td>
-                                       		{!subitem.title__c}
-                                       </td> 
-                                       <td>
-                                            <span class="lessSpan">
-	                        					<apex:outputText value="{!Left(subitem.SCP_Certa_GC__Strategic_Initiative__c,50)}"/>
-												<apex:outputText rendered="{!LEN(subitem.SCP_Certa_GC__Strategic_Initiative__c) > 50}">
-													...
-													<button class="btn btn-default btn-xs showMore" style="float:right;">
-														<span class="glyphicon glyphicon-zoom-in icon-btn-left"></span>&nbsp;{!$Label.show_more}
-													</button>
-												</apex:outputText>
-											</span>
-											<span class="moreSpan" style="float:right;display:none;">								
-												<apex:outputField value="{!subitem.SCP_Certa_GC__Strategic_Initiative__c}"/>												
-												<button class="btn btn-default btn-xs showLess" style="float:right;">
-													<span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
-												</button>
-											</span>	                                                    
-                                        </td>		                                                                                                      
-	                                    <td class=" dataCell  ">
-	                                        {!$Label.Iniciativa} 
-	                                    </td>
-	                                    <td class=" dataCell  ">
-	                                        Parent Account
-	                                    </td>
-	                                    <td class="TdLink" >
-	                                        <apex:repeat value="{!subitem.Potential_New_Business_Strategic_Ini__R}" var="pnbs">
-	                                        	<div class="PopupHolder">
-			                                        <span class="label label-success label-warning">{!pnbs.Potential_New_Business__r.Name}</span>
-			                                            <div class="individualPalette lookupHoverDetail lookupHoverDetailOverridable" style="display:none; visibility:visible; position:absolute; top:auto; left:auto;">
-			                                                <div class="Custom50Block topRight"><div class="bPageBlock secondaryPalette">
-			                                                    <div class="pbHeader">
-			                                                        <table border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
-			                                                            <tr>
-			                                                                <td class="pbTitle" colspan="2"><h2 class="mainTitle">{!$Label.Potential_New_Business}</h2></td>			                                                                
-			                                                            </tr>
-			                                                        </tbody></table>
-			                                                    </div>
-			                                                    <div class="pbBody">
-			                                                        <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
-			                                                            <tr>
-			                                                                <td class="labelCol last">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</td>
-			                                                                <td class="dataCol last">{!pnbs.Potential_new_Business__r.Potential_new_Business__c}</td>
-			                                                            </tr>
-			                                                        </tbody></table>
-			                                                    </div>
-			                                                    <div class="pbFooter secondaryPalette">
-			                                                        <div class="bg"></div>
-			                                                    </div>
-			                                                </div></div>
-			                                            </div>
-			                                    	</div>
-	                                        </apex:repeat>
-	                                    </td>
-	                                </tr>
+                                                {!subitem.title__c}
+                                            </td> 
+                                            <td>
+                                                <span class="lessSpan">
+                                                    <apex:outputText value="{!Left(subitem.SCP_Certa_GC__Strategic_Initiative__c,50)}"/>
+                                                    <apex:outputText rendered="{!LEN(subitem.SCP_Certa_GC__Strategic_Initiative__c) > 50}">
+                                                        ...
+                                                        <button class="btn btn-default btn-xs showMore" style="float:right;">
+                                                            <span class="glyphicon glyphicon-zoom-in icon-btn-left"></span>&nbsp;{!$Label.show_more}
+                                                        </button>
+                                                    </apex:outputText>
+                                                </span>
+                                                <span class="moreSpan" style="float:right;display:none;">								
+                                                    <apex:outputField value="{!subitem.SCP_Certa_GC__Strategic_Initiative__c}"/>												
+                                                    <button class="btn btn-default btn-xs showLess" style="float:right;">
+                                                        <span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
+                                                    </button>
+                                                </span>	                                                    
+                                            </td>		                                                                                                      
+                                            <td class=" dataCell  ">
+                                                {!$Label.Iniciativa} 
+                                            </td>
+                                            <td class=" dataCell  ">
+                                                Parent Account
+                                            </td>
+                                            <td class="TdLink" >
+                                                <apex:repeat value="{!subitem.Potential_New_Business_Strategic_Ini__R}" var="pnbs">
+                                                    <div class="PopupHolder">
+                                                        <span class="label label-success label-warning">{!pnbs.Potential_New_Business__r.Name}</span>
+                                                        <div class="individualPalette lookupHoverDetail lookupHoverDetailOverridable" style="display:none; visibility:visible; position:absolute; top:auto; left:auto;">
+                                                            <div class="Custom50Block topRight"><div class="bPageBlock secondaryPalette">
+                                                                <div class="pbHeader">
+                                                                    <table border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
+                                                                        <tr>
+                                                                            <td class="pbTitle" colspan="2"><h2 class="mainTitle">{!$Label.Potential_New_Business}</h2></td>			                                                                
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </div>
+                                                                <div class="pbBody">
+                                                                    <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
+                                                                        <tr>
+                                                                            <td class="labelCol last">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</td>
+                                                                            <td class="dataCol last">{!pnbs.Potential_new_Business__r.Potential_new_Business__c}</td>
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </div>
+                                                                <div class="pbFooter secondaryPalette">
+                                                                    <div class="bg"></div>
+                                                                </div>
+                                                                </div></div>
+                                                        </div>
+                                                    </div>
+                                                </apex:repeat>
+                                            </td>
+                                        </tr>
+                                    <!--/apex:outputText-->
+                                    
+	                               
 	                            </apex:repeat>
 	                            <apex:repeat value="{!localStrategicInitiatives}" var="subitem">
-	                                <tr id="{!subitem.id}" class="StrategicInitiativeRow DraggableRow dataRow {!IF ( (subitem.Opportunities__R.size > 0) && (subitem.Potential_New_Business_Strategic_Ini__r.size > 0), 'hasOpportunityAndPotencial', IF(subitem.Opportunities__R.size > 0 , 'hasOpportunity' , IF(subitem.Potential_New_Business_Strategic_Ini__r.size > 0 , 'hasPotentialBussiness' , 'NotUsed')) )}"  onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">                                  
-	                                    <td>
-                                         {!subitem.title__c}
-                                        </td>
-                                        <td>
-                                            <span class="lessSpan">
-	                        					<apex:outputText value="{!Left(subitem.SCP_Certa_GC__Strategic_Initiative__c,50)}"/>
-												<apex:outputText rendered="{!LEN(subitem.SCP_Certa_GC__Strategic_Initiative__c) > 50}">
-													...
-													<button class="btn btn-default btn-xs showMore" style="float:right;">
-														<span class="glyphicon glyphicon-zoom-in icon-btn-left"></span>&nbsp;{!$Label.show_more}
-													</button>
-												</apex:outputText>
-											</span>
-											<span class="moreSpan" style="float:right;display:none;">								
-												<apex:outputField value="{!subitem.SCP_Certa_GC__Strategic_Initiative__c}"/>												
-												<button class="btn btn-default btn-xs showLess" style="float:right;">
-													<span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
-												</button>
-											</span>	                                                    
-                                        </td>
-	                                    <td class=" dataCell  ">
-	                                        {!$Label.Iniciativa} 
-	                                    </td>
-	                                    <td class=" dataCell  ">
-	                                        Account
-	                                    </td>
-	                                    <td class="TdLink" >
-	                                        <apex:repeat value="{!subitem.Potential_New_Business_Strategic_Ini__R}" var="pnbs">
-	                                        	<div class="PopupHolder">
-			                                        <span class="label label-success label-warning">{!pnbs.Potential_New_Business__r.Name}</span>
-			                                            <div class="individualPalette lookupHoverDetail lookupHoverDetailOverridable" style="display:none; visibility:visible; position:absolute; top:auto; left:auto;">
-			                                                <div class="Custom50Block topRight"><div class="bPageBlock secondaryPalette">
-			                                                    <div class="pbHeader">
-			                                                        <table border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
-			                                                            <tr>
-			                                                                <td class="pbTitle" colspan="2"><h2 class="mainTitle">{!$Label.Potential_New_Business}</h2></td>			                                                                
-			                                                            </tr>
-			                                                        </tbody></table>
-			                                                    </div>
-			                                                    <div class="pbBody">
-			                                                        <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
-			                                                            <tr>
-			                                                                <td class="labelCol last">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</td>
-			                                                                <td class="dataCol last">{!pnbs.Potential_new_Business__r.Potential_new_Business__c}</td>
-			                                                            </tr>
-			                                                        </tbody></table>
-			                                                    </div>
-			                                                    <div class="pbFooter secondaryPalette">
-			                                                        <div class="bg"></div>
-			                                                    </div>
-			                                                </div></div>
-			                                            </div>
-			                                    	</div>
-	                                        </apex:repeat>
-	                                    </td>
-	                                </tr>
+                                    
+                                    <!--apex:outputText rendered="{!subitem.Opportunities__R != null && subitem.Potential_New_Business_Strategic_Ini__r != null}"-->
+                                        <tr id="{!subitem.id}" class="StrategicInitiativeRow DraggableRow dataRow {!IF ( (subitem.Opportunities__R.size > 0) && (subitem.Potential_New_Business_Strategic_Ini__r.size > 0), 'hasOpportunityAndPotencial', IF(subitem.Opportunities__R.size > 0 , 'hasOpportunity' , IF(subitem.Potential_New_Business_Strategic_Ini__r.size > 0 , 'hasPotentialBussiness' , 'NotUsed')) )}"  onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">                                  
+                                            <td>
+                                                {!subitem.title__c}
+                                            </td>
+                                            <td>
+                                                <span class="lessSpan">
+                                                    <apex:outputText value="{!Left(subitem.SCP_Certa_GC__Strategic_Initiative__c,50)}"/>
+                                                    <apex:outputText rendered="{!LEN(subitem.SCP_Certa_GC__Strategic_Initiative__c) > 50}">
+                                                        ...
+                                                        <button class="btn btn-default btn-xs showMore" style="float:right;">
+                                                            <span class="glyphicon glyphicon-zoom-in icon-btn-left"></span>&nbsp;{!$Label.show_more}
+                                                        </button>
+                                                    </apex:outputText>
+                                                </span>
+                                                <span class="moreSpan" style="float:right;display:none;">								
+                                                    <apex:outputField value="{!subitem.SCP_Certa_GC__Strategic_Initiative__c}"/>												
+                                                    <button class="btn btn-default btn-xs showLess" style="float:right;">
+                                                        <span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
+                                                    </button>
+                                                </span>	                                                    
+                                            </td>
+                                            <td class=" dataCell  ">
+                                                {!$Label.Iniciativa} 
+                                            </td>
+                                            <td class=" dataCell  ">
+                                                Account
+                                            </td>
+                                            <td class="TdLink" >
+                                                <apex:repeat value="{!subitem.Potential_New_Business_Strategic_Ini__R}" var="pnbs">
+                                                    <div class="PopupHolder">
+                                                        <span class="label label-success label-warning">{!pnbs.Potential_New_Business__r.Name}</span>
+                                                        <div class="individualPalette lookupHoverDetail lookupHoverDetailOverridable" style="display:none; visibility:visible; position:absolute; top:auto; left:auto;">
+                                                            <div class="Custom50Block topRight"><div class="bPageBlock secondaryPalette">
+                                                                <div class="pbHeader">
+                                                                    <table border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
+                                                                        <tr>
+                                                                            <td class="pbTitle" colspan="2"><h2 class="mainTitle">{!$Label.Potential_New_Business}</h2></td>			                                                                
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </div>
+                                                                <div class="pbBody">
+                                                                    <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
+                                                                        <tr>
+                                                                            <td class="labelCol last">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</td>
+                                                                            <td class="dataCol last">{!pnbs.Potential_new_Business__r.Potential_new_Business__c}</td>
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </div>
+                                                                <div class="pbFooter secondaryPalette">
+                                                                    <div class="bg"></div>
+                                                                </div>
+                                                                </div></div>
+                                                        </div>
+                                                    </div>
+                                                </apex:repeat>
+                                            </td>
+                                        </tr>
+                                    <!--/apex:outputText-->
+                                    
+	                                
 	                            </apex:repeat>
 	                            <apex:repeat value="{!provenValueWrapperList}" var="subitem">
-	                                <tr id="{!subitem.provenValue.id}" class="PastProvenValueNewRow DraggableRow dataRow {!IF ( (subitem.provenValue.OpportunityPastProvenValueNew__r.size > 0) && (subitem.provenValue.Potential_New_Business_Past_Provent__r.size > 0), 'hasOpportunityAndPotencial',IF(subitem.provenValue.OpportunityPastProvenValueNew__r.size > 0 , 'hasOpportunity' , IF(subitem.provenValue.Potential_New_Business_Past_Provent__r.size > 0 , 'hasPotentialBussiness' , 'NotUsed')) )}"  onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">                                   
-	                                    
-                                        <td>
-                                        {!subitem.provenValue.Title__c}
-                                        </td>
-                                        <td>
-                                            <span class="lessSpan">
-	                        					<apex:outputText value="{!Left(subitem.provenValue.SCP_Certa_GC__Unique_Value__c,50)}"/>
-												<apex:outputText rendered="{!LEN(subitem.provenValue.SCP_Certa_GC__Unique_Value__c) > 50}">
-													...
-													<button class="btn btn-default btn-xs showMore" style="float:right;">
-														<span class="glyphicon glyphicon-zoom-in icon-btn-left"></span>&nbsp;{!$Label.show_more}
-													</button>
-												</apex:outputText>
-											</span>
-											<span class="moreSpan" style="float:right;display:none;">								
-												<apex:outputField value="{!subitem.provenValue.SCP_Certa_GC__Unique_Value__c}"/>												
-												<button class="btn btn-default btn-xs showLess" style="float:right;">
-													<span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
-												</button>
-											</span>	                                                    
-                                        </td>
-	                                    <td class=" dataCell  ">
-	                                        {!subitem.provenValue.Type__c}
-	                                    </td>
-	                                    <td class=" dataCell  ">
-	                                        {!subitem.source}
-	                                    </td>
-	                                    <td class="TdLink" >
-	                                        <apex:repeat value="{!subitem.provenValue.Potential_New_Business_Past_Provent__r}" var="pnb">
-	                                        	<div class="PopupHolder">
-			                                        <span class="label label-success label-warning">{!pnb.Potential_New_Business__r.Name}</span>
-			                                            <div class="individualPalette lookupHoverDetail lookupHoverDetailOverridable" style="display:none; visibility:visible; position:absolute; top:auto; left:auto;">
-			                                                <div class="Custom50Block topRight"><div class="bPageBlock secondaryPalette">
-			                                                    <div class="pbHeader">
-			                                                        <table border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
-			                                                            <tr>
-			                                                                <td class="pbTitle" colspan="2"><h2 class="mainTitle">{!$Label.Potential_New_Business}</h2></td>			                                                                
-			                                                            </tr>
-			                                                        </tbody></table>
-			                                                    </div>
-			                                                    <div class="pbBody">
-			                                                        <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
-			                                                            <tr>
-			                                                                <td class="labelCol last">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</td>
-			                                                                <td class="dataCol last">{!pnb.Potential_new_Business__r.Potential_new_Business__c}</td>
-			                                                            </tr>
-			                                                        </tbody></table>
-			                                                    </div>
-			                                                    <div class="pbFooter secondaryPalette">
-			                                                        <div class="bg"></div>
-			                                                    </div>
-			                                                </div></div>
-			                                            </div>
-			                                    	</div>
-	                                        </apex:repeat>
-	                                    </td>                                           
-	                                </tr>
+                                    
+                                    <!--apex:outputText rendered="{!subitem.provenValue.OpportunityPastProvenValueNew__r != null && subitem.provenValue.Potential_New_Business_Past_Provent__r != null}"-->
+                                        <tr id="{!subitem.provenValue.id}" class="PastProvenValueNewRow DraggableRow dataRow {!IF ( (subitem.provenValue.OpportunityPastProvenValueNew__r.size > 0) && (subitem.provenValue.Potential_New_Business_Past_Provent__r.size > 0), 'hasOpportunityAndPotencial',IF(subitem.provenValue.OpportunityPastProvenValueNew__r.size > 0 , 'hasOpportunity' , IF(subitem.provenValue.Potential_New_Business_Past_Provent__r.size > 0 , 'hasPotentialBussiness' , 'NotUsed')) )}"  onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">                                   
+                                            
+                                            <td>
+                                                {!subitem.provenValue.Title__c}
+                                            </td>
+                                            <td>
+                                                <span class="lessSpan">
+                                                    <apex:outputText value="{!Left(subitem.provenValue.SCP_Certa_GC__Unique_Value__c,50)}"/>
+                                                    <apex:outputText rendered="{!LEN(subitem.provenValue.SCP_Certa_GC__Unique_Value__c) > 50}">
+                                                        ...
+                                                        <button class="btn btn-default btn-xs showMore" style="float:right;">
+                                                            <span class="glyphicon glyphicon-zoom-in icon-btn-left"></span>&nbsp;{!$Label.show_more}
+                                                        </button>
+                                                    </apex:outputText>
+                                                </span>
+                                                <span class="moreSpan" style="float:right;display:none;">								
+                                                    <apex:outputField value="{!subitem.provenValue.SCP_Certa_GC__Unique_Value__c}"/>												
+                                                    <button class="btn btn-default btn-xs showLess" style="float:right;">
+                                                        <span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
+                                                    </button>
+                                                </span>	                                                    
+                                            </td>
+                                            <td class=" dataCell  ">
+                                                {!subitem.provenValue.Type__c}
+                                            </td>
+                                            <td class=" dataCell  ">
+                                                {!subitem.source}
+                                            </td>
+                                            <td class="TdLink" >
+                                                <apex:repeat value="{!subitem.provenValue.Potential_New_Business_Past_Provent__r}" var="pnb">
+                                                    <div class="PopupHolder">
+                                                        <span class="label label-success label-warning">{!pnb.Potential_New_Business__r.Name}</span>
+                                                        <div class="individualPalette lookupHoverDetail lookupHoverDetailOverridable" style="display:none; visibility:visible; position:absolute; top:auto; left:auto;">
+                                                            <div class="Custom50Block topRight"><div class="bPageBlock secondaryPalette">
+                                                                <div class="pbHeader">
+                                                                    <table border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
+                                                                        <tr>
+                                                                            <td class="pbTitle" colspan="2"><h2 class="mainTitle">{!$Label.Potential_New_Business}</h2></td>			                                                                
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </div>
+                                                                <div class="pbBody">
+                                                                    <table class="detailList" border="0" cellpadding="0" cellspacing="0" style="border-bottom:0px;"><tbody>
+                                                                        <tr>
+                                                                            <td class="labelCol last">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</td>
+                                                                            <td class="dataCol last">{!pnb.Potential_new_Business__r.Potential_new_Business__c}</td>
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </div>
+                                                                <div class="pbFooter secondaryPalette">
+                                                                    <div class="bg"></div>
+                                                                </div>
+                                                                </div></div>
+                                                        </div>
+                                                    </div>
+                                                </apex:repeat>
+                                            </td>                                           
+                                        </tr>    
+                                    <!--/apex:outputText-->
+                                    
+	                                
 	                            </apex:repeat>                              
 	                        </tbody>                           
 	                    </table>
@@ -649,7 +671,7 @@
 		                                <th scope="col" class=" deemphasize">{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Potential_new_Business__c.label}</th>
 		                                <th scope="col" class=" deemphasize">{!$Label.Estimated_FCV}</th>
 		                                <th scope="col" class=" deemphasize">{!$Label.Contact}</th>
-		                                <th scope="col" class=" deemphasize">{!$Label.Status}</th>
+		                                <th scope="col" class=" deemphasize">{!$Label.estado}</th>
 		                                <th scope="col" class=" deemphasize">{!$Label.comments}</th>
 		                                <th scope="col" class=" deemphasize">{!$Label.Related_Value_Drivers}</th>
 		                            </tr>
@@ -659,27 +681,27 @@
 		                            <tr id="{!pnb.id}" class="dataRow even droppableTD">                                        
 		                                <td class="dataCell">
 		                                    <apex:outputField value="{!pnb.SCP_Certa_GC__Potential_new_Business__c}">
-		                                        <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+		                                        <apex:inlineEditSupport event="ondblclick"/>
 		                                    </apex:outputField>
 		                                </td>
 		                                <td class="dataCell">
 		                                    <apex:outputField value="{!pnb.SCP_Certa_GC__Estimated_FCV__c}">
-		                                        <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+		                                        <apex:inlineEditSupport event="ondblclick"/>
 		                                    </apex:outputField>
 		                                </td>                                       
 		                                <td class="dataCell">
 		                                    <apex:outputField value="{!pnb.SCP_Certa_GC__Contact_to_approach__c}">
-		                                        <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+		                                        <apex:inlineEditSupport event="ondblclick"/>
 		                                    </apex:outputField>
 		                                </td>
 		                                <td class="dataCell">
 		                                    <apex:outputField value="{!pnb.SCP_Certa_GC__Status__c}">
-		                                        <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+		                                        <apex:inlineEditSupport event="ondblclick"/>
 		                                    </apex:outputField>
 		                                </td>
 		                                <td class="dataCell">
 		                                    <apex:outputField value="{!pnb.SCP_Certa_GC__Comments__c}">
-		                                        <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+		                                        <apex:inlineEditSupport event="ondblclick"/>
 		                                    </apex:outputField>
 		                                </td>
 		                                <td class="dataCell">
@@ -814,7 +836,7 @@
 					      				</tr>
 					      				<tr>
 					      					<td style="text-align: right;">
-					      						<apex:outputText value="{!$ObjectType.SCP_Certa_GC__Potential_New_Business__c.fields.SCP_Certa_GC__Status__c.label}" />:
+					      						<apex:outputText value="{!$Label.scp_certa_gc__estado}" />:
 					      					</td>
 					      					<td>
 					      						<apex:inputField style="width: 335px;" value="{!potentialNewBusiness.SCP_Certa_GC__Status__c}"/><br/>
@@ -831,7 +853,7 @@
 					      			</table>		        
 					      		</div>
 					      		<div class="modal-footer">
-					        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					        		<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 					        		<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="add()">{!$Label.add_buttom} {!$Label.potential_business}</button>
 					      		</div>
 					    	</div>
@@ -842,7 +864,7 @@
 	    	<div class="panel-footer">
     			<div class="row paddingRight">	
 					<div class="btn-group pull-right" role="group" aria-label="...">	    					
-           				<apex:outputText rendered="{!canEdit}">
+           				<apex:outputText >
 	           				<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">
 		   						<span class="glyphicon glyphicon-plus icon-btn-left"></span>&nbsp;{!$Label.add_buttom} {!$Label.potential_business}
 		                    </button>

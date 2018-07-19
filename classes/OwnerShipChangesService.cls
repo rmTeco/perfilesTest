@@ -182,9 +182,9 @@ global with sharing class OwnerShipChangesService implements vlocity_cmt.Vlocity
         try {
             
             String orderId = (String)inputMap.get('OrderId');
-	        String accountId = (String)inputMap.get('AccountId');
-	        String contextId = (String)inputMap.get('ContextId');
-	        Object assetMap = (Object)inputMap.get('Asset');
+            String accountId = (String)inputMap.get('AccountId');
+            String contextId = (String)inputMap.get('ContextId');
+            Object assetMap = (Object)inputMap.get('Asset');
             
             Map<String, Object> dateMap = new Map<String, Object>();
             dateMap.put('MoveOutDate', String.valueOf(Date.today()));

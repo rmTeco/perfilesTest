@@ -21,6 +21,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>vlocity_cmt__ApplicablePermissionName__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>vlocity_cmt__IsActive__c</field>
             </layoutItems>
             <layoutItems>
@@ -50,14 +54,6 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>vlocity_cmt__IsSeedAction__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__ApplicablePermissionName__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ApplicablePermissionSet__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -158,7 +154,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h6C000000RNvy</masterLabel>
+        <masterLabel>00hc0000000LmkB</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

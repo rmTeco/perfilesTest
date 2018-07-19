@@ -1,5 +1,4 @@
 global with sharing class BillingGroupAnnulledCaseController{
-    global String algo{get; set; }
 
     @RemoteAction
     global static Boolean closeCase(String Id){

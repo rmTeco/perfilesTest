@@ -66,6 +66,7 @@ global with sharing class ta_care_queryAdjustmentsHelper implements vlocity_cmt.
             Boolean flag = false;
             String strQuery = 'SELECT Id,Manager_Profile__c,Manager__c,Parent_Team__c FROM WorkTeam__c WHERE Id =:workteamId';
             Map<String,Object> result = new Map<String,Object>();
+            result.put('approvalProfileR', '');
 
             if(String.isBlank(approvalProfile))
             {
@@ -80,6 +81,26 @@ global with sharing class ta_care_queryAdjustmentsHelper implements vlocity_cmt.
                 result.put('descError', 'El equipo de trabajo no se encuentra correctamente configurado. Por favor, revise con el administrador la consulta y reintente nuevamente.');
                 flag = true; 
             }
+
+            Id profileId = userinfo.getProfileId();
+            String profileName = [SELECT Id, Name FROM Profile WHERE Id = :profileId].Name;
+
+            if(profileName == approvalProfile)
+            {
+                result.put('codError', '0');
+                result.put('approvalProfileR', 'Representante');
+                result.put('approvalId', profileId);
+                flag = true; 
+            }
+
+           /* if(profileName == 'System Administrator'  )
+            {
+                result.put('codError', '0');
+                result.put('approvalProfileR', 'FAN_Director');
+                result.put('approvalId', '0056C000000xouc');
+                flag = true; 
+            }
+            */
 
             while (!flag) 
             {
@@ -101,11 +122,11 @@ global with sharing class ta_care_queryAdjustmentsHelper implements vlocity_cmt.
                     { 
                         //Corto porque estoy en el padre (primero). Ver que hacer aca
                         result.put('codError', '103');
-                        result.put('descError', 'El caso que intenta ejecutar no encuentra aprobador disponible. Por favor, revise con el administrador la consulta y reintente nuevamente.');
+                        result.put('descError', 'El caso que intenta ejecutar no encuentra aprobador disponible. Por favor, revise con el administrador la consulta y reintente nuevamente.'); // Perfil: '+profileName + ' approvalProfile: '+ approvalProfile + ' workteamId: '+workteamId);
                         flag = true; 
                         break;
                     }
-
+                                        
                     parentTeamWork = (String)workTeam.get('Parent_Team__c');
                     strQuery = 'SELECT Id,Manager_Profile__c,Manager__c,Parent_Team__c FROM WorkTeam__c WHERE Id =:parentTeamWork';
                 }
@@ -121,22 +142,68 @@ global with sharing class ta_care_queryAdjustmentsHelper implements vlocity_cmt.
         // Vlocity Integration Procedure Obj
         vlocity_cmt.IntegrationProcedureService integProcServ = new vlocity_cmt.IntegrationProcedureService();
         
+         // ***** *****  BUG  PFTA-10332 *********************** ////////////
+        Map<String, Object> bodyNewMap = (Map<String,Object>) inputMap.get('body');
+        System.debug('newBody_' + inputMap );
+        String codSubcript = (String) inputMap.get('codSuscript');   
+        Map<String, Object> resultNew = (Map<String,Object>) bodyNewMap.get('cuenta'); 
+        
+        
+        Map<String, Object> codiT = (Map<String, Object>) resultNew.get('accesoCuenta');
+        System.debug('result new_' + resultNew + '--' + codiT);
+        
+        codiT.put('idCuenta', codSubcript);
+        
+        Date dateFrom = Date.today() - 5;
+        Date dateUntil = Date.today();
+        String dateFromString = string.valueOf(dateFrom)+' 00:00:00';
+        String dateUntilString = string.valueOf(dateUntil)+' 00:00:00';
+        System.debug('fechasss_' + dateFromString +'__-' + dateUntilString);
+        
+        bodyNewMap.put('cuenta',resultNew);
+        bodyNewMap.put('fechaDesde', dateFromString );
+        bodyNewMap.put('fechaHasta', dateUntilString );
+        
+        inputMap.put('body',bodyNewMap );
+        System.debug('New Data_S138' + inputMap);
+        
+        // ***** *****  //// ***********************
+        
         //Getting S138 data from IP
         if(!Test.isRunningTest()){integProcServ.invokeMethod('IFS_S138', inputMap, outMap, options);}
         //System.debug('inputMap: ' + inputMap);
-        //System.debug('outMap: ' + outMap);
+        System.debug('outMap: ' + outMap);
         Map<String, Object> result = (Map<String, Object>)outMap.get('IPResult');
-        List<Object> ajustments = (List<Object>)result.get('listaDetalleAjuste');
-        List<Object> ajustments2 = new List<Object>();
-        for (Object a : ajustments){
-            Map<string, object> aMap = ( Map<string, object>)a;
-            aMap.put('motivoAjuste', getAdjustments_CBS__c.getInstance((string)aMap.get('codMotivoAjuste')).ServiceMessage__c);
-            ajustments2.add(aMap);
-        }
-        result.put('listaDetalleAjuste', ajustments2);
-        outMap.put('IPResult', result);
-        //system.debug(json.serialize(outMap));
         
+        if((result != null && result.get('detalle') != null) || outMap.get('error') != null ){
+            System.debug('into error code --' + result);
+            List<Object> refillsSOS = (List<Object>)result.get('listaDetallePrestamo');
+            result.put('codError', '201');     
+            Map<String, Object> objectNewResult = new Map<String, Object>();
+            objectNewResult.put('listaDetalleAjuste', result);
+            outMap.put('IPResult',objectNewResult);
+            
+        }else{
+            System.debug('withuot error --' + result);
+            List<Object> ajustments = (List<Object>)result.get('listaDetalleAjuste');
+                if(ajustments.isEmpty()){ 
+                  result.put('codError', '201');
+                  result.put('descError', 'NO DATA');  
+                  Map<String, Object> objectNewResult = new Map<String, Object>();
+                  objectNewResult.put('listaDetalleAjuste', result);
+                  outMap.put('IPResult',objectNewResult);
+                }else{
+                    List<Object> ajustments2 = new List<Object>();
+                    for (Object a : ajustments){
+                        Map<string, object> aMap = ( Map<string, object>)a;
+                        aMap.put('motivoAjuste', getAdjustments_CBS__c.getInstance((string)aMap.get('codMotivoAjuste')).ServiceMessage__c);
+                        ajustments2.add(aMap);
+                    }
+                    result.put('listaDetalleAjuste', ajustments2);
+                    outMap.put('IPResult', result);
+                }
+            //system.debug(json.serialize(outMap));
+        } 
     }
     
     global void GetAdjustmentHistoryForOS(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
@@ -213,10 +280,11 @@ global with sharing class ta_care_queryAdjustmentsHelper implements vlocity_cmt.
     global static void AmountLimitForUser(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
     {
         Map<String,Object> result = new Map<String,Object>();
+        String approvalProfile = (String) options.get('approvalProfile');
         try
         {
-            Double newAmount = (Double) options.get('Amount');
-            String approvalProfile = (String) options.get('approvalProfile');
+            Double newAmount = Double.valueOf(options.get('Amount'));
+            
             String tipoSeleccion = (String) options.get('TipoSeleccion');
             //Id accountId = (Id) options.get('AccountId');
             Id serviceId = (Id) options.get('ServiceId');
@@ -235,7 +303,7 @@ global with sharing class ta_care_queryAdjustmentsHelper implements vlocity_cmt.
                 if(!Test.isRunningTest())
                 {
                     RAV_Max_Amount__c objMaxAmount = RAV_Max_Amount__c.getValues(approvalProfile);
-                    limitThreshold = (Double)objMaxAmount.get('Max_amount__c');
+                    limitThreshold = Double.valueOf(objMaxAmount.get('Max_amount__c'));
                     System.debug('Limite: '+limitThreshold);
                 }
                 else
@@ -250,7 +318,7 @@ global with sharing class ta_care_queryAdjustmentsHelper implements vlocity_cmt.
 
                 Double currentTotalAmount;
                 if(listObj[0].get('totalAmount') != null)
-                     currentTotalAmount = (Double)listObj[0].get('totalAmount');
+                     currentTotalAmount = Double.valueOf(listObj[0].get('totalAmount'));
                 else
                     currentTotalAmount = 0;
 
@@ -262,7 +330,7 @@ global with sharing class ta_care_queryAdjustmentsHelper implements vlocity_cmt.
                 //Si el monto a ajustar mas lo ya ajustado supera el umbral definido bloqueamos la operacion y se envia mail al gerente. 
                 if(currentAmount > limitThreshold) {
                     result.put('codError', '101');
-                    result.put('descError', 'El usuario '+UserInfo.getFirstName()+' '+ UserInfo.getLastName() +' ha superado el monto máximo de desdoblamiento para ajustar a la cuenta.');
+                    result.put('descError', 'El usuario '+UserInfo.getFirstName()+' '+ UserInfo.getLastName() +' ha superado el monto máximo de desdoblamiento para ajustar a la cuenta.'); //+' approvalProfile: '+approvalProfile+ ' limitThreshold: '+limitThreshold);
                     options.put('templateName', 'Send_Email_when_max_adjustment_amount_is_reached');
                    // options.put('caseOwner', options.get('caseOwner'));
                     options.put('caseOwner', userId);

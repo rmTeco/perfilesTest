@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customButtons>TA_Clone</customButtons>
     <customButtons>vlocity_cmt__OrderPDF</customButtons>
     <customButtons>vlocity_cmt__CPQ</customButtons>
     <customButtons>vlocity_cmt__SavePDF</customButtons>
@@ -12,6 +13,7 @@
     <customButtons>vlocity_cmt__PickFrameContract</customButtons>
     <customButtons>TA_CPQ</customButtons>
     <customButtons>Aprobar_Orden</customButtons>
+    <excludeButtons>Clone</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -271,6 +273,14 @@
                 <behavior>Edit</behavior>
                 <field>SubGestion__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Delivery_Date_Time__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Conciliador_Time_Based_Workflow__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -340,6 +350,10 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>OriginalOrderId</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>vlocity_cmt__ShippingName__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -488,12 +502,12 @@
         <fields>vlocity_cmt__LineNumber__c</fields>
         <fields>Quantity</fields>
         <fields>vlocity_cmt__ProvisioningStatus__c</fields>
-        <fields>vlocity_cmt__ServiceAccountId__c</fields>
         <fields>vlocity_cmt__ParentOrderProduct__c</fields>
         <fields>vlocity_cmt__Action__c</fields>
         <fields>vlocity_cmt__SubAction__c</fields>
         <fields>vlocity_cmt__AssetReferenceId__c</fields>
         <fields>vlocity_cmt__RootItemId__c</fields>
+        <fields>vlocity_cmt__AssetId__c</fields>
         <relatedList>RelatedOrderItemList</relatedList>
     </relatedLists>
     <relatedLists>

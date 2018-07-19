@@ -100,8 +100,8 @@ global with sharing class ta_care_ifs018 {
                 //system.debug('CICLO DE FACTURACION -->'+objMap);
                 Date dt = date.valueOf((String)objMap.get('fechaVencimientoFacturacion'));
                 if(dt >= date.today()){
-                    Map<String, Object> facturacionMap =(Map<String, Object>)objMap.get('detalleCicloFacturacion');
-                    List<Object> itemCicloFacturacionList = VlocityOpenInterfaceHelper.getListObjectsFromMap(facturacionMap, 'detalleItemCicloFacturacion');
+                    Map<String, Object> facturacionMap =(Map<String, Object>)objMap.get('listaCicloFacturacionDetallado');
+                    List<Object> itemCicloFacturacionList = VlocityOpenInterfaceHelper.getListObjectsFromMap(facturacionMap, 'cicloFacturacionDetallado');
                     for (Object obje : itemCicloFacturacionList ) {
                         Map<String, Object> objeMap = (Map<String, Object>)obje;
                         //system.debug('ITEM FACTURACION--> '+objeMap);
@@ -124,7 +124,10 @@ global with sharing class ta_care_ifs018 {
 			List<Object> balanceList = VlocityOpenInterfaceHelper.getListObjectsFromMap(balMap, 'balance');
 			for (Object obj : balanceList ) {
 				Map<String, Object> objMap = (Map<String, Object>)obj;
-				sum += Decimal.valueOf((String)objMap.get('saldoPorTipoBalance'));
+				if(String.valueOf(objMap.get('codTipoBalance')) == 'C_MAIN_BILLING_ACCOUNT') //PFTA-11259
+				{
+					sum += Decimal.valueOf((String)objMap.get('saldoPorTipoBalance'));
+				}
 			}
 			result = string.valueof(sum);
 		}else {
@@ -145,8 +148,8 @@ global with sharing class ta_care_ifs018 {
     			//system.debug('CICLO DE FACTURACION -->'+objMap);
     			Date dt = date.valueOf((String)objMap.get('fechaVencimientoFacturacion'));
     			if(dt < date.today()){
-    				Map<String, Object> facturacionMap =(Map<String, Object>)objMap.get('detalleCicloFacturacion');
-    				List<Object> itemCicloFacturacionList = VlocityOpenInterfaceHelper.getListObjectsFromMap(facturacionMap, 'detalleItemCicloFacturacion');
+    				Map<String, Object> facturacionMap =(Map<String, Object>)objMap.get('listaCicloFacturacionDetallado');
+    				List<Object> itemCicloFacturacionList = VlocityOpenInterfaceHelper.getListObjectsFromMap(facturacionMap, 'cicloFacturacionDetallado');
     				for (Object obje : itemCicloFacturacionList ) {
     					Map<String, Object> objeMap = (Map<String, Object>)obje;
     					//system.debug('ITEM FACTURACION--> '+objeMap);

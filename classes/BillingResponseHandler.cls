@@ -22,6 +22,10 @@ global with sharing class BillingResponseHandler implements vlocity_cmt.VlocityO
             if (methodName.equals('getNominationAssets')){
                 getNominationAssets(inputMap, outMap, options);
             }
+            if(methodName.equals('sendOrderToOM')){
+                String orderId = (String) options.get('IdOrder');
+                sendOrderToOM(orderId);
+            }
             result = false;  
         } 
         catch(Exception e)
@@ -31,276 +35,283 @@ global with sharing class BillingResponseHandler implements vlocity_cmt.VlocityO
         return result;
     }
     
-     public static Boolean callBackService224(Map<String,Object> inputMap, Map<String, Object> outMap, Map<String,Object> options)
-    {
-        try
-        {
-            inputMap = new Map<String, Object>();
-            if (outMap == null)
-                outMap = new Map<String, Object>();
-            String jsonCallBack = (String) options.get('JSONResponse');
-            Map<String, Object> objCallBack = (Map<String, Object>)JSON.deserializeUntyped(jsonCallBack);
-            Map<String, Object> objCallBackInfo = (Map<String, Object>)objCallBack.get('invoiceAndPaymentNotification');
-            String orderId = (String) objCallBackInfo.get('SalesOrderId');
-            String callBackStatus = (String) objCallBackInfo.get('Status');
-            String legalInvoiceNumber = (String) objCallBackInfo.get('LegalInvoiceNumber');
-            String statusInvoice = (String) objCallBackInfo.get('StatusInvoice');
+public static Boolean callBackService224(Map < String, Object > inputMap, Map < String, Object > outMap, Map < String, Object > options) {
+  try {
+    inputMap = new Map < String, Object > ();
+    if (outMap == null)
+      outMap = new Map < String, Object > ();
+    String jsonCallBack = (String) options.get('JSONResponse');
+    Map < String, Object > objCallBack = (Map < String, Object > ) JSON.deserializeUntyped(jsonCallBack);
+    Map < String, Object > objCallBackInfo = (Map < String, Object > ) objCallBack.get('invoiceAndPaymentNotification');
+    String orderId;
+    //PFTA-11176. La integracion S029 envía un OrderNumber en lugar de un Id, por lo que HW devuelve este parametro
+    String orderNum = (String) objCallBackInfo.get('SalesOrderId');
+    String callBackStatus = (String) objCallBackInfo.get('Status');
+    String legalInvoiceNumber = (String) objCallBackInfo.get('LegalInvoiceNumber');
+    String statusInvoice = (String) objCallBackInfo.get('StatusInvoice');
 
-            OrderItem objOrderItem;
-            
-            system.debug('orderId: ' + orderId);
-            
-            if (orderId != null)
-            {
-                Order objOrder = [
-                SELECT 
-                    Id,
-                    OrderNumber,
-                    TotalAmount,
-                    TrackingStatus__c,
-                    TrackingStatusDetail__c,
-                    Gestion__c,
-                    OriginStoreLocation__c,
-                    Delivery_Method__c,
-                    LegalInvoiceNumber__c,
-                    CreatedDate
-                FROM Order 
-                WHERE Id = :orderId];
-                
-                //Código realizado para setear disconnectDate en null tanto para la orden como para sus orderItems
-                //Comienzo
-                List<orderItem> orderItems = [SELECT Id from orderItem where OrderId = :orderId];
-                if(orderItems.size() > 0){
-                    for (orderItem a: orderItems){
-                                       a.vlocity_cmt__DisconnectDate__c = null;
-                    }
-                }
-                Update orderItems;
-                //Fin
-                
-                getPaymentResponse(objOrder.Id);
-                
-                
-                //PFTA10108 - Notificaciones del servicio S224 durante el cobro y facturación de una orden
-                
-               if (callBackStatus == 'payment failed'){
-                    objOrder.TrackingStatus__c = 'Pago Fallido';
-                }
-                
-                /////////////////////////////////////////////////////////////////
-                
-                //PFTA-7438 - Store Pickup - Flujo de Derivacion - INI
-                System.debug('OriginStoreLocation: ' + objOrder.OriginStoreLocation__c);
-                vlocity_cmt__BusinessSite__c store = [SELECT Channel__c, Channel_Type__c FROM vlocity_cmt__BusinessSite__c WHERE Id = :objOrder.OriginStoreLocation__c];
-                System.debug('Channel: ' + store.Channel_Type__c);
-                //PFTA-7438 - Store Pickup - Flujo de Derivacion - FIN
+    system.debug('orderNum: ' + orderNum);
+    if (orderNum != null) {
+      Order objOrder = [
+        SELECT
+        Id,
+        OrderNumber,
+        TotalAmount,
+        TrackingStatus__c,
+        TrackingStatusDetail__c,
+        Gestion__c,
+        OriginStoreLocation__c,
+        Delivery_Method__c,
+        LegalInvoiceNumber__c,
+        CreatedDate
+        FROM Order
+        WHERE OrderNumber = : orderNum
+      ];
 
-                if (callBackStatus == 'payment succeed')
-                {
-                    objOrder.LegalInvoiceNumber__c = legalInvoiceNumber;
-                
-                    //PFTA10108 - Notificaciones del servicio S224 durante el cobro y facturación de una orden
-                
-                    objOrder.TrackingStatus__c = 'Pagos Imputados';
-                    objOrder.Received224_Date__c = Date.Today();
-                
-                    update objOrder;
-                
-                if (statusInvoice == 'invoice succeed'){
-                    objOrder.TrackingStatus__c = 'Factura Emitida';
-                }
-                
-                update objOrder;
-                
-                /////////////////////////////////////////////////////////////////
+      orderId = objOrder.Id;
 
-                SendSuccesfulOrderClientNotification(objOrder.Id);
+      if (callBackStatus == 'payment succeed') {
+        System.debug('OriginStoreLocation: ' + objOrder.OriginStoreLocation__c);
+        vlocity_cmt__BusinessSite__c store = [SELECT Channel__c, Channel_Type__c FROM vlocity_cmt__BusinessSite__c WHERE Id = : objOrder.OriginStoreLocation__c];
+        System.debug('Channel: ' + store.Channel_Type__c);
 
-                    //PFTA - 9135 - INI
-                    if(store.Channel__c == 'Telefónico' || store.Channel_Type__c == 'Web')
-                    {
-                        SendSuccesfulPaymentClientNotification(objOrder.Id);
-                    }
-                    //PFTA - 9135 - FIN
-                    
-                    //PFTA-7438 - Store Pickup - Flujo de Derivacion - INI
-                    if(store.Channel_Type__c == 'Oficinas Comerciales')
-                    {
-                        objOrder.TrackingStatus__c = 'Preparar pedido';
-                        taOrderController.CreateStateTask(orderId, taOrderController.PENDIENTE_ARMADO_NOTIFICATION);
-                    }
-                    else if(store.Channel_Type__c == 'Agentes')
-                    {
-                        if(objOrder.Delivery_Method__c == 'Presencial' || objOrder.Delivery_Method__c == 'Delivery')
-                        {
-                            objOrder.TrackingStatus__c = 'Entregado';
-                        }
-                        if(objOrder.Delivery_Method__c == 'Store Pick Up')
-                        {
-                            objOrder.TrackingStatus__c = 'Preparar pedido';
-                            taOrderController.CreateStateTask(orderId, taOrderController.PENDIENTE_ARMADO_NOTIFICATION);
-                        }
-                    }
-                    else if(store.Channel_Type__c == 'Call Center')
-                    {
-                        if(objOrder.Delivery_Method__c == 'Delivery')
-                        {
-                            objOrder.TrackingStatus__c = 'Cobrado';
-                        }
-                        if(objOrder.Delivery_Method__c == 'Store Pick Up')
-                        {
-                            objOrder.TrackingStatus__c = 'Preparar pedido';
-                            taOrderController.CreateStateTask(orderId, taOrderController.PENDIENTE_ARMADO_NOTIFICATION);
-                        }
-                    }
-                    //objOrder.TrackingStatus__c = 'Cobrado';
-                    //PFTA-7438 - Store Pickup - Flujo de Derivacion - FIN
-                    
-                    //<DA> Agrego logica para recarga
-                    if(objOrder.Gestion__c == 'Recarga')
-                    {
-                        objOrderItem = [SELECT vlocity_cmt__EffectiveOneTimeTotal__c, vlocity_cmt__JSONAttribute__c, UnitPrice, vlocity_cmt__AssetId__c FROM OrderItem WHERE OrderId = :orderId];
-
-                        String assetId = objOrderItem.vlocity_cmt__AssetId__c;
-                        
-                        Asset objAsset = [SELECT Subscription_Id__c FROM Asset WHERE Id = :assetId];
-
-                        Map<String,Object> jsonAttribute = AssetAttributesUtils.GetJSONAttribute(objOrderItem.vlocity_cmt__JSONAttribute__c, 'MSISDN');
-                        String nroLinea = (String)((Map<String, Object>)jsonAttribute.get('attributeRunTimeInfo')).get('value');
-                        //Decimal monto = objOrderItem.vlocity_cmt__EffectiveOneTimeTotal__c;
-                        Decimal monto = objOrderItem.UnitPrice;
-                        String sMonto = monto.toPlainString();
-                        String subscriptionId = objAsset.Subscription_Id__c;
-
-                        System.debug('sMonto: ' + sMonto);
-                        System.debug('nroLinea: ' + nroLinea);
-                        System.debug('subscriptionId: ' + subscriptionId);
-
-                        options.put('nroLinea', nroLinea);
-                        options.put('ChargeAmmount', monto);
-                        options.put('subscriptionId', subscriptionId);
-                        LinesManager lManager = new LinesManager();
-
-                        Map<String, Object> outMapCRecharge = new Map<String, Object>();
-
-                        lManager.invokeMethod('CreditRecharge',inputMap, outMapCRecharge, options);
-                        System.debug('outMapCRecharge: ' + outMapCRecharge);
-                        String creditError = (String) outMapCRecharge.get('Error');
-                        if (creditError ==  null){
-                            objOrder.TrackingStatus__c = 'Recargado';
-                            outMap.put('txId', outMapCRecharge.get('txId'));
-                            
-                            Map<String,String> variables = new Map<String,String>();
-                            variables.put('monto', sMonto);
-                            variables.put('linea', nroLinea);
-
-                            //Envio SMS al cliente avisando que la recarga fue ok
-                            //sendSMSTemplate(String cellNumber, String templateSMS, Map<String, String> variables)
-                            Boolean SMSsendStatus = taSalesSMSInteraction.sendSMSTemplate(nroLinea, 'Recarga Exitosa', variables);
-                            if (!SMSsendStatus)
-                                objOrder.TrackingStatusDetail__c = 'Error en envio SMS de confirmacion recarga al cliente';
-                            objOrder.Status = 'Activated';
-                            
-                        }
-                        else{
-                            objOrder.TrackingStatusDetail__c = creditError;
-                        }
-                            
-                    }
-                    else
-                    {
-                        //vlocity_cmt.SimpleDecompositionManager.startOrderProcessing(objOrder.Id);
-                        //vlocity_cmt.SimpleDecompositionController.decomposeOrder(objOrder.Id);
-                        //DA - 26/01/2018: Se modifica con los nuevos metodos
-                        system.debug('OM Antes' + objOrder.Id);
-                        
-                        // vlocity_cmt.SimpleDecompositionController.decomposeOrder(objOrder.Id);
-                        // vlocity_cmt.SimpleDecompositionController.startOrchestrationPlan(objOrder.Id);
-                        
-                        // New call to OM (26/03/2018)
-                        boolean isOmniScript = false;
-                        vlocity_cmt.SimpleDecompositionController.decomposeAndCreatePlanEx(objOrder.Id, isOmniScript);
-
-                        system.debug('OM Paso');
-                    }
-                    update objOrder;
-                }
-                else
-                {
-                    String reasonCode = (String) objCallBackInfo.get('ReasonCode');
-                    if (reasonCode != null) {
-                        System.debug('reasonCode: ' + reasonCode);
-                        objOrder.TrackingStatusDetail__c = '';
-                        
-                        //PFTA-10108 - Notificaciones del servicio S224 durante el cobro y facturación de una orden
-                        
-                        objOrder.Reason_Code__c = reasonCode; 
-                        String reasonCodeName = (String) objCallBackInfo.get('ReasonCodeName');
-                        
-                        if(reasonCodeName != null){
-                        objOrder.Reason_Code_Name__c = reasonCodeName;}
-                        
-                        /////////////////////////////////////////////////
-                        
-                        for(Order_Failed_Payment_Messages__c failedMessages : Order_Failed_Payment_Messages__c.getAll().values()) {
-                            if (failedMessages.Error_Code__c == reasonCode) {
-                                objOrder.TrackingStatusDetail__c = failedMessages.Error_Message__c;
-                            }
-                        }
-                        Map<String,Object> inMap = new Map<String,Object>();
-                        Map<String,Object> oMap = new Map<String,Object>();
-                        Map<String,Object> optMap = new Map<String,Object>();
-                        List<Object> csFields = new List<Object>();
-
-                        //DA - 12/03/18 Me traigo los reason codes correspondientes a Anuldada y a Cancelada
-                        optMap.put('CSName','TASalesCodeValue__c');
-                        optMap.put('CSAtribute','IF224ReasonAnulada');
-                        Map<String,Object> auxMap = new Map<String,Object>();
-                        auxMap.put('field', 'Value__c');
-                        csFields.add(auxMap); 
-                        optMap.put('CSFields',csFields);
-                        SaleManager sm = new SaleManager();
-                        sm.invokeMethod('GetCustomSettingAtribute', inMap, oMap, optMap);
-                        TASalesCodeValue__c cs = (TASalesCodeValue__c) oMap.get('CSValues');
-                        String codAnulada = cs.Value__c;
-                        System.debug('codAnulada: ' + codAnulada);
-                        optMap.put('CSAtribute','IF224ReasonCancelada');
-                        sm.invokeMethod('GetCustomSettingAtribute', inMap, oMap, optMap);
-                        cs = (TASalesCodeValue__c) oMap.get('CSValues');
-                        String codCancelada = cs.Value__c;
-                        System.debug('codCancelada: ' + codCancelada);
-                        optMap.put('CSAtribute','IF224ReasonCambioMedioPago');
-                        sm.invokeMethod('GetCustomSettingAtribute', inMap, oMap, optMap);
-                        cs = (TASalesCodeValue__c) oMap.get('CSValues');
-                        String codCambioMedioPago = cs.Value__c;
-                        System.debug('codCancelada: ' + codCambioMedioPago);
-
-                        //DA - 12/03/18. PFTA-8682 Lógica de acuerdo a respuesta de caja por cancelada o anulada
-                        
-                        if (reasonCode == codCambioMedioPago){ //Codigo 1
-                            objOrder.TrackingStatus__c = 'Pendiente de Cambio de Medio de Pago';
-                        }
-                        if (reasonCode == codAnulada){ //Codigo 2
-                            objOrder.TrackingStatus__c = 'Pago No Concretado';
-                        }
-                        if (reasonCode == codCancelada){ //Codigo 3
-                            taOrderController.CancelOrderAndRelease(orderId);
-                            objOrder.Status = 'Cancelled';
-                        }
-                       
-                    }
-                    upsert objOrder;
-                }
+        switch on objOrder.Gestion__c {
+            when 'Recarga' {
+                String txId = processRecharge(objOrder, legalInvoiceNumber, statusInvoice);
+                outMap.put('txId', txId);
             }
-            return true;
+            when 'Reseteo de Cuota' {
+                processInternetPackReset(objOrder);
+            }
+            when else {
+                processOrderHandOver(objOrder, store, legalInvoiceNumber, statusInvoice);
+            }                
         }
-        catch(Exception e) {
-            System.debug('callBackService224 Msg: ' + e.getMessage());
-            System.debug('callBackService224 Cause: ' + e.getCause());
-            System.debug('callBackService224 Trace: ' + e.getStackTraceString());
-            return false;
+        
+        SendSuccesfulOrderClientNotification(objOrder.Id);
+        if (store.Channel__c == 'Telefónico' || store.Channel_Type__c == 'Web') {
+          SendSuccesfulPaymentClientNotification(objOrder.Id);
+        }
+      } else {
+        String reasonCode = (String) objCallBackInfo.get('ReasonCode');
+        String reasonCodeName = (String) objCallBackInfo.get('ReasonCodeName');
+        processPaymentError(objOrder, reasonCode, reasonCodeName);
+      }
+  }
+  return true;
+} catch (Exception e) {
+  System.debug('callBackService224 Msg: ' + e.getMessage());
+  System.debug('callBackService224 Cause: ' + e.getCause());
+  System.debug('callBackService224 Trace: ' + e.getStackTraceString());
+  return false;
+}
+}
+
+public static void processInternetPackReset(Order objOrder) {
+  vlocity_cmt__PaymentAdjustment__c payment = [SELECT Id, toLabel(vlocity_cmt__PaymentMethodId__r.vlocity_cmt__MethodType__c) FROM vlocity_cmt__PaymentAdjustment__c WHERE Order__r.Id = :objOrder.Id];
+  OrderItem item = [SELECT Id, Product2.Id, Product2.vlocity_cmt__JSONAttribute__c, Product2.ProductCode, Product2.ID_Sistema_Origen__c, vlocity_cmt__AssetId__r.Subscription_Id__c, vlocity_cmt__AssetId__r.MSISDN__c FROM OrderItem WHERE OrderId = :objOrder.Id LIMIT 1];
+  ta_sales_renovacionDatos.ChangeSubOffering(objOrder.Id, payment.vlocity_cmt__PaymentMethodId__r.vlocity_cmt__MethodType__c, item);
+  Map<String,Object> inputMap = new Map<String,Object>();
+  Map<String,Object> outMap = new Map<String,Object>();
+  Map<String,Object> options = new Map<String,Object>();
+  inputMap.put('nroLinea',item.vlocity_cmt__AssetId__r.MSISDN__c);
+  ta_sales_renovacionDatos.EnviarSMSExito(inputMap, outMap, options);
+}
+
+public static void updateOrderFromPaymentStatus(Order objOrder, String legalInvoiceNumber, String statusInvoice) {
+  if (legalInvoiceNumber != null) {
+    objOrder.LegalInvoiceNumber__c = legalInvoiceNumber;
+  }
+
+  objOrder.TrackingStatus__c = 'Pagos Imputados';
+  objOrder.Received224_Date__c = Date.Today();
+
+  update objOrder;
+
+  if (statusInvoice == 'invoice succeed') {
+    objOrder.TrackingStatus__c = 'Factura Emitida';
+    update objOrder;
+  }
+}
+
+public static void processPaymentError(Order objOrder, String reasonCode, String reasonCodeName) {
+  objOrder.TrackingStatus__c = 'Pago Fallido';
+  if (reasonCode != null) {
+    System.debug('reasonCode: ' + reasonCode);
+    objOrder.TrackingStatusDetail__c = '';
+
+    //PFTA-10108 - Notificaciones del servicio S224 durante el cobro y facturación de una orden
+    objOrder.Reason_Code__c = reasonCode;
+
+    if (reasonCodeName != null) {
+      objOrder.Reason_Code_Name__c = reasonCodeName;
+    }
+
+    for (Order_Failed_Payment_Messages__c failedMessages: Order_Failed_Payment_Messages__c.getAll().values()) {
+      if (failedMessages.Error_Code__c == reasonCode) {
+        objOrder.TrackingStatusDetail__c = failedMessages.Error_Message__c;
+      }
+    }
+    Map < String, Object > inMap = new Map < String, Object > ();
+    Map < String, Object > oMap = new Map < String, Object > ();
+    Map < String, Object > optMap = new Map < String, Object > ();
+    List < Object > csFields = new List < Object > ();
+
+    //DA - 12/03/18 Me traigo los reason codes correspondientes a Anuldada y a Cancelada
+    optMap.put('CSName', 'TASalesCodeValue__c');
+    optMap.put('CSAtribute', 'IF224ReasonAnulada');
+    Map < String, Object > auxMap = new Map < String, Object > ();
+    auxMap.put('field', 'Value__c');
+    csFields.add(auxMap);
+    optMap.put('CSFields', csFields);
+    SaleManager sm = new SaleManager();
+    sm.invokeMethod('GetCustomSettingAtribute', inMap, oMap, optMap);
+    TASalesCodeValue__c cs = (TASalesCodeValue__c) oMap.get('CSValues');
+    String codAnulada = cs.Value__c;
+    System.debug('codAnulada: ' + codAnulada);
+    optMap.put('CSAtribute', 'IF224ReasonCancelada');
+    sm.invokeMethod('GetCustomSettingAtribute', inMap, oMap, optMap);
+    cs = (TASalesCodeValue__c) oMap.get('CSValues');
+    String codCancelada = cs.Value__c;
+    System.debug('codCancelada: ' + codCancelada);
+    optMap.put('CSAtribute', 'IF224ReasonCambioMedioPago');
+    sm.invokeMethod('GetCustomSettingAtribute', inMap, oMap, optMap);
+    cs = (TASalesCodeValue__c) oMap.get('CSValues');
+    String codCambioMedioPago = cs.Value__c;
+    System.debug('codCancelada: ' + codCambioMedioPago);
+
+    //DA - 12/03/18. PFTA-8682 Lógica de acuerdo a respuesta de caja por cancelada o anulada
+    if (reasonCode == codCambioMedioPago) { //Codigo 1
+      objOrder.TrackingStatus__c = 'Pendiente de Cambio de Medio de Pago';
+    }
+    if (reasonCode == codAnulada) { //Codigo 2
+      objOrder.TrackingStatus__c = 'Pago No Concretado';
+    }
+    if (reasonCode == codCancelada) { //Codigo 3
+      taOrderController.CancelOrderAndRelease(objOrder.Id);
+      objOrder.Status = 'Cancelled';
+    }
+  }
+  update objOrder;
+}
+
+public static void processOrderHandOver(Order objOrder, vlocity_cmt__BusinessSite__c store, String legalInvoiceNumber, String statusInvoice) {
+  updateOrderFromPaymentStatus(objOrder, legalInvoiceNumber, statusInvoice);
+  //Código realizado para setear disconnectDate en null tanto para la orden como para sus orderItems
+  //Comienzo
+  List < orderItem > orderItems = [SELECT Id from orderItem where OrderId = : objOrder.Id];
+  if (orderItems.size() > 0) {
+    for (orderItem a: orderItems) {
+      a.vlocity_cmt__DisconnectDate__c = null;
+    }
+  }
+  Update orderItems;
+  //Fin
+  getPaymentResponse(objOrder.Id);
+  Boolean tangibleExists = taOrderController.ValidateTangibleExistence(objOrder.Id);
+
+  if(tangibleExists = true) {
+    switch on store.Channel_Type__c {
+        when 'Oficinas Comerciales' {
+            
+            //PFTA-11418
+            if (statusInvoice == 'invoice succeed') {
+                objOrder.TrackingStatus__c = 'Preparar pedido';
+                taOrderController.CreateStateTask(objOrder.Id, taOrderController.PENDIENTE_ARMADO_NOTIFICATION);
+            }
+        
+            
+        }
+        when 'Agentes' {
+        if (objOrder.Delivery_Method__c == 'Presencial' || objOrder.Delivery_Method__c == 'Delivery') {
+            objOrder.TrackingStatus__c = 'Entregado';
+        }
+        if (objOrder.Delivery_Method__c == 'Store Pick Up') {
+            objOrder.TrackingStatus__c = 'Preparar pedido';
+            taOrderController.CreateStateTask(objOrder.Id, taOrderController.PENDIENTE_ARMADO_NOTIFICATION);
+        }
+        }
+        when 'Call Center' {
+        if (objOrder.Delivery_Method__c == 'Delivery') {
+            objOrder.TrackingStatus__c = 'Cobrado';
+        }
+        if (objOrder.Delivery_Method__c == 'Store Pick Up') {
+            objOrder.TrackingStatus__c = 'Preparar pedido';
+            taOrderController.CreateStateTask(objOrder.Id, taOrderController.PENDIENTE_ARMADO_NOTIFICATION);
+        }
         }
     }
+  }
+
+  system.debug('OM Antes' + objOrder.Id);
+  boolean isOmniScript = false;
+  vlocity_cmt.SimpleDecompositionController.decomposeAndCreatePlanEx(objOrder.Id, isOmniScript);
+  system.debug('OM Paso');
+  update objOrder;
+}
+
+private static void sendOrderToOM(String orderId) {
+        
+    String responseOM = vlocity_cmt.SimpleDecompositionController.decomposeAndCreatePlanEx(orderId, false );
+    Map<String, Object> mapResponseOM = (Map<String, Object>) JSON.deserializeUntyped(responseOM);
+
+    if(mapResponseOM.get('isOk')!= true){
+        throw new FuncException('Error: ' + mapResponseOM.get('errorMsg'));
+    }
+        
+}  
+
+public static String processRecharge(Order objOrder, String legalInvoiceNumber, String statusInvoice) {
+  String txId;
+  System.debug('Gestion__c: ' + objOrder.Gestion__c);
+  OrderItem objOrderItem = [SELECT vlocity_cmt__EffectiveOneTimeTotal__c, vlocity_cmt__JSONAttribute__c, UnitPrice, vlocity_cmt__AssetId__c FROM OrderItem WHERE OrderId = : objOrder.Id];
+  System.debug('objOrderItem: ' + objOrderItem);
+  String assetId = objOrderItem.vlocity_cmt__AssetId__c;
+
+  Asset objAsset = [SELECT Subscription_Id__c, MSISDN__c FROM Asset WHERE Id = : assetId];
+
+  String nroLinea = objAsset.MSISDN__c;
+  //Decimal monto = objOrderItem.vlocity_cmt__EffectiveOneTimeTotal__c;
+  Decimal monto = objOrderItem.UnitPrice;
+  String sMonto = monto.toPlainString();
+  String subscriptionId = objAsset.Subscription_Id__c;
+
+  System.debug('sMonto: ' + sMonto);
+  System.debug('nroLinea: ' + nroLinea);
+  System.debug('subscriptionId: ' + subscriptionId);
+  
+  Map < String, Object > inputMap = new Map < String, Object > ();
+  Map < String, Object > outMapCRecharge = new Map < String, Object > ();
+  Map < String, Object > options = new Map < String, Object > ();
+
+  options.put('nroLinea', nroLinea);
+  options.put('ChargeAmmount', monto);
+  options.put('subscriptionId', subscriptionId);
+  LinesManager lManager = new LinesManager();
+
+  lManager.invokeMethod('CreditRecharge', inputMap, outMapCRecharge, options);
+  System.debug('outMapCRecharge: ' + outMapCRecharge);
+  updateOrderFromPaymentStatus(objOrder, legalInvoiceNumber, statusInvoice);
+  String creditError = (String) outMapCRecharge.get('Error');
+  if (creditError == null) {
+    objOrder.TrackingStatus__c = 'Recargado';
+    txId = (String) outMapCRecharge.get('txId');
+    sendClientRechargeConfirmation(nroLinea, sMonto);//Envio SMS al cliente avisando que la recarga fue ok
+    objOrder.Status = 'Activated';
+  } else {
+    objOrder.TrackingStatusDetail__c = creditError;
+  }
+  update objOrder;
+  return txId;
+}
+
+@future(callout=true)
+public static void sendClientRechargeConfirmation(String nroLinea, String sMonto) {
+  Map < String, String > variables = new Map < String, String > ();
+    variables.put('monto', sMonto);
+    variables.put('linea', nroLinea);
+  Boolean SMSsendStatus = taSalesSMSInteraction.sendSMSTemplate(nroLinea, 'Recarga Exitosa', variables);
+}
 
     @future(callout=true)
     public static void SendSuccesfulPaymentClientNotification(Id idOrder){

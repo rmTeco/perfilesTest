@@ -347,11 +347,6 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>Evaluation</fullName>
-                    <default>false</default>
-                    <label>Evaluation</label>
-                </value>
-                <value>
                     <fullName>Qualification</fullName>
                     <default>false</default>
                     <label>Qualification</label>
@@ -376,11 +371,6 @@
         <valueSet>
             <valueSetDefinition>
                 <sorted>false</sorted>
-                <value>
-                    <fullName>Context Rule</fullName>
-                    <default>false</default>
-                    <label>Context Rule</label>
-                </value>
                 <value>
                     <fullName>Configuration</fullName>
                     <default>false</default>
@@ -413,20 +403,12 @@
     <listViews>
         <fullName>vlocity_cmt__All</fullName>
         <columns>NAME</columns>
-        <columns>vlocity_cmt__Type__c</columns>
-        <columns>vlocity_cmt__ObjectName__c</columns>
-        <columns>vlocity_cmt__IsActive__c</columns>
-        <columns>vlocity_cmt__Description__c</columns>
+        <columns>vlocity_cmt__RuleType__c</columns>
         <columns>vlocity_cmt__RulePurpose__c</columns>
         <columns>vlocity_cmt__EffectiveDate__c</columns>
-        <columns>vlocity_cmt__EndDate__c</columns>
-        <columns>vlocity_cmt__Expression__c</columns>
         <columns>vlocity_cmt__Operation__c</columns>
-        <columns>vlocity_cmt__FailureMessage__c</columns>
-        <columns>vlocity_cmt__FallbackId__c</columns>
-        <columns>vlocity_cmt__HeaderId__c</columns>
-        <columns>vlocity_cmt__RuleType__c</columns>
-        <columns>UPDATEDBY_USER</columns>
+        <columns>vlocity_cmt__IsActive__c</columns>
+        <columns>vlocity_cmt__Type__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>

@@ -1,0 +1,81 @@
+<aura:component controller="Components" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!-- START ATT -->
+    <aura:attribute name="OSNames" type="List" />
+    <aura:attribute name="OSNamesUnique" type="List" />
+    <aura:attribute name="OSElementsOrigin" type="List" />
+    <aura:attribute name="OSElementsTarget" type="List" />
+    <aura:attribute name="OriginVersions" type="List" />
+    <aura:attribute name="TargetVersions" type="List" />
+    <aura:attribute name="TargetOrgVersions" type="List" />
+    <aura:attribute name="Origin" type="Object" />
+    <aura:attribute name="Target" type="Object" />
+    <aura:attribute name="isTargetOrg" type="Boolean" Default="false" />
+    <aura:attribute name="showMsg" type="Boolean" Default="true" />
+    <aura:attribute name="msg" type="String" Default="Here will be shown Omniscript Elements once you have chosen OS Name and Version" />
+    <!-- END ATT -->
+    <div class="slds-page-header">
+        <div class="slds-media">
+        <div class="slds-media__body">
+        <h1 class="slds-page-header__title slds-truncate slds-align-middle slds-text-heading_large" title="Vlocity Tools">Vlocity Tools</h1>
+        <p class="slds-text-body_small slds-line-height_reset">Some helpful tools</p>
+        </div>
+        </div>
+    </div>
+    <div class="slds-tabs_default">
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li id="OS" aura:id="OS" class="slds-tabs_default__item slds-is-active" title="OS" role="presentation">
+            <a class="slds-tabs_default__link" onclick="{!c.showHideTab}" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" id="tab_OS">Omniscript</a>
+        </li>
+        <li id="IP" aura:id="IP" class="slds-tabs_default__item slds-hide" title="IP" role="presentation">
+            <a class="slds-tabs_default__link" onclick="{!c.showHideTab}" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab_IP">Integration Procedure</a>
+        </li>
+        <li id="DR" aura:id="DR" class="slds-tabs_default__item slds-hide" title="DR" role="presentation">
+            <a class="slds-tabs_default__link" onclick="{!c.showHideTab}" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-3" id="tab_DR">DataRaptors</a>
+        </li>
+        <li id="Card" aura:id="Card" class="slds-tabs_default__item slds-hide" title="Card" role="presentation">
+            <a class="slds-tabs_default__link" onclick="{!c.showHideTab}" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-4" id="tab_Card">Card</a>
+        </li>
+    </ul>
+    <div aura:id="OS_Section" class="demo-only demo-only--sizing slds-grid slds-wrap">
+        <div class="slds-size_1-of-2">
+            <div class="slds-box slds-box_x-small slds-text-align_center slds-m-around_x-small">
+                <lightning:select aura:id="Name" name="Name" label="Select an OS" onchange="{!c.selectedName}">
+                    <option value="none">choose one...</option>
+                    <aura:iteration var="os" items="{!v.OSNamesUnique}" indexVar="{!index}" >
+                        <option value="{!os}">{!os}</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+        </div>
+        <div class="slds-size_1-of-2">
+            <div class="slds-box slds-box_x-small slds-text-align_center slds-m-around_x-small">
+                <lightning:select aura:id="origin" name="selectItem" label="Select version" onchange="{!c.selectedOrigin}">
+                    <option value="">choose one...</option>
+                    <aura:iteration var="origin" items="{!v.OriginVersions}" indexVar="index" >
+                        <option value="{!origin.Id}">{!origin.vlocity_cmt__Version__c}</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+        </div>
+        <div class="slds-size_2-of-2">
+            <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around_x-small">
+                <c:Items OSElements="{!v.OSElementsOrigin}" />
+                <div class="slds-box slds-text-align_center" style="{!'display:' + if(v.showMsg, ';', 'none;')}">
+                    <p>{!v.msg}</p>
+                  </div>
+            </div>
+        </div>
+    </div>
+    <div aura:id="IP_Section" id="tab-default-2" class="slds-tabs_default__content slds-hide" role="tabpanel" aria-labelledby="tab-default-2__item">IP</div>
+    <div aura:id="DR_Section" id="tab-default-3" class="slds-tabs_default__content slds-hide" role="tabpanel" aria-labelledby="tab-default-3__item">DR</div>
+    <div aura:id="Card_Section" id="tab-default-4" class="slds-tabs_default__content slds-hide" role="tabpanel" aria-labelledby="tab-default-4__item">IP</div>
+    </div>
+    <div aura:id="spinner" class="demo-only slds-hide" style="height: 6rem;">
+        <div role="status" class="slds-spinner slds-spinner_medium">
+            <span class="slds-assistive-text">Loading</span>
+            <div class="slds-spinner__dot-a"></div>
+            <div class="slds-spinner__dot-b"></div>
+        </div>
+    </div>
+</aura:component>

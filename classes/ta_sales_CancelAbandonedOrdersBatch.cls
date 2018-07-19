@@ -10,7 +10,9 @@ global with sharing class ta_sales_CancelAbandonedOrdersBatch implements Databas
         String fecha = daysto.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'');
 
         //Armo la query y la paso al batch
-        String query = 'SELECT Id, Status, TrackingStatus__c FROM Order WHERE CreatedDate < ' + fecha + ' AND Status=\'Draft\' AND Id =\'8016C0000008bik\' ';
+        
+        //String query = 'SELECT Id, Status, TrackingStatus__c FROM Order WHERE CreatedDate < ' + fecha + ' AND Status=\'Draft\' AND Id =\'8016C0000008bik\' ';
+        String query = 'SELECT Id, Status, TrackingStatus__c, PreInvoiceNumber__c FROM Order WHERE CreatedDate < ' + fecha + ' AND Status=\'Draft\' ';
         //String query = 'SELECT Id, Status, TrackingStatus__c FROM Order WHERE CreatedDate < YESTERDAY AND Status=\'Draft\'';
         System.debug('query batch: ' + query);
         return Database.getQueryLocator(query);

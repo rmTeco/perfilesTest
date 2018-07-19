@@ -59,10 +59,10 @@
     				<span style="float:left;">
     					{!$Label.scp_certa_gc__dcm}
     				</span>
-
-    				<span style="float:left;">
-	   					<c:showVideo />
-	   				</span>
+                    
+                    <span style="float:left;">
+                        <a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/N0Z7o2X04pQ"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
+                    </span>
     			</h3>
     			<div class="row paddingRight"></div>
     		</apex:outputPanel>

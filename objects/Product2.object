@@ -350,6 +350,17 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>NMU__c</fullName>
+        <description>Unique product identifier for TA</description>
+        <externalId>true</externalId>
+        <label>NMU</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Name</fullName>
         <trackHistory>false</trackHistory>
     </fields>
@@ -516,6 +527,39 @@
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>TA_Relationship_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Relationship Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Offer</fullName>
+                    <default>false</default>
+                    <label>Offer</label>
+                </value>
+                <value>
+                    <fullName>Specification</fullName>
+                    <default>false</default>
+                    <label>Specification</label>
+                </value>
+                <value>
+                    <fullName>Group</fullName>
+                    <default>false</default>
+                    <label>Group</label>
+                </value>
+                <value>
+                    <fullName>Promotion</fullName>
+                    <default>false</default>
+                    <label>Promotion</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Tangible__c</fullName>
@@ -926,6 +970,21 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
+                    <fullName>Grant</fullName>
+                    <default>false</default>
+                    <label>Grant</label>
+                </value>
+                <value>
+                    <fullName>Product</fullName>
+                    <default>false</default>
+                    <label>Product</label>
+                </value>
+                <value>
+                    <fullName>Promotion</fullName>
+                    <default>false</default>
+                    <label>Promotion</label>
+                </value>
+                <value>
                     <fullName>Resource</fullName>
                     <default>false</default>
                     <label>Resource</label>
@@ -936,34 +995,14 @@
                     <label>Service</label>
                 </value>
                 <value>
-                    <fullName>Product</fullName>
-                    <default>false</default>
-                    <label>Product</label>
-                </value>
-                <value>
                     <fullName>Offer</fullName>
                     <default>false</default>
                     <label>Offer</label>
                 </value>
                 <value>
-                    <fullName>Promotion</fullName>
-                    <default>false</default>
-                    <label>Promotion</label>
-                </value>
-                <value>
-                    <fullName>Grant</fullName>
-                    <default>false</default>
-                    <label>Grant</label>
-                </value>
-                <value>
                     <fullName>Repair Service</fullName>
                     <default>false</default>
                     <label>Repair Service</label>
-                </value>
-                <value>
-                    <fullName>Group</fullName>
-                    <default>false</default>
-                    <label>Group</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1020,136 +1059,11 @@
         <valueSet>
             <controllingField>vlocity_cmt__Type__c</controllingField>
             <valueSetDefinition>
-                <sorted>true</sorted>
-                <value>
-                    <fullName>BAM</fullName>
-                    <default>false</default>
-                    <label>BAM</label>
-                </value>
-                <value>
-                    <fullName>Cine</fullName>
-                    <default>false</default>
-                    <label>Cine</label>
-                </value>
-                <value>
-                    <fullName>Combinado</fullName>
-                    <default>false</default>
-                    <label>Combinado</label>
-                </value>
-                <value>
-                    <fullName>Credito</fullName>
-                    <default>false</default>
-                    <label>Credito</label>
-                </value>
-                <value>
-                    <fullName>Datos</fullName>
-                    <default>false</default>
-                    <label>Datos</label>
-                </value>
-                <value>
-                    <fullName>Festivales</fullName>
-                    <default>false</default>
-                    <label>Festivales</label>
-                </value>
-                <value>
-                    <fullName>Identificacion de Llamadas</fullName>
-                    <default>false</default>
-                    <label>Identificacion de Llamadas</label>
-                </value>
-                <value>
-                    <fullName>Internet</fullName>
-                    <default>false</default>
-                    <label>Internet</label>
-                </value>
-                <value>
-                    <fullName>Llamada en Espera</fullName>
-                    <default>false</default>
-                    <label>Llamada en Espera</label>
-                </value>
-                <value>
-                    <fullName>MMS</fullName>
-                    <default>false</default>
-                    <label>MMS</label>
-                </value>
-                <value>
-                    <fullName>Multimedia</fullName>
-                    <default>false</default>
-                    <label>Multimedia</label>
-                </value>
+                <sorted>false</sorted>
                 <value>
                     <fullName>None</fullName>
                     <default>true</default>
                     <label>None</label>
-                </value>
-                <value>
-                    <fullName>Otros</fullName>
-                    <default>false</default>
-                    <label>Otros</label>
-                </value>
-                <value>
-                    <fullName>OTT</fullName>
-                    <default>false</default>
-                    <label>OTT</label>
-                </value>
-                <value>
-                    <fullName>Power</fullName>
-                    <default>false</default>
-                    <label>Power</label>
-                </value>
-                <value>
-                    <fullName>Proteccion</fullName>
-                    <default>false</default>
-                    <label>Proteccion</label>
-                </value>
-                <value>
-                    <fullName>Radio</fullName>
-                    <default>false</default>
-                    <label>Radio</label>
-                </value>
-                <value>
-                    <fullName>Recitales</fullName>
-                    <default>false</default>
-                    <label>Recitales</label>
-                </value>
-                <value>
-                    <fullName>Ring Back Tones</fullName>
-                    <default>false</default>
-                    <label>Ring Back Tones</label>
-                </value>
-                <value>
-                    <fullName>Salidas</fullName>
-                    <default>false</default>
-                    <label>Salidas</label>
-                </value>
-                <value>
-                    <fullName>Segmentada</fullName>
-                    <default>false</default>
-                    <label>Segmentada</label>
-                </value>
-                <value>
-                    <fullName>SMS</fullName>
-                    <default>false</default>
-                    <label>SMS</label>
-                </value>
-                <value>
-                    <fullName>Teatro</fullName>
-                    <default>false</default>
-                    <label>Teatro</label>
-                </value>
-                <value>
-                    <fullName>Techno</fullName>
-                    <default>false</default>
-                    <label>Techno</label>
-                </value>
-                <value>
-                    <fullName>Televisores</fullName>
-                    <default>false</default>
-                    <label>Televisores</label>
-                </value>
-                <value>
-                    <fullName>Transferencia de Llamada</fullName>
-                    <default>false</default>
-                    <label>Transferencia de Llamada</label>
                 </value>
                 <value>
                     <fullName>Troquelado</fullName>
@@ -1157,19 +1071,79 @@
                     <label>Troquelado</label>
                 </value>
                 <value>
-                    <fullName>Turismo</fullName>
-                    <default>false</default>
-                    <label>Turismo</label>
-                </value>
-                <value>
                     <fullName>VOZ</fullName>
                     <default>false</default>
                     <label>VOZ</label>
                 </value>
                 <value>
-                    <fullName>Weareable</fullName>
+                    <fullName>SMS</fullName>
                     <default>false</default>
-                    <label>Weareable</label>
+                    <label>SMS</label>
+                </value>
+                <value>
+                    <fullName>MMS</fullName>
+                    <default>false</default>
+                    <label>MMS</label>
+                </value>
+                <value>
+                    <fullName>Datos</fullName>
+                    <default>false</default>
+                    <label>Datos</label>
+                </value>
+                <value>
+                    <fullName>Transferencia de Llamada</fullName>
+                    <default>false</default>
+                    <label>Transferencia de Llamada</label>
+                </value>
+                <value>
+                    <fullName>Identificacion de Llamadas</fullName>
+                    <default>false</default>
+                    <label>Identificacion de Llamadas</label>
+                </value>
+                <value>
+                    <fullName>Ring Back Tones</fullName>
+                    <default>false</default>
+                    <label>Ring Back Tones</label>
+                </value>
+                <value>
+                    <fullName>Llamada en Espera</fullName>
+                    <default>false</default>
+                    <label>Llamada en Espera</label>
+                </value>
+                <value>
+                    <fullName>BAM</fullName>
+                    <default>false</default>
+                    <label>BAM</label>
+                </value>
+                <value>
+                    <fullName>OTT</fullName>
+                    <default>false</default>
+                    <label>OTT</label>
+                </value>
+                <value>
+                    <fullName>Combinado</fullName>
+                    <default>false</default>
+                    <label>Combinado</label>
+                </value>
+                <value>
+                    <fullName>Internet</fullName>
+                    <default>false</default>
+                    <label>Internet</label>
+                </value>
+                <value>
+                    <fullName>Radio</fullName>
+                    <default>false</default>
+                    <label>Radio</label>
+                </value>
+                <value>
+                    <fullName>Segmentada</fullName>
+                    <default>false</default>
+                    <label>Segmentada</label>
+                </value>
+                <value>
+                    <fullName>Credito</fullName>
+                    <default>false</default>
+                    <label>Credito</label>
                 </value>
             </valueSetDefinition>
             <valueSettings>
@@ -1211,51 +1185,11 @@
         <type>Picklist</type>
         <valueSet>
             <valueSetDefinition>
-                <sorted>true</sorted>
+                <sorted>false</sorted>
                 <value>
-                    <fullName>Accesorio</fullName>
+                    <fullName>Plan</fullName>
                     <default>false</default>
-                    <label>Accesorio</label>
-                </value>
-                <value>
-                    <fullName>Bundle</fullName>
-                    <default>false</default>
-                    <label>Bundle</label>
-                </value>
-                <value>
-                    <fullName>Captura</fullName>
-                    <default>false</default>
-                    <label>Captura</label>
-                </value>
-                <value>
-                    <fullName>Control Cuota Datos</fullName>
-                    <default>false</default>
-                    <label>Control Cuota Datos</label>
-                </value>
-                <value>
-                    <fullName>Credito Adicional</fullName>
-                    <default>false</default>
-                    <label>Credito Adicional</label>
-                </value>
-                <value>
-                    <fullName>Cuota Datos Compartidos</fullName>
-                    <default>false</default>
-                    <label>Cuota Datos Compartidos</label>
-                </value>
-                <value>
-                    <fullName>Cuota Datos Mandatoria</fullName>
-                    <default>false</default>
-                    <label>Cuota Datos Mandatoria</label>
-                </value>
-                <value>
-                    <fullName>Dispositivo</fullName>
-                    <default>false</default>
-                    <label>Dispositivo</label>
-                </value>
-                <value>
-                    <fullName>Experiencias</fullName>
-                    <default>false</default>
-                    <label>Experiencias</label>
+                    <label>Plan</label>
                 </value>
                 <value>
                     <fullName>Gemalto</fullName>
@@ -1263,9 +1197,19 @@
                     <label>Gemalto</label>
                 </value>
                 <value>
-                    <fullName>Internet</fullName>
+                    <fullName>None</fullName>
+                    <default>true</default>
+                    <label>None</label>
+                </value>
+                <value>
+                    <fullName>TELECOM PERSONAL</fullName>
                     <default>false</default>
-                    <label>Internet</label>
+                    <label>TELECOM PERSONAL</label>
+                </value>
+                <value>
+                    <fullName>Bundle</fullName>
+                    <default>false</default>
+                    <label>Bundle</label>
                 </value>
                 <value>
                     <fullName>FixedLine</fullName>
@@ -1278,9 +1222,34 @@
                     <label>Línea Móvil</label>
                 </value>
                 <value>
-                    <fullName>None</fullName>
-                    <default>true</default>
-                    <label>None</label>
+                    <fullName>Internet</fullName>
+                    <default>false</default>
+                    <label>Internet</label>
+                </value>
+                <value>
+                    <fullName>Servicio Valor Agregado</fullName>
+                    <default>false</default>
+                    <label>Servicio Valor Agregado</label>
+                </value>
+                <value>
+                    <fullName>Plan Prepago</fullName>
+                    <default>false</default>
+                    <label>Plan Prepago</label>
+                </value>
+                <value>
+                    <fullName>Plan Pospago</fullName>
+                    <default>false</default>
+                    <label>Plan Pospago</label>
+                </value>
+                <value>
+                    <fullName>Plan Hibrido</fullName>
+                    <default>false</default>
+                    <label>Plan Hibrido</label>
+                </value>
+                <value>
+                    <fullName>Servicio GSM</fullName>
+                    <default>false</default>
+                    <label>Servicio GSM</label>
                 </value>
                 <value>
                     <fullName>Numeros Amigos</fullName>
@@ -1293,34 +1262,39 @@
                     <label>Pack</label>
                 </value>
                 <value>
-                    <fullName>Pack LDI</fullName>
+                    <fullName>Reseteo de Cuota</fullName>
                     <default>false</default>
-                    <label>Pack LDI</label>
+                    <label>Reseteo de Cuota</label>
                 </value>
                 <value>
-                    <fullName>Pack Roaming</fullName>
+                    <fullName>Control Cuota Datos</fullName>
                     <default>false</default>
-                    <label>Pack Roaming</label>
+                    <label>Control Cuota Datos</label>
                 </value>
                 <value>
-                    <fullName>Plan</fullName>
+                    <fullName>Simcard</fullName>
                     <default>false</default>
-                    <label>Plan</label>
+                    <label>Simcard</label>
                 </value>
                 <value>
-                    <fullName>Plan Hibrido</fullName>
+                    <fullName>Recarga</fullName>
                     <default>false</default>
-                    <label>Plan Hibrido</label>
+                    <label>Recarga</label>
                 </value>
                 <value>
-                    <fullName>Plan Pospago</fullName>
+                    <fullName>Credito Adicional</fullName>
                     <default>false</default>
-                    <label>Plan Pospago</label>
+                    <label>Credito Adicional</label>
                 </value>
                 <value>
-                    <fullName>Plan Prepago</fullName>
+                    <fullName>Roaming</fullName>
                     <default>false</default>
-                    <label>Plan Prepago</label>
+                    <label>Roaming</label>
+                </value>
+                <value>
+                    <fullName>Dispositivo</fullName>
+                    <default>false</default>
+                    <label>Dispositivo</label>
                 </value>
                 <value>
                     <fullName>Prestamo</fullName>
@@ -1333,39 +1307,19 @@
                     <label>Proteccion</label>
                 </value>
                 <value>
-                    <fullName>Recarga</fullName>
+                    <fullName>Captura</fullName>
                     <default>false</default>
-                    <label>Recarga</label>
+                    <label>Captura</label>
                 </value>
                 <value>
-                    <fullName>Reseteo de Cuota</fullName>
+                    <fullName>Pack LDI</fullName>
                     <default>false</default>
-                    <label>Reseteo de Cuota</label>
+                    <label>Pack LDI</label>
                 </value>
                 <value>
-                    <fullName>Roaming</fullName>
+                    <fullName>Pack Roaming</fullName>
                     <default>false</default>
-                    <label>Roaming</label>
-                </value>
-                <value>
-                    <fullName>Servicio GSM</fullName>
-                    <default>false</default>
-                    <label>Servicio GSM</label>
-                </value>
-                <value>
-                    <fullName>Servicio Valor Agregado</fullName>
-                    <default>false</default>
-                    <label>Servicio Valor Agregado</label>
-                </value>
-                <value>
-                    <fullName>Simcard</fullName>
-                    <default>false</default>
-                    <label>Simcard</label>
-                </value>
-                <value>
-                    <fullName>TELECOM PERSONAL</fullName>
-                    <default>false</default>
-                    <label>TELECOM PERSONAL</label>
+                    <label>Pack Roaming</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -1385,45 +1339,59 @@
         <type>Lookup</type>
     </fields>
     <listViews>
-        <fullName>AllTheProducts</fullName>
+        <fullName>AllProducts</fullName>
         <columns>PRODUCT2.NAME</columns>
-        <columns>PRODUCT2.CREATED_DATE</columns>
-        <columns>vlocity_cmt__GlobalKey__c</columns>
         <columns>PRODUCT2.CUSTOMER_PRODUCT_ID</columns>
         <columns>PRODUCT2.DESCRIPTION</columns>
         <columns>PRODUCT2.FAMILY</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>PRODUCT2.ACTIVE</columns>
         <columns>vlocity_cmt__Type__c</columns>
-        <columns>vlocity_cmt__SpecificationType__c</columns>
-        <columns>PRODUCT2.RECORD_TYPE</columns>
-        <columns>vlocity_cmt__Status__c</columns>
-        <columns>vlocity_cmt__AttributeDefaultValues__c</columns>
-        <columns>vlocity_cmt__AttributeMetadata__c</columns>
-        <columns>Marca__c</columns>
+        <columns>vlocity_cmt__SubType__c</columns>
         <columns>vlocity_cmt__ObjectTypeId__c</columns>
-        <columns>PRODUCT2.LAST_UPDATE</columns>
         <filterScope>Everything</filterScope>
-        <label>All the Products</label>
+        <label>Todos los productos</label>
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Tangibles</fullName>
+        <fullName>AllProducts3</fullName>
         <columns>PRODUCT2.NAME</columns>
         <columns>PRODUCT2.CUSTOMER_PRODUCT_ID</columns>
-        <columns>PRODUCT2.SKU</columns>
+        <columns>PRODUCT2.DESCRIPTION</columns>
+        <columns>PRODUCT2.FAMILY</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>PRODUCT2.ACTIVE</columns>
+        <columns>PRODUCT2.LAST_UPDATE</columns>
+        <columns>PRODUCT2.RECORD_TYPE</columns>
+        <columns>HAS_DEF_QTY_SCHEDULE</columns>
+        <columns>HAS_DEF_REV_SCHEDULE</columns>
+        <columns>PRODUCT2.CREATED_DATE</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>PRODUCT2.QTY_SCHEDULE_ENABLED</columns>
+        <columns>PRODUCT2.REV_SCHEDULE_ENABLED</columns>
+        <columns>PRODUCT2.QTY_SCHEDULE_TYPE</columns>
+        <filterScope>Everything</filterScope>
+        <label>Vista Supplementary</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Devices</fullName>
+        <columns>PRODUCT2.NAME</columns>
+        <columns>PRODUCT2.CUSTOMER_PRODUCT_ID</columns>
         <columns>PRODUCT2.DESCRIPTION</columns>
         <columns>PRODUCT2.FAMILY</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Tangible__c</field>
+            <field>PRODUCT2.FAMILY</field>
             <operation>equals</operation>
-            <value>1</value>
+            <value>Device</value>
         </filters>
         <filters>
             <field>PRODUCT2.RECORD_TYPE</field>
             <operation>equals</operation>
             <value>Product2.vlocity_cmt__Product</value>
         </filters>
-        <label>Tangibles</label>
+        <label>Devices</label>
         <language>en_US</language>
     </listViews>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
@@ -1439,7 +1407,7 @@
             </values>
             <values>
                 <fullName>0%2E21</fullName>
-                <default>false</default>
+                <default>true</default>
             </values>
             <values>
                 <fullName>0%2E255</fullName>
@@ -1481,255 +1449,6 @@
             </values>
             <values>
                 <fullName>LG</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Motorola</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Samsung</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TELECOM Personal</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>QuantityUnitOfMeasure</picklist>
-            <values>
-                <fullName>Each</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>SIM_Type__c</picklist>
-            <values>
-                <fullName>Micro</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Nano</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Troquelado</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Sistema_Origen__c</picklist>
-            <values>
-                <fullName>Huawei</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Infotainment</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SAP</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Tipo_de_Bien_de_Uso__c</picklist>
-            <values>
-                <fullName>Intangible</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Servicio</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tangible</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>vlocity_cmt__JeopardySafetyIntervalUnit__c</picklist>
-            <values>
-                <fullName>Business Days</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Business Hours</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Calendar Days</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Calendar Hours</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Seconds</fullName>
-                <default>true</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>vlocity_cmt__SpecificationType__c</picklist>
-            <values>
-                <fullName>Offer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Product</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Resource</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Service</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>vlocity_cmt__Status__c</picklist>
-            <values>
-                <fullName>Active</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Draft</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pending Approval</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>vlocity_cmt__SubType__c</picklist>
-            <values>
-                <fullName>None</fullName>
-                <default>true</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>vlocity_cmt__Type__c</picklist>
-            <values>
-                <fullName>Bundle</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>FixedLine</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Internet</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mobile</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>None</fullName>
-                <default>true</default>
-            </values>
-        </picklistValues>
-    </recordTypes>
-    <recordTypes>
-        <fullName>vlocity_cmt__Product</fullName>
-        <active>true</active>
-        <label>Product</label>
-        <picklistValues>
-            <picklist>Alicuota__c</picklist>
-            <values>
-                <fullName>0%2E105</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>0%2E21</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>0%2E255</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Family</picklist>
-            <values>
-                <fullName>Bundle</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Device</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Fixed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Internet</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Maintenance%2FService Fees</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mobile</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Movil</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>One Time Charge</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>One Time Discount</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Prepaid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Service Plan</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Simcard</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TV</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Marca__c</picklist>
-            <values>
-                <fullName>Gemalto</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Google</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LG</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MarcaPrueba1</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1827,8 +1546,252 @@
         <picklistValues>
             <picklist>vlocity_cmt__Scope__c</picklist>
             <values>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Downstream Order Item</fullName>
                 <default>false</default>
+            </values>
+            <values>
+                <fullName>Order Item</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__SpecificationType__c</picklist>
+            <values>
+                <fullName>Product</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Resource</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Service</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__Status__c</picklist>
+            <values>
+                <fullName>Active</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Draft</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending Approval</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__SubType__c</picklist>
+            <values>
+                <fullName>None</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__Type__c</picklist>
+            <values>
+                <fullName>None</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>vlocity_cmt__Product</fullName>
+        <active>true</active>
+        <label>Product</label>
+        <picklistValues>
+            <picklist>Alicuota__c</picklist>
+            <values>
+                <fullName>0%2E105</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>0%2E21</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>0%2E255</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Family</picklist>
+            <values>
+                <fullName>Bundle</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Device</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Internet</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maintenance%2FService Fees</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Movil</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time Charge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One Time Discount</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prepaid</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Service Plan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Simcard</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Marca__c</picklist>
+            <values>
+                <fullName>Gemalto</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Google</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>LG</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Motorola</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Samsung</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>TELECOM Personal</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>QuantityUnitOfMeasure</picklist>
+            <values>
+                <fullName>Each</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SIM_Type__c</picklist>
+            <values>
+                <fullName>Micro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nano</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Troquelado</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Sistema_Origen__c</picklist>
+            <values>
+                <fullName>Huawei</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Infotainment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SAP</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Tipo_de_Bien_de_Uso__c</picklist>
+            <values>
+                <fullName>Intangible</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Servicio</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tangible</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__JeopardySafetyIntervalUnit__c</picklist>
+            <values>
+                <fullName>Business Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Business Hours</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Calendar Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Calendar Hours</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Seconds</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__Scope__c</picklist>
+            <values>
+                <fullName>Account</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Downstream Order Item</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Order Item</fullName>
+                <default>true</default>
             </values>
         </picklistValues>
         <picklistValues>
@@ -1838,19 +1801,15 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Group</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Offer</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Product</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Promotion</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Repair Service</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1904,24 +1863,8 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Multimedia</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>None</fullName>
                 <default>true</default>
-            </values>
-            <values>
-                <fullName>Otros</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Power</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Proteccion</fullName>
-                <default>false</default>
             </values>
             <values>
                 <fullName>Radio</fullName>
@@ -1940,10 +1883,6 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Techno</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Transferencia de Llamada</fullName>
                 <default>false</default>
             </values>
@@ -1959,10 +1898,6 @@
         <picklistValues>
             <picklist>vlocity_cmt__Type__c</picklist>
             <values>
-                <fullName>Accesorio</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Bundle</fullName>
                 <default>false</default>
             </values>
@@ -1976,14 +1911,6 @@
             </values>
             <values>
                 <fullName>Credito Adicional</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cuota Datos Compartidos</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cuota Datos Mandatoria</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2088,7 +2015,7 @@
             </values>
             <values>
                 <fullName>0%2E21</fullName>
-                <default>false</default>
+                <default>true</default>
             </values>
             <values>
                 <fullName>0%2E255</fullName>
@@ -2233,13 +2160,24 @@
             </values>
         </picklistValues>
         <picklistValues>
-            <picklist>vlocity_cmt__SpecificationType__c</picklist>
+            <picklist>vlocity_cmt__Scope__c</picklist>
             <values>
-                <fullName>Grant</fullName>
+                <fullName>Account</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Offer</fullName>
+                <fullName>Downstream Order Item</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Order Item</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__SpecificationType__c</picklist>
+            <values>
+                <fullName>Grant</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2277,139 +2215,15 @@
         <picklistValues>
             <picklist>vlocity_cmt__SubType__c</picklist>
             <values>
-                <fullName>Credito</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Multimedia</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>None</fullName>
                 <default>true</default>
-            </values>
-            <values>
-                <fullName>Otros</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Power</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Proteccion</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Radio</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Segmentada</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Techno</fullName>
-                <default>false</default>
             </values>
         </picklistValues>
         <picklistValues>
             <picklist>vlocity_cmt__Type__c</picklist>
             <values>
-                <fullName>Accesorio</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Bundle</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Captura</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Control Cuota Datos</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Credito Adicional</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cuota Datos Compartidos</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cuota Datos Mandatoria</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>FixedLine</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Internet</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mobile</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>None</fullName>
                 <default>true</default>
-            </values>
-            <values>
-                <fullName>Numeros Amigos</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pack</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pack LDI</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pack Roaming</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Plan Hibrido</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Plan Pospago</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Plan Prepago</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Proteccion</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Recarga</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Reseteo de Cuota</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Servicio GSM</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Servicio Valor Agregado</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Simcard</fullName>
-                <default>false</default>
             </values>
         </picklistValues>
     </recordTypes>
@@ -2417,7 +2231,6 @@
         <customTabListAdditionalFields>PRODUCT2.NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields>PRODUCT2.CUSTOMER_PRODUCT_ID</customTabListAdditionalFields>
         <customTabListAdditionalFields>PRODUCT2.DESCRIPTION</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Tangible__c</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>PRODUCT2.NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>PRODUCT2.CUSTOMER_PRODUCT_ID</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>PRODUCT2.DESCRIPTION</lookupDialogsAdditionalFields>
@@ -2430,8 +2243,16 @@
         <searchResultsAdditionalFields>PRODUCT2.CUSTOMER_PRODUCT_ID</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>PRODUCT2.DESCRIPTION</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>PRODUCT2.FAMILY</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Alicuota__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PRODUCT2.SKU</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>SCP_Certa_GC__Solo_editable_por_duenio</fullName>
+        <active>false</active>
+        <errorConditionFormula>(CreatedBy.Id &lt;&gt; $User.Id) &amp;&amp; NOT(ISNEW())</errorConditionFormula>
+        <errorMessage>Solo el dueño del registro puede editar un producto.</errorMessage>
+    </validationRules>
     <webLinks>
         <fullName>vlocity_cmt__Clone_Product</fullName>
         <availability>online</availability>

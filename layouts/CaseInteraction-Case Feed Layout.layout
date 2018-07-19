@@ -36,10 +36,6 @@
         </feedFilters>
         <feedFilters>
             <feedFilterType>FeedItemType</feedFilterType>
-            <feedItemType>ReplyPost</feedItemType>
-        </feedFilters>
-        <feedFilters>
-            <feedFilterType>FeedItemType</feedFilterType>
             <feedItemType>MilestoneEvent</feedItemType>
         </feedFilters>
         <fullWidthFeed>false</fullWidthFeed>
@@ -418,10 +414,6 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Port_FVC__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LineNumber__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>

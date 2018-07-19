@@ -20,4 +20,21 @@ public with sharing class EntitlementManager {
         }
         return resultMap;
     }
+    
+    public static void UpdateCompletionDateMilestone (String milestoneName, Set<Id> setIds){
+        try{
+            List<CaseMilestone> cmsToUpdate = [SELECT Id, completionDate FROM CaseMilestone cm WHERE caseId IN: setIds  AND cm.MilestoneType.Name =: milestoneName AND completionDate = null];
+            if (cmsToUpdate.size() > 0){
+                for (CaseMilestone cm : cmsToUpdate){
+                    cm.completionDate = System.now();
+                }
+                update cmsToUpdate;
+            }
+        }
+        catch(Exception ex) 
+        {
+            System.debug('Error:' + ex.getMessage());
+        }
+    }
+    
 }

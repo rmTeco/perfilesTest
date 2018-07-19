@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
+        <label><!-- AbortedCampaign --></label>
+        <name>AbortedCampaign__c</name>
+    </fields>
+    <fields>
         <label><!-- AccountIntegrationId --></label>
         <name>AccountIntegrationId__c</name>
     </fields>

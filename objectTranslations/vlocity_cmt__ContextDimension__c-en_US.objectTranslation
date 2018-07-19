@@ -28,10 +28,6 @@
             <translation><!-- Date --></translation>
         </picklistValues>
         <picklistValues>
-            <masterLabel>DateTime</masterLabel>
-            <translation><!-- DateTime --></translation>
-        </picklistValues>
-        <picklistValues>
             <masterLabel>Number</masterLabel>
             <translation><!-- Number --></translation>
         </picklistValues>
@@ -155,14 +151,6 @@
         <picklistValues>
             <masterLabel>OnDemand</masterLabel>
             <translation><!-- OnDemand --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Order</masterLabel>
-            <translation><!-- Order --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Order Line</masterLabel>
-            <translation><!-- Order Line --></translation>
         </picklistValues>
         <picklistValues>
             <masterLabel>Session</masterLabel>

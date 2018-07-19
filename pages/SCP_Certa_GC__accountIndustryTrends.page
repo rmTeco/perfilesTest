@@ -155,7 +155,7 @@
 					</span>
 
 					<span style="float:left;">
-    					<c:showVideo />
+    					<a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/FEEndykRL_s"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
     				</span>
                 </h2>
 				<div class="row paddingRight">
@@ -173,7 +173,7 @@
 					</div>
 				</div>
                 <span style="font-size: 11pt; font-weight: bold;">
-                    Segmento Vertical: {!account.Segmento_Vertical__c}
+                    {!$Label.Segmento_vertical}: {!account.Segmento_Vertical__c}
                 </span>
 			</div>    		
 			<div class="panel-body">

@@ -1,6 +1,9 @@
 @isTest
 public class TaIdentityValidationHandlerTest
 {
+    //Bug10904- Yamila Simoncini#I
+    static User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+     //Bug10904- Yamila Simoncini#F
     @isTest static void getQuestions()
     {
         Map<String,Object> inputMap = new Map<String,Object>();
@@ -28,7 +31,7 @@ public class TaIdentityValidationHandlerTest
         NameComparisonPercentage__c ncp = new NameComparisonPercentage__c();
         ncp.Percentage__c = Decimal.valueOf('33.33');
         insert ncp;
-
+        
         Test.startTest();
             taIdentityValidationHandler ivh = new taIdentityValidationHandler();
             ivh.invokeMethod('getQuestions', inputMap, outMap, options);
@@ -47,7 +50,7 @@ public class TaIdentityValidationHandlerTest
 
         Map<String, Object> pregunta = new Map<String, Object>();
         pregunta.put('codConsulta', '001');
-        pregunta.put('codRespuestaFinal', '1');
+        pregunta.put('codRespuesta', '1');
         List<Object> listaPreguntas = new List<Object>();
         listaPreguntas.add(pregunta);
         data.put('listaPreguntas', listaPreguntas);
@@ -73,19 +76,23 @@ public class TaIdentityValidationHandlerTest
         String documentNumber = '12345678';
         String accountNumber = '1234';
         String email = 'test@yopmail.com';
-        Contact contact = new Contact(FirstName = firstName, LastName = lastName, DocumentType__c = documentType, DocumentNumber__c = documentNumber, Email = email, Validated__c= true);
-        insert contact;
-        
-        ValidationMethodsByChannel__c ValidationMethod = new ValidationMethodsByChannel__c(Name= 'Físico', AdjuntarDocumentacion__c= true, LineaDecisora__c = true, QA__c = true);
-        insert ValidationMethod;
-        inputMap.put('Contact', contact);
-        inputMap.put('ContactId', contact.id);
+        //Bug10904- Yamila Simoncini#I
+        System.runAs (thisUser) {
 
-        Test.startTest();
-            taIdentityValidationHandler ivh = new taIdentityValidationHandler();
-            ivh.invokeMethod('getValidationOptions', inputMap, outMap, null);
-            ivh.invokeMethod('getValidationOptionsForValidatedContact', inputMap, outMap, null);
-        Test.stopTest();
+            Contact contact = new Contact(FirstName = firstName, LastName = lastName, DocumentType__c = documentType, DocumentNumber__c = documentNumber, Email = email, Validated__c= true);
+            insert contact;
+            
+            ValidationMethodsByChannel__c ValidationMethod = new ValidationMethodsByChannel__c(Name= 'Físico', AdjuntarDocumentacion__c= true, LineaDecisora__c = true, QA__c = true);
+            insert ValidationMethod;
+            inputMap.put('Contact', contact);
+            inputMap.put('ContactId', contact.id);
+    
+            Test.startTest();
+                taIdentityValidationHandler ivh = new taIdentityValidationHandler();
+                ivh.invokeMethod('getValidationOptions', inputMap, outMap, null);
+                ivh.invokeMethod('getValidationOptionsForValidatedContact', inputMap, outMap, null);
+            Test.stopTest();
+        }//Bug10904- Yamila Simoncini#F
     }
 
     @isTest static void getNominationValidationOptions_test()
@@ -93,28 +100,41 @@ public class TaIdentityValidationHandlerTest
         TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
         Map<String,Object> inputMap = new Map<String,Object>();
         Map<String,Object> outMap = new Map<String,Object>();
-        
-        ValidationMethodsByChannel__c ValidationMethod = new ValidationMethodsByChannel__c(Name= 'Físico', AdjuntarDocumentacion__c= true, LineaDecisora__c = true, QA__c = true);
-        insert ValidationMethod;
-        
-        Test.startTest();
-            taIdentityValidationHandler ivh = new taIdentityValidationHandler();
-            ivh.invokeMethod('getNominationValidationOptions', inputMap, outMap, null);
-        Test.stopTest();
+        System.runAs (thisUser) {
+
+            ValidationMethodsByChannel__c ValidationMethod = new ValidationMethodsByChannel__c(Name= 'Físico', AdjuntarDocumentacion__c= true, LineaDecisora__c = true, QA__c = true);
+            insert ValidationMethod;
+            
+            Test.startTest();
+                taIdentityValidationHandler ivh = new taIdentityValidationHandler();
+                ivh.invokeMethod('getNominationValidationOptions', inputMap, outMap, null);
+            Test.stopTest();
+        }
     }
 
     @isTest static void getValidationOptionsPas_test()
     {
+        
         TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
         Map<String,Object> inputMap = new Map<String,Object>();
         Map<String,Object> outMap = new Map<String,Object>();
+
         
-        ValidationMethodsByChannel__c ValidationMethod = new ValidationMethodsByChannel__c(Name= 'Físico', AdjuntarDocumentacion__c= true, LineaDecisora__c = true, QA__c = true);
-        insert ValidationMethod;
+        ValidationMethodsByChannel__c ValidationMethod = new ValidationMethodsByChannel__c(Name= 'Telefónico', AdjuntarDocumentacion__c= true, LineaDecisora__c = true, QA__c = true);
+        System.runAs(thisUser) {
+            
+            insert ValidationMethod;
         
-        Test.startTest();
-            taIdentityValidationHandler ivh = new taIdentityValidationHandler();
-            ivh.invokeMethod('getValidationOptionsPas', inputMap, outMap, null);
-        Test.stopTest();
+            Test.startTest();
+                taIdentityValidationHandler ivh = new taIdentityValidationHandler();
+                ivh.invokeMethod('getValidationOptionsPas', inputMap, outMap, null);
+            Test.stopTest();
+        }
+        //Bug10904- Yamila Simoncini#F
+        
     }
+    
+    
+    
+    
 }

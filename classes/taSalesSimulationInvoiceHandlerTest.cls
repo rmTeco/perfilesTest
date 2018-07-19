@@ -1,6 +1,16 @@
 @isTest
 public with sharing class taSalesSimulationInvoiceHandlerTest {
-        public static testmethod void Call_S013_Simulate_Calculate_Taxes(){
+    @testSetup static void setup(){
+        
+        // String mockResponse = '{"calculoImpuestosRespuesta":{"importeComprobante":"224.2800","infoResCalculoImpuestos":[{"impuestoxItemInfo":{"listaDescuentosImpuestos":[],"importeItemComprobante":"224.28","listaInfoImpuestos":[{"infoImpuesto":{"codMoneda":"ARS","tipoCategoriaImpositiva":"IVA","alicuotaImpuesto":"21","precioBase":"185.3528","importeImpuestoAplicado":"224.28","codImpuesto":"IMP21"}}],"secuenciaProductoAdquirido":"1"}}],"idCliente":"13800010033"}}';
+
+        String mockResponse = '{"calculoImpuestosRespuesta":{"importeComprobante":"28.9256","listaDatosAdicionales":[{"datoAdicional":{"valorParametro":"CAPITAL FEDERAL","nombreParametro":"C_E_TAXPROVINCE"}},{"datoAdicional":{"valorParametro":"20180703124533","nombreParametro":"C_E_TAXDATE"}}],"idCliente":"99000002560"}}';
+
+        VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S013', mockResponse);
+    }
+
+    @isTest
+    public static void Call_S013_Simulate_Calculate_Taxes(){
         Test.startTest();
         Map<String,Object> inputMap = new Map<String,Object>();
         Map<String,Object> outMap = new Map<String,Object>();
@@ -111,7 +121,8 @@ public with sharing class taSalesSimulationInvoiceHandlerTest {
         Test.stopTest();
     }
 
-     public static testmethod void Call_S015_Create_Billing_Account_test(){
+    @isTest
+    public static void Call_S015_Create_Billing_Account_test(){
          
          TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
          List<Account> account = TestDataFactory.createAccounts(1, 'Consumer');
@@ -174,7 +185,8 @@ public with sharing class taSalesSimulationInvoiceHandlerTest {
     //     Test.stopTest();
     // }
 
-    @IsTest static void GetOrderItemsBillable_test (){
+    @isTest 
+    public static void GetOrderItemsBillable_test (){
         String methodName = 'GetOrderItemsBillable';
         Map<String, Object> inputMap = new Map<String, Object>();
         Map<String, Object> outMap = new Map<String, Object>();
@@ -192,27 +204,32 @@ public with sharing class taSalesSimulationInvoiceHandlerTest {
         Test.stopTest();
     }
     
-    @IsTest static void Call_S202_Create_Customer_test(){
+    @isTest
+    public static void Call_S202_Create_Customer_test(){
         String methodName = 'Call_S202_Create_Customer';
         Map<String, Object> inputMap = new Map<String, Object>();
         Map<String, Object> outMap = new Map<String, Object>();
         Map<String, Object> options = new Map<String, Object>(); 
+        Map<String, Object> optionsBusiness = new Map<String, Object>(); 
         TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
         List<Account> account = TestDataFactory.createAccounts(1, 'Consumer');
+        List<Account> accountBusiness = TestDataFactory.createAccounts(1, 'Business');
         Contact contact = TestDataFactory.createContacts(1, account[0])[0];
         Order order = TestDataFactory.createOrders(1, account[0])[0];
         options.put('AccountId',account[0].Id);
+        optionsBusiness.put('AccountId',accountBusiness[0].Id);
         
         taSalesSimulationInvoiceHandler testedClass = new taSalesSimulationInvoiceHandler();
         
         Test.startTest();
         testedClass.invokeMethod(methodName, inputMap, outMap, options);
+        testedClass.invokeMethod(methodName, inputMap, outMap, optionsBusiness);
         Test.stopTest();
         
     } 
     
-    
-    @IsTest static void GetBaseDiscount_test() {
+    @isTest
+    public static void GetBaseDiscount_test() {
         
         Map<String,Object> inputMap = new Map<String,Object>();
         Map<String,Object> outMap = new Map<String,Object>();
@@ -237,7 +254,7 @@ public with sharing class taSalesSimulationInvoiceHandlerTest {
         String priceLog = '{"LogData":{"OT_STD_PRC":[{"ChargeTiming":null,"LogSequence":0,"DisplayText":"[One Time Loyalty Total (0.00) + Rollup ROLLUP_OT_LTY_TOTAL (0.00)] x Cantidad (1.00)"}],"REC_MNTH_STD_PRC_TOTAL":[{"ChargeTiming":null,"LogSequence":0,"DisplayText":"[Recurring Calculated Price (0.00) + Rollup Recurring Total (0.00)] x Cantidad (1.00)"}],"REC_MNTH_STD_PRC_CALC":[{"ChargeTiming":null,"LogSequence":0,"DisplayText":"Recurring Charge (0.00) - Recurring Manual Discount (0.00%)"}],"OT_STD_PRC_TOTAL":[{"ChargeTiming":"One-Time","LogSequence":0,"DisplayText":"[One Time Calculated Price (0.00) + Rollup One Time Total (60.00)] x Cantidad (1.00)"}],"OT_STD_PRC_CALC":[{"ChargeTiming":null,"LogSequence":0,"DisplayText":"One Time Charge (0.00) - One Time Manual Discount (0.00%)"}],"REC_MNTH_STD_PRC":[{"LogSequence":0,"AdjustmentType":"None","LoyaltyCode":null,"CurrencyCode":"ARS","CurrencyType":"Currency","Amount":0.00,"AdjustmentValue":0.00,"AdjustmentMethod":null,"BaseValue":0.00,"BaseAdjustment":null,"PriceListId":"a2Yc0000000k4YnEAI","OfferId":null,"PromotionId":null,"PricingElementId":"a2bc0000001dk7MAAQ","PricingVariableCode":"REC_MNTH_STD_PRC","DisplayText":"0 pesos","EndValue":0.00,"ChargeTiming":"Recurring","Frequency":"Monthly","SubType":"Standard","StartValue":0.00,"PricingElementGlobalKey":"46056b36-6648-17a3-cffd-1044fabf4da0","LogType":"PRICE","PriceListEntryId":"a2Xc0000001ADjhEAG"}]},"PricingVariableCodeFieldBinding":{"vlocity_cmt__OneTimeCalculatedPrice__c":"OT_STD_PRC_CALC","vlocity_cmt__OneTimeCharge__c":"OT_STD_PRC","vlocity_cmt__OneTimeLoyaltyTotal__c":"OT_LTY_TOTAL","vlocity_cmt__OneTimeLoyaltyPrice__c":"OT_LTY","Quantity":"LINE_QUANTITY","vlocity_cmt__EffectiveRecurringTotal__c":"EFF_REC_MNTH_STD_PRC_TOTAL","vlocity_cmt__EffectiveOneTimeTotal__c":"EFF_OT_STD_PRC_TOTAL","vlocity_cmt__EffectiveOneTimeLoyaltyTotal__c":"EFF_OT_LTY_TOTAL","vlocity_cmt__EffectiveQuantity__c":"EFFECTIVE_QUANTITY","vlocity_cmt__RecurringTotal__c":"REC_MNTH_STD_PRC_TOTAL","vlocity_cmt__RecurringCalculatedPrice__c":"REC_MNTH_STD_PRC_CALC","vlocity_cmt__RecurringCharge__c":"REC_MNTH_STD_PRC","vlocity_cmt__OneTimeTotal__c":"OT_STD_PRC_TOTAL","vlocity_cmt__OneTimeManualDiscount__c":"OT_STD_PRC_DISC_PCT_MAN","vlocity_cmt__RecurringManualDiscount__c":"REC_MNTH_STD_PRC_DISC_PCT_MAN"},"PriceAdjustmentPromoKeys":[],"PricingVariableCodeValues":{"DISP_OT_LTY":0.00,"DISP_OT_STD_PRC":0.00,"ROLLUP_REC_MNTH_STD_PRC_TOTAL":0.00,"ROLLUP_OT_STD_PRC_TOTAL":60.00,"ROLLUP_OT_LTY_TOTAL":0.00,"REC_MNTH_STD_PRC_DISC_PCT_MAN":0.00,"OT_STD_PRC_DISC_PCT_MAN":0.00,"EFFECTIVE_QUANTITY":1.00,"LINE_QUANTITY":1.00,"EFF_REC_MNTH_STD_PRC_TOTAL":0.00,"EFF_OT_STD_PRC_TOTAL":60.00,"REC_MNTH_STD_PRC_TOTAL":0.00,"REC_MNTH_STD_PRC_CALC":0.00,"REC_MNTH_STD_PRC":0.00,"OT_STD_PRC_TOTAL":60.00,"OT_STD_PRC_CALC":0.00,"OT_STD_PRC":0.00,"OT_LTY_TOTAL":0.00,"OT_LTY":0.00,"EFF_OT_LTY_TOTAL":0.00},"PricingVariableCodeBaseValues":{"REC_MNTH_STD_PRC":0.00},"LogVersion":"1.0","LastPricingTime":"2018-05-11T17:34:31.931Z"}';
         
         try {
-            Decimal dec = taSalesSimulationInvoiceHandler.GetBaseDiscount(jsonAttr, priceLog, itemsList1[0].PricebookEntryId);
+            Decimal dec = taSalesSimulationInvoiceHandler.GetBaseDiscount('0.21', jsonAttr, priceLog, itemsList1[0].PricebookEntryId);
         } catch (exception e) {
             System.assertEquals(null,null);
         }
@@ -247,7 +264,8 @@ public with sharing class taSalesSimulationInvoiceHandlerTest {
         
     }
     
-    @isTest static void GetPriceAdjustmentsGroupByOrderItem_test() {
+    @isTest 
+    public static void GetPriceAdjustmentsGroupByOrderItem_test() {
         
         Map<String,Object> inputMap = new Map<String,Object>();
         Map<String,Object> outMap = new Map<String,Object>();
@@ -269,6 +287,10 @@ public with sharing class taSalesSimulationInvoiceHandlerTest {
         itemsList1[0].vlocity_cmt__EffectiveOneTimeTotal__c = 0;
         itemsList1[0].vlocity_cmt__EffectiveRecurringTotal__c = 0;
         taSalesSimulationInvoiceHandler.GetPriceAdjustmentsGroupByOrderItem(inputMap, outMap,options);
+        taSalesSimulationInvoiceHandler testedClass = new taSalesSimulationInvoiceHandler();
+        Test.startTest();
+        testedClass.invokeMethod('GetPriceAdjustmentsGroupByOrderItem', inputMap, outMap, options);
+        Test.stopTest();
         
     }
 
@@ -281,6 +303,7 @@ public with sharing class taSalesSimulationInvoiceHandlerTest {
     //     insert orderItem;
     // }
 
+    @isTest
     public static Product2 getProductSimcard(){
         Product2 product = new Product2(
             Name='Simcard',

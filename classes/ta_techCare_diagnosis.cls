@@ -7,7 +7,10 @@ global with sharing class ta_techCare_diagnosis implements vlocity_cmt.VlocityOp
             else if(methodName.equals('ObtenerInfoMovil')) ObtenerInfoMovil(input, outMap, options);
             else if(methodName.equals('GetCpeIdentifierByModemAssetId')) GetCpeIdentifierByModemAssetId(input, outMap, options);
             else if(methodName.equals('GetServiceAttributes')) GetServiceAttributes(input, outMap, options);
-            
+            else if(methodName.equals('updateOrderToOM')) UpdateOrderToOM(input, outMap, options); 
+            else if(methodName.equals('sendOrderToOM')) SendOrderToOM(input, outMap, options);
+            else if(methodName.equals('getNewGuid')) GetNewGuid(input, outMap, options);
+
         } catch(Exception ex){
             outMap.put('error', ex.getMessage());
             options.put('error', ex.getMessage());
@@ -101,4 +104,65 @@ global with sharing class ta_techCare_diagnosis implements vlocity_cmt.VlocityOp
             throw ex;
         }
     }
+
+    private static void UpdateOrderToOM(Map<String, Object> input, Map<String, Object> outMap, Map<String, Object> options) {
+       
+        try {
+
+            String parameterOrderId = (String) options.get('orderFdoId');
+            List<Object> assetIdList = (List<Object>) options.get('assetIdList');
+
+            Order order = [SELECT Gestion__c , Status FROM Order where Id = :parameterOrderId];
+            order.Gestion__c = (String) options.get('gestionOrder');
+
+            update order;
+
+            List<OrderItem> listOrderItems = [SELECT Id, Order.Id, vlocity_cmt__Action__c, vlocity_cmt__SubAction__c, vlocity_cmt__ProvisioningStatus__c FROM OrderItem WHERE Order.Id =:parameterOrderId];
+            if (listOrderItems.size()==0){
+                throw new FuncException('Error: No Existen OrderItems');
+            }
+
+            Map<Id,Object> standardPriceMap = new Map<Id,Object>();
+            for(OrderItem getOrderItem : listOrderItems ){
+                getOrderItem.vlocity_cmt__Action__c = (String) options.get('actionOrder');
+                getOrderItem.vlocity_cmt__SubAction__c = (String) options.get('subActionOrder') ; 
+                getOrderItem.vlocity_cmt__ProvisioningStatus__c = (String) options.get('provisioningStatusOrder'); 
+               
+            }
+
+            update listOrderItems;
+       
+        }catch(Exception ex) {
+
+            throw ex;
+
+        }
+        
+
+    }
+
+    private static void SendOrderToOM (Map<String, Object> input, Map<String, Object> outMap, Map<String, Object> options) {
+       
+        String orderIdToOM = (String) options.get('sendOrderFdoId');
+        
+        String responseOM = vlocity_cmt.SimpleDecompositionController.decomposeAndCreatePlanEx(orderIdToOM, false );
+        Map<String, Object> mapResponseOM = (Map<String, Object>) JSON.deserializeUntyped(responseOM);
+
+        if(mapResponseOM.get('isOk')!= true){
+            throw new FuncException('Error: ' + mapResponseOM.get('errorMsg'));
+        }
+        
+    }
+
+        //Norwill Gutierrez - To Get unique id for transaction
+    private void GetNewGuid(Map<String, Object> input, Map<String, Object> outMap, Map<String, Object> options) {
+        String idUnico = GuidUtil.NewGuid();
+        Datetime dateTransaction = datetime.now();
+
+
+        outMap.put('UniqueTransactionID', idUnico);
+        outMap.put('DateTransaction', dateTransaction.format('yyyyddMMHHmmss')) ;
+
+
+    }       
 }

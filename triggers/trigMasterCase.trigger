@@ -11,10 +11,12 @@ trigger trigMasterCase on Case (after delete, after insert, after undelete, afte
         if (Trigger.isBefore) {
             if (Trigger.isInsert) { 
                 CaseTriggerHandler.updateCaseDataOnInsert(Trigger.new);
+                CaseTriggerHandler.SetOwnerTeam(Trigger.new,null);
                 CaseTriggerHandler.updateCaseTechServiceCriteria(Trigger.new, null);
             }
             if (Trigger.isUpdate) { 
-                CaseTriggerHandler.updateCaseOnUpdate(Trigger.new); 
+                CaseTriggerHandler.updateCaseOnUpdate(Trigger.new);
+                CaseTriggerHandler.SetOwnerTeam(Trigger.new,Trigger.oldMap); 
                 CaseTriggerHandler.updateCaseForAdjustment(Trigger.new, Trigger.oldMap);
                 CaseTriggerHandler.updateCaseTechServiceCriteria(Trigger.new , Trigger.oldMap);
             }

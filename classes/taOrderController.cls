@@ -1,32 +1,32 @@
-global with sharing class taOrderController implements vlocity_cmt.VlocityOpenInterface{
+global with sharing class taOrderController implements vlocity_cmt.VlocityOpenInterface {
 
     public class ServiceException extends Exception {}
     public static final String PENDIENTE_ARMADO_NOTIFICATION = 'OrderNotification-Pendiente-Armado';
     public static final String PENDIENTE_ENTREGA_NOTIFICATION = 'OrderNotification-Pendiente-Entrega';
     public static final String INSTANCE_VENTA_NORMAL = 'VTAN';
     public static final String INSTANCE_ANULAR_RESERVA = 'ANULARESERVA';
+    static final String COD_PRODUCTO_ENVIO_BASE = 'FAN_ENV_000';
 
     public String valor { get; set; }
     public String ipOrigin { get; set; }
 
     private Integer count = 0; 
 
-    Public taOrderController(){
-        if(ApexPages.currentPage() !=  null){
+    Public taOrderController() {
+        if(ApexPages.currentPage() !=  null) {
             System.debug('replace ipOrigin');
             ipOrigin=ApexPages.currentPage().getHeaders().get('X-Salesforce-SIP');
         }
 
         System.debug('X-Salesforce-SIP: '+ipOrigin);
-
     }
+
     //Constructor para utilizar la clase como controller extension
     Public taOrderController (ta_techCare_technical_service_controller sttController){}
 
     global Boolean invokeMethod(String methodName, Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         Boolean result = true;
-        try
-        {
+        try {
             if (methodName.equals('OrderPreparationUpdate')) {
                 OrderPreparationUpdate(inputMap, outMap, options);
             }
@@ -122,6 +122,24 @@ global with sharing class taOrderController implements vlocity_cmt.VlocityOpenIn
                 outMap = deleteCartItem(request);
             }
 
+            // PFTA-7756 - INI
+            if (methodName.equals('AddToCartItemsDelivery')) {
+                AddToCartItemsDelivery(inputMap, outMap, options);
+            }
+
+            if (methodName.equals('AddToCartItemsDeliveryChild')) {
+                AddToCartItemsDeliveryChild(inputMap, outMap, options);
+            }
+
+            if (methodName.equals('DeleteCartItemsDelivery')) {
+                DeleteCartItemsDelivery(inputMap, outMap, options);
+            }
+
+            if (methodName.equals('DeleteCartItemsDeliveryChild')) {
+                DeleteCartItemsDeliveryChild(inputMap, outMap, options);
+            }
+            // PFTA-7756 - FIN
+
             result = false;
         }
         catch(Exception e) {
@@ -134,8 +152,7 @@ global with sharing class taOrderController implements vlocity_cmt.VlocityOpenIn
 
     void CancelOrder(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('CancelOrder');
-        try
-        {
+        try {
             String orderId = (String) options.get('orderId');
             AnulaStockReserved(orderId);
             RealeaseNmuReserve(orderId);
@@ -147,11 +164,9 @@ global with sharing class taOrderController implements vlocity_cmt.VlocityOpenIn
         }
     }
 
-    void DeleteOrder(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
-    {
+    void DeleteOrder(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('DeleteOrder');
-        try
-        {
+        try {
             String orderId = (String) options.get('orderId');
             Order order = new Order();
             order.Id = orderId;
@@ -163,11 +178,9 @@ global with sharing class taOrderController implements vlocity_cmt.VlocityOpenIn
         }
     }
 
-    void OrderPreparationUpdate(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
-    {
+    void OrderPreparationUpdate(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('OrderPreparationUpdate');
-        try
-        {
+        try {
             String orderId = (String) options.get('idOrder');
             String channel = (String) options.get('Channel');
             String deliveryMethod = (String) options.get('DeliveryMethod');
@@ -186,15 +199,13 @@ global with sharing class taOrderController implements vlocity_cmt.VlocityOpenIn
         }
     }
 
-    void OrderHandOverUpdate(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
-    {
+    void OrderHandOverUpdate(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('OrderHandOverUpdate');
-        try
-        {
-            String codDeposito = '';
+        try {
             String orderId = (String) options.get('idOrder');
             String storePickUp = (String) options.get('StorePickUp');
-            Order order = [SELECT Delivery_Method__c, Gestion__c FROM Order where Id = :orderId];
+            Order order = [SELECT Delivery_Method__c, Gestion__c, OriginStoreLocation__r.AssociatedWarehouseId__c FROM Order where Id = :orderId];
+            String codDeposito = order.OriginStoreLocation__r.AssociatedWarehouseId__c;
             if (order.Gestion__c == 'Cambio en Garantia')
             {
                 CegStockMovement(orderId);
@@ -203,106 +214,96 @@ global with sharing class taOrderController implements vlocity_cmt.VlocityOpenIn
             }
             else
             {
-                String deliveryMethod = order.Delivery_Method__c;
-                Map<string, Object> response = TaMatrixUtils.getStockMovementOperation('VTAN','ENTREGA', deliveryMethod, 'NOAPLICA');
-                if(response != null){
-                    String codOperation =  (String) response.get('StockMovementOperation__OperationCode');
-                    system.debug('codOperation'+codOperation);
-                    String destinationDepositCode = (String) response.get('StockMovementOperation__DestinationDepositCode');
-                    System.debug('ENTREGA -> Codigo operacion: ' + codOperation + ' Codigo deposito: ' + destinationDepositCode );
-
-                    if(destinationDepositCode == 'VICLIE')
-                        codDeposito = 'VICLIE0001';
-
-                    if (String.isNotBlank(codOperation) && String.isNotBlank(codDeposito))
-                        StockUtils.StockMovement(orderId, codOperation, codDeposito);
-
-                    UpdateOrderStatus(orderId, 'Entregado');
-                    DeleteTasks(orderId, PENDIENTE_ENTREGA_NOTIFICATION);
-                } else {
-                    System.debug('RESPONSE MATRIX NULL');
-                }
+                List<OrderItem> orderItems = taOrderController.GetOrderSerials(orderId);
+                Map<String,String> serialNumbersToDeliver = new Map<String,String>();
+                for(OrderItem item : orderItems) serialNumbersToDeliver.put(item.vlocity_cmt__SerialNumber__c, null);
+                taOrderController.MoveSerialsStock('VTAN', 'FACTURA', serialNumbersToDeliver, order.OriginStoreLocation__r.AssociatedWarehouseId__c, order.Delivery_Method__c);
+                UpdateOrderStatus(orderId, 'Entregado');
+                DeleteTasks(orderId, PENDIENTE_ENTREGA_NOTIFICATION);
             }
         }
         catch(Exception e) {
             System.debug('An unexpected error has occurred: ' + e.getMessage());
             System.debug(e.getMessage());
+            throw e;
         }
     }
 
-    public void CegStockMovement(Id cegOrderId)
-    {
-    try
-    {
-        Order order = [SELECT Delivery_Method__c, SubGestion__c, Gestion__c, OriginStoreLocation__r.AssociatedWarehouseId__c FROM Order WHERE Id = :cegOrderId];//Se obtiene el tipo de CEG
-        List<OrderItem> orderItems = taOrderController.GetOrderSerials(cegOrderId);
-        /*List<Order> orders = [SELECT Delivery_Method__c, SubGestion__c, Gestion__c, OriginStoreLocation__r.AssociatedWarehouseId__c FROM Order WHERE Id IN :cegOrderIds];//Se obtiene el tipo de CEG
-        Map<Id, Order> ordersMap = new Map<Id, Order>(orders);
-        List<OrderItem> orderItems = taOrderController.GetOrderSerials(cegOrderIds);
-        Map<Id, OrderItem> ordersItemsMap = new Map<Id, OrderItem>(orderItems);
-        */
-        Map<String,String> serialNumbersToDeliver = new Map<String,String>();//Por ahora limitado a presencial
-        Map<String,String> serialNumbersForReturn = new Map<String,String>();
-        for(OrderItem item : orderItems){
-            if (item.vlocity_cmt__Action__c == 'Disconnect')
+    public void CegStockMovement(Id cegOrderId) {
+        try {
+            Order order = [SELECT Delivery_Method__c, SubGestion__c, Gestion__c, OriginStoreLocation__r.AssociatedWarehouseId__c FROM Order WHERE Id = :cegOrderId];//Se obtiene el tipo de CEG
+            List<OrderItem> orderItems = taOrderController.GetOrderSerials(cegOrderId);
+            /*List<Order> orders = [SELECT Delivery_Method__c, SubGestion__c, Gestion__c, OriginStoreLocation__r.AssociatedWarehouseId__c FROM Order WHERE Id IN :cegOrderIds];//Se obtiene el tipo de CEG
+            Map<Id, Order> ordersMap = new Map<Id, Order>(orders);
+            List<OrderItem> orderItems = taOrderController.GetOrderSerials(cegOrderIds);
+            Map<Id, OrderItem> ordersItemsMap = new Map<Id, OrderItem>(orderItems);
+            */
+            Set<Id> assetsIds = new Set<Id>();
+            for(OrderItem item : orderItems)
+                if (item.vlocity_cmt__AssetId__c != null) assetsIds.add(item.vlocity_cmt__AssetId__c);
+            List<AssetHistory> assetHistoryList = [SELECT CreatedDate, NewValue, OldValue FROM AssetHistory WHERE AssetId in :assetsIds AND Field = 'imei__c' AND IsDeleted = false ORDER BY CreatedDate];
+            Map<Id,String> assetHistoryMap = new Map<Id,String>();
+            for(AssetHistory item : assetHistoryList)
             {
-                List<AssetHistory> assetHistoryList = [SELECT CreatedDate, NewValue, OldValue FROM AssetHistory WHERE AssetId = :item.vlocity_cmt__AssetId__c AND Field = 'imei__c' AND IsDeleted = false ORDER BY CreatedDate DESC];
-                if (assetHistoryList.size() > 1) item.vlocity_cmt__SerialNumber__c = (String) assetHistoryList.get(0).OldValue;
-                if (order.SubGestion__c != 'Ley de defensa del consumidor') item.FromStock__c = null;
-                serialNumbersForReturn.put(item.vlocity_cmt__SerialNumber__c, item.FromStock__c);
+                assetHistoryMap.put(item.AssetId,(String)item.OldValue);
+            }
+            Map<String,String> serialNumbersToDeliver = new Map<String,String>();//Por ahora limitado a presencial
+            Map<String,String> serialNumbersForReturn = new Map<String,String>();
+            for(OrderItem item : orderItems){
+                if (item.vlocity_cmt__Action__c == 'Disconnect')
+                {
+                    //List<AssetHistory> assetHistoryList = [SELECT CreatedDate, NewValue, OldValue FROM AssetHistory WHERE AssetId = :item.vlocity_cmt__AssetId__c AND Field = 'imei__c' AND IsDeleted = false ORDER BY CreatedDate DESC];
+                    //if (assetHistoryList.size() > 1) item.vlocity_cmt__SerialNumber__c = (String) assetHistoryList.get(0).OldValue;
+                    String serialCAPLA = (String) assetHistoryMap.get(item.vlocity_cmt__AssetId__c);
+                    if(String.isNotBlank(serialCAPLA)) item.vlocity_cmt__SerialNumber__c = serialCAPLA;
+                    if (order.SubGestion__c != 'Ley de defensa del consumidor') item.FromStock__c = null;
+                    serialNumbersForReturn.put(item.vlocity_cmt__SerialNumber__c, item.FromStock__c);
+                }
+                else
+                    serialNumbersToDeliver.put(item.vlocity_cmt__SerialNumber__c, null);
+            }
+            CegStockMovement(serialNumbersForReturn, serialNumbersToDeliver, order.SubGestion__c, order.OriginStoreLocation__r.AssociatedWarehouseId__c, order.Delivery_Method__c);
+        }
+        catch(ServiceException sEx) {
+            throw sEx;
+        }
+        catch(Exception ex) {
+            System.debug('taOrderController:MoveSerialsStock -> exception: '+ex);
+            System.debug('Exception Stack Trace: ' + ex.getStackTraceString());
+            throw new ServiceException('Error al realizar el movimiento de stock');
+        }
+    }
+
+    public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<String,String> serialNumbersToDeliver, String cegMotive, String codDeposito, String deliveryMethod) {
+        String operation, instance;
+        Boolean serialReturnMade = false;
+        try {
+            //Devolucion CEG
+            if (cegMotive == 'Ley de defensa del consumidor'){
+                operation = 'ANUV';
+                instance = 'ANULAVENTA';
             }
             else
-                serialNumbersToDeliver.put(item.vlocity_cmt__SerialNumber__c, item.FromStock__c);
+            {
+                operation = 'DEVG';
+                instance = 'FACTURA';
+            }
+            taOrderController.MoveSerialsStock(operation, instance, serialNumbersForReturn, codDeposito, 'NOAPLICA');
+            serialReturnMade = true;
+            taOrderController.MoveSerialsStock('VTAN', 'FACTURA', serialNumbersToDeliver, codDeposito, deliveryMethod);
         }
-        CegStockMovement(serialNumbersForReturn, serialNumbersToDeliver, order.SubGestion__c, order.OriginStoreLocation__r.AssociatedWarehouseId__c, order.Delivery_Method__c);
+        catch(Exception e) {
+            if (serialReturnMade)
+                taOrderController.MoveSerialsStock('ANUG', 'ANULADEVOLUCION', serialNumbersForReturn, codDeposito, 'NOAPLICA');
+            System.debug('taOrderController:MoveSerialsStock -> exception: '+e);
+            System.debug('Exception Stack Trace: ' + e.getStackTraceString());
+            throw new ServiceException('Error al realizar el movimiento de stock');
+        }
     }
-    catch(ServiceException sEx)
-    {
-        throw sEx;
-    }
-    catch(Exception ex)
-    {
-        System.debug('taOrderController:MoveSerialsStock -> exception: '+ex);
-        System.debug('Exception Stack Trace: ' + ex.getStackTraceString());
-        throw new ServiceException('Error al realizar el movimiento de stock');
-    }
-}
 
-public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<String,String> serialNumbersToDeliver, String cegMotive, String codDeposito, String deliveryMethod)
-{
-    String operation, instance;
-    Boolean serialReturnMade = false;
-    try
-    {
-        //Devolucion CEG
-        if (cegMotive == 'Ley de defensa del consumidor'){
-            operation = 'ANUV';
-            instance = 'ANULAVENTA';
-        }
-        else
-        {
-            operation = 'DEVG';
-            instance = 'FACTURA';
-        }
-        taOrderController.MoveSerialsStock(operation, instance, serialNumbersForReturn, codDeposito, 'NOAPLICA');
-        serialReturnMade = true;
-        taOrderController.MoveSerialsStock('VTAN', 'FACTURA', serialNumbersToDeliver, codDeposito, deliveryMethod);
-    }
-    catch(Exception e)
-    {
-        if (serialReturnMade)
-            taOrderController.MoveSerialsStock('ANUG', 'ANULADEVOLUCION', serialNumbersForReturn, codDeposito, 'NOAPLICA');
-        System.debug('taOrderController:MoveSerialsStock -> exception: '+e);
-        System.debug('Exception Stack Trace: ' + e.getStackTraceString());
-        throw new ServiceException('Error al realizar el movimiento de stock');
-    }
-}
-
-    void GetProductNMU(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
-    {
+    void GetProductNMU(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('GetProductNMU');
-        try
-        {
+        try {
             String productCode = (String) options.get('ProductCode');
             System.debug('Product Code:'+productCode);
             Product2 product = [SELECT vlocity_cmt__JSONAttribute__c FROM Product2 WHERE ProductCode = :productCode];
@@ -315,11 +316,9 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    void GetPointOfSaleWarehouse(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
-    {
+    void GetPointOfSaleWarehouse(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('GetPointOfSaleWarehouse');
-        try
-        {
+        try {
             String orderId = (String) options.get('orderId');
             Map<String,String> getPointOfSaleWarehouseResponse = GetPointOfSaleWarehouse(orderId);
             String codPuntoDeVenta = getPointOfSaleWarehouseResponse.get('codPuntoDeVenta');
@@ -333,11 +332,9 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static void UpdateOrderStatus(String orderId, String Status)
-    {
+    public static void UpdateOrderStatus(String orderId, String Status) {
         System.debug('UpdateOrderStatus');
-        try
-        {
+        try {
             Order order = new Order();
             order.Id = orderId;
             //order.Status = Status;
@@ -351,21 +348,22 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static void CancelOrderAndRedirect(string id, string jsonOrder){
+    global static void CancelOrderAndRedirect(string id, string jsonOrder) {
         try{
             AnulaStockReserved(id);
             ReleaseLines(jsonOrder);
             RealeaseNmuReserve(id);
             CancelOrder(id);
-        }catch(DmlException e){
+        }
+        catch(DmlException e) {
             System.debug('An unexpected error has occurred: ' + e.getMessage());
             System.debug(e.getMessage());
         }
     }
 
     @RemoteAction
-    global static void OrderTimeOut(string orderId){
-        try{
+    global static void OrderTimeOut(string orderId) {
+        try {
             System.debug('OrderTimeOut');
             Order order = [SELECT Delivery_Method__c FROM Order WHERE Id = :orderId];
             List<OrderItem> orderItems = GetOrderSerials(orderId);
@@ -385,8 +383,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
                 }
                 else
                 {
-                    String nmu = GetNMU(item.vlocity_cmt__JSONAttribute__c);
-                    AddNmuToRelease(nmusMap,nmu,codDeposito);
+                    AddNmuToRelease(nmusMap,item.Product2.NMU__c,codDeposito);
                 }
             }
             //if (oldSerialNumbers.size() > 0)
@@ -403,13 +400,14 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
                 ManageReservedNmus('L',nmusMap,codPuntoDeVenta,codDeposito, orderId);
               }
             }
-        }catch(DmlException e){
+        }
+        catch(DmlException e) {
             System.debug('An unexpected error has occurred: ' + e.getMessage());
             System.debug(e.getMessage());
         }
     }
 
-    private static void ReleaseLines(string jsonOrder){
+    private static void ReleaseLines(string jsonOrder) {
         try{
             System.debug('ReleaseLines');
             System.debug('jsonOrder: ' + jsonOrder);
@@ -430,18 +428,18 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
 
             if(linesToRelease.KeySet().size() > 0 )
                 lineManager.FreeReservedLines(linesToRelease);
-
-        }catch(DmlException ex){
+        }
+        catch(DmlException ex) {
             System.debug(ex.getMessage());
         }
-
     }
-    private void CancelOrderAndRelease(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
-    {
+
+    private void CancelOrderAndRelease(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         String orderId = (String) options.get('orderId');
         CancelOrderAndRelease(orderId);
     }
-    public static void CancelOrderAndRelease(Id orderId){
+
+    public static void CancelOrderAndRelease(Id orderId) {
         /**
         * ─────────────────────────────────────────────────────────────────────────────────────────────────
         * @description Cancel Order and Release Lines, Numbers and Stock
@@ -456,14 +454,15 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
             RealeaseNmuReserve(orderId);
             AnulaStockReserved(orderId);
             //CancelOrder(orderId);
-        }catch(Exception e){
+        }
+        catch(Exception e) {
             System.debug('CancelOrderAndRelease Msg: ' + e.getMessage());
             System.debug('CancelOrderAndRelease Cause: ' + e.getCause());
             System.debug('CancelOrderAndRelease Stack Trace: ' + e.getStackTraceString());
         }
     }
 
-    public static void ReleaseLinesFromOrder(Id orderId){
+    public static void ReleaseLinesFromOrder(Id orderId) {
         /**ß
         * ─────────────────────────────────────────────────────────────────────────────────────────────────
         * @description Release Lines previously reserved in an Order
@@ -479,7 +478,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         List<OrderItem> plansProducts;
         String lineAux;
 
-        try{
+        try {
             System.debug('ReleaseLines');
 
             plansProducts = [SELECT Id, Product2.ProductCode, Product2.Name, Product2.vlocity_cmt__Type__c, vlocity_cmt__SerialNumber__c, vlocity_cmt__JSONAttribute__c, FromStock__c FROM OrderItem WHERE OrderId = :orderId AND Product2.vlocity_cmt__Type__c = 'Plan Prepago'];
@@ -492,16 +491,15 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
             LinesManager lineManager = new LinesManager();
             if(linesToRelease.KeySet().size() > 0 )
                 lineManager.FreeReservedLines(linesToRelease);
-
-        }catch(Exception e){
+        }
+        catch(Exception e) {
             System.debug('ReleaseLines Msg: ' + e.getMessage());
             System.debug('ReleaseLines Cause: ' + e.getCause());
             System.debug('ReleaseLines Stack Trace: ' + e.getStackTraceString());
         }
-
     }
 
-    public static void CreateMACD2(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options){
+    public static void CreateMACD2(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         Boolean outB;
         try{
             System.debug('CreateMACD2');
@@ -561,8 +559,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    //public static Date GetMACDRequestDate(String assetId, List<String> assetIdList, Map<String,Object> outMap){
-    public static Date GetMACDRequestDate(String assetId, List<String> assetIdList){
+    public static Date GetMACDRequestDate(String assetId, List<String> assetIdList) {
         Date rDate;
         //List<Date> rDates;
         List<OrderItem> rOItems;
@@ -619,7 +616,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         return rDate;
     }
 
-    private static void AnulaStockReserved(string orderId){
+    private static void AnulaStockReserved(string orderId) {
         System.debug('AnulaStockReserved');
         /*PFTA-6757 CALL ANULARESERVA */
         system.debug('Anulación Orderd ====> '+orderId);
@@ -669,7 +666,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    private static void RealeaseNmuReserve(string orderId){
+    private static void RealeaseNmuReserve(string orderId) {
         try{
             System.debug('RealeaseNmuReserve');
             Map<String,String> getPointOfSaleWarehouseResponse = taOrderController.GetPointOfSaleWarehouse(orderId);
@@ -690,8 +687,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static Map<String,String> GetPointOfSaleWarehouse(String idOrder)
-    {
+    public static Map<String,String> GetPointOfSaleWarehouse(String idOrder) {
         System.debug('GetPointOfSaleWarehouse');
         try
         {
@@ -730,8 +726,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static void DeleteTasks(String idOrder, String type)
-    {
+    public static void DeleteTasks(String idOrder, String type) {
         System.debug('DeleteTasks');
         try
         {
@@ -744,8 +739,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static void CreateStateTask(String idOrder, String type)
-    {
+    public static void CreateStateTask(String idOrder, String type) {
         System.debug('CreateStateTask');
         try
         {
@@ -765,6 +759,10 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         try {
             List<OrderItem> items = [SELECT Product2.Name FROM OrderItem WHERE OrderId = :orderId AND Product2.Tangible__c = true];
             Boolean serviceExists = false ;
+            system.debug('orderID'+OrderId);
+            system.debug(items);
+            
+            
 
             if (items.size() > 0)
                 serviceExists = true;
@@ -780,11 +778,12 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     //public static void DeReserveSerialNumber(List<String> serialNumbers, String codDeposito, String deliveryMethod)
-    public static void MoveSerialsStock(String operation, String instance, Map<String,String> serialNumbers, String codDeposito, String deliveryMethod)
-    {
+    public static void MoveSerialsStock(String operation, String instance, Map<String,String> serialNumbers, String codDeposito, String deliveryMethod) {
         try
         {
             System.debug('INTO MoveSerialsStock');
+            System.debug('INTO MoveSerialsStock');
+            System.debug('codDeposito-->' + codDeposito);
             String codOperation;
             String destinationDepositCode;
             Map<String,Object> serialNumbersToMove = new Map<String,Object>();
@@ -813,7 +812,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
             }
 
         }
-        catch(FuncException e){
+        catch(CallOutException e){
             System.debug('taOrderController:MoveSerialsStock -> exception: '+e);
             System.debug('Exception Stack Trace: ' + e.getStackTraceString());
             throw new ServiceException('Error al realizar el movimiento de stock');
@@ -824,8 +823,8 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
             throw new ServiceException('Error al realizar el movimiento de stock');
         }
     }
-    public static String GetStockCodeByOperation(String operation, String subOperation, String deliveryMethod)
-    {
+
+    public static String GetStockCodeByOperation(String operation, String subOperation, String deliveryMethod) {
         try
         {
             Map<string, Object> response = TaMatrixUtils.getStockMovementOperation(operation,subOperation, deliveryMethod, 'NOAPLICA');
@@ -839,8 +838,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static void AddNmuToRelease(Map<String, Map<String, Object>> nmusMap, String nmu, String codDeposito)
-    {
+    public static void AddNmuToRelease(Map<String, Map<String, Object>> nmusMap, String nmu, String codDeposito) {
         try
         {
             Map<String, Object> existingNmu = (Map<String, Object>) nmusMap.get(nmu);
@@ -866,20 +864,25 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static void ManageReservedNmus(String operationCode, Map<String, Map<String, Object>> nmusMap, String codPuntoDeVenta, String codDeposito, String orderId)
-    {
+    public static void ManageReservedNmus(String operationCode, Map<String, Map<String, Object>> nmusMap, String codPuntoDeVenta, String codDeposito, String orderId) {
         try
         {
-          system.debug('llegue yo ====> ');
-          //PFTA - 10326 - Se envia siempre punto de venta 0
+            system.debug('llegue yo ====> ');
+            //PFTA - 10326 - Se envia siempre punto de venta 0
             String idUnicoTransaccion = GuidUtil.NewGuid();
             System.debug('taOrderController:idUnicoTransaccion: ' + idUnicoTransaccion);
-            Map<String,Object> response = IFS_S101_reserveOrRelease.reserveOrRelease(operationCode, '2', orderId, '0', idUnicoTransaccion, nmusMap);
+            Map<String,Object> response = new Map<String,Object>();
+
+            if(!Test.isRunningTest()){
+                response = IFS_S101_reserveOrRelease.reserveOrRelease(operationCode, '2', orderId, '0', idUnicoTransaccion, nmusMap);
+            }else {
+                response.put('httpStatusCode', '200');
+            }
 
             String httpResponseCode = (String) response.get('httpStatusCode');
             if (httpResponseCode != '200')
                 throw new FuncException('Error al invocar al servicio de reserva por NMU. ' + response);
-            }
+        }
         catch(FuncException e){
             System.debug('taOrderController:ManageReservedNmus -> exception: '+e);
             System.debug('Exception Stack Trace: ' + e.getStackTraceString());
@@ -892,8 +895,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static String GetNMU(String vlocitycmtJSONAttribute)
-    {
+    public static String GetNMU(String vlocitycmtJSONAttribute) {
         System.debug('GetNMU');
         try
         {
@@ -916,8 +918,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static List<OrderItem> GetOrderSerials(String orderId)
-    {
+    public static List<OrderItem> GetOrderSerials(String orderId) {
         System.debug('GetOrderSerials');
         try
         {
@@ -933,13 +934,12 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    public static List<OrderItem> GetOrderSerials(List<Id> orderIds)
-    {
+    public static List<OrderItem> GetOrderSerials(List<Id> orderIds) {
         System.debug('GetOrderSerials');
         try
         {
             List<OrderItem> tangibleItems = new List<OrderItem>();
-            List<OrderItem> items = [SELECT Id, Product2.ProductCode, Product2.Name, Product2.vlocity_cmt__Type__c, vlocity_cmt__SerialNumber__c, Product2.Tangible__c, vlocity_cmt__JSONAttribute__c, FromStock__c, vlocity_cmt__Action__c, Operation_Code__c, Deposit_Code__c, vlocity_cmt__AssetId__c FROM OrderItem WHERE OrderId IN :orderIds];
+            List<OrderItem> items = [SELECT Id, Product2.ProductCode, Product2.Name, Product2.vlocity_cmt__Type__c, Product2.NMU__c, vlocity_cmt__SerialNumber__c, Product2.Tangible__c, vlocity_cmt__JSONAttribute__c, FromStock__c, vlocity_cmt__Action__c, Operation_Code__c, Deposit_Code__c, vlocity_cmt__AssetId__c FROM OrderItem WHERE OrderId IN :orderIds];
             system.debug('GetOrderSerials items ====> '+items);
             for(OrderItem item : items)
             {
@@ -959,7 +959,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    void GetManageableIdentityValidation(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options){
+    void GetManageableIdentityValidation(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('PRINT INPUT GetManageableIdentityValidation');
         System.debug(inputMap);
         Boolean validationRequired = false;
@@ -1114,7 +1114,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         outMap.put('validationRequired', validationRequired);
     }
 
-    public static Boolean consultingMatrixValidationRequired(String paymentMethodItem, String code){
+    public static Boolean consultingMatrixValidationRequired(String paymentMethodItem, String code) {
             Boolean validationRequired = false;
             Map<string, Object> response = TaMatrixUtils.GetManageableIdentityValidationMatrix(paymentMethodItem, code);
             System.debug(response);
@@ -1193,7 +1193,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }*/
 
     @RemoteAction
-    global static Map<String, Object> GetPaymentMethods(Map<String, Object> input){
+    global static Map<String, Object> GetPaymentMethods(Map<String, Object> input) {
         ta_sales_paymentMethod paymentMethodClass = new ta_sales_paymentMethod();
         Map<String, Object> outMap = new Map<String, Object>();
         Map<String, Object> options = new Map<String, Object>();
@@ -1202,7 +1202,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> GetDocumentTypes(Map<String, Object> input){
+    global static Map<String, Object> GetDocumentTypes(Map<String, Object> input) {
         taNewContact newContactClass = new taNewContact();
         Map<String, Object> outMap = new Map<String, Object>();
         Map<String, Object> options = new Map<String, Object>();
@@ -1211,7 +1211,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> PopulateEntidades(Map<String, Object> input){
+    global static Map<String, Object> PopulateEntidades(Map<String, Object> input) {
         ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         Map<String, Object> outMap = new Map<String, Object>();
         Map<String, Object> options = new Map<String, Object>();
@@ -1220,19 +1220,19 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> GetCardsByBank(String bankCode){
+    global static Map<String, Object> GetCardsByBank(String bankCode) {
         ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         return paymentMethodClass.GetCardsByBank(bankCode);
     }
 
     @RemoteAction
-    global static Map<String, Object> GetInstallmentsByCard(String bankCode, String cardCode){
+    global static Map<String, Object> GetInstallmentsByCard(String bankCode, String cardCode) {
         ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         return paymentMethodClass.GetInstallmentsByCard(bankCode, cardCode);
     }
 
     @RemoteAction
-    global static Map<String, Object> GetMatrixDpfCft(String installments){
+    global static Map<String, Object> GetMatrixDpfCft(String installments) {
         System.debug('GetMatrixDpfCft');
         Map<string, Object> response =  TaMatrixUtils.GetPromocionesFinancierasVigentes('DPF', 'NA', 'NA', installments);
         System.debug(response);
@@ -1240,7 +1240,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static List<OrderItem> GetOrderItemsBillable(String orderId){
+    global static List<OrderItem> GetOrderItemsBillable(String orderId) {
 
         List<OrderItem> orderItems = [
             SELECT
@@ -1266,14 +1266,13 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
                 AND vlocity_cmt__Action__c = 'Add'
             ORDER BY CreatedDate DESC
         ];
-        // System.debug(JSON.serialize(orderItems));
+        System.debug('1.- orderitems: ' + JSON.serialize(orderItems));
 
         List<OrderItem> billables = new List<OrderItem>();
         for(OrderItem item : orderItems)
         {
             Boolean isBillable = false;
-            // System.debug('vlocity_cmt__JSONAttribute__c');
-            // System.debug(item.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c);
+            System.debug('vlocity_cmt__JSONAttribute__c' + item.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c);
             Map<String, Object> attrbBillable = AssetAttributesUtils.GetJSONAttribute(item.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c, 'Facturable en Venta');
             if(attrbBillable != null && attrbBillable.get('value__c') != null && 
                 (attrbBillable.get('value__c') == 'Requerido' || attrbBillable.get('value__c') == 'Opcional')){
@@ -1287,7 +1286,8 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         // ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         // return paymentMethodClass.GetInstallmentsByCard(bankCode, cardCode);
     }
-    public static void ValidateTelecomNumbers(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options){
+
+    public static void ValidateTelecomNumbers(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('ValidateTelecomNumbers');
 
         try
@@ -1315,7 +1315,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Boolean ValidateTelecomNumber(string lineNumber){
+    global static Boolean ValidateTelecomNumber(string lineNumber) {
         try{
             String integProcName = 'IFS_S464';
             String codTipoVenta = 'NOR';
@@ -1327,7 +1327,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
             vlocity_cmt.IntegrationProcedureService integProcServ = new vlocity_cmt.IntegrationProcedureService();
             integProcServ.invokeMethod(integProcName, input, output, options);
             Map<String, Object> response = (Map<String, Object>) output.get('IPResult');
-            Integer result = (Integer) response.get('resultado');
+            Integer result = Integer.valueof(response.get('resultado'));
             if (result == 0)
                 return true;
             else return false;
@@ -1338,7 +1338,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         }
     }
 
-    void UpdateOrderCreditRefillSOS(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options){
+    void UpdateOrderCreditRefillSOS(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
             System.debug('UpdateOrderCreditRefillSOS');
             String orderId = (String) inputMap.get('orderId');
             String status = (String) inputMap.get('Status');
@@ -1365,7 +1365,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
 
     // Payment Method Credit Card Logic With Custom Object - JARA
     @RemoteAction
-    global static Map<String, Object> PopulateEntidadesFromObject(Map<String, Object> input){
+    global static Map<String, Object> PopulateEntidadesFromObject(Map<String, Object> input) {
         ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         Map<String, Object> outMap = new Map<String, Object>();
         Map<String, Object> options = new Map<String, Object>();
@@ -1374,7 +1374,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> GetCardsByBankFromObject(Map<String, Object> input){
+    global static Map<String, Object> GetCardsByBankFromObject(Map<String, Object> input) {
         ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         Map<String, Object> outMap = new Map<String, Object>();
         Map<String, Object> options = new Map<String, Object>();
@@ -1383,19 +1383,19 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> GetPromotionsByBankCardFromObject(String bankCode, String cardCode, Map<String, Object> options){
+    global static Map<String, Object> GetPromotionsByBankCardFromObject(String bankCode, String cardCode, Map<String, Object> options) {
         ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         return paymentMethodClass.GetPromotionsByBankCard(bankCode, cardCode, options);
     }
 
     @RemoteAction
-    global static Map<String, Object> GetInstallmentsByPromotion(String bankCode, String cardCode, String promotionName, Map<String, Object> options){
+    global static Map<String, Object> GetInstallmentsByPromotion(String bankCode, String cardCode, String promotionName, Map<String, Object> options) {
         ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         return paymentMethodClass.GetInstallmentsByPromotions(bankCode, cardCode, promotionName, options);
     }
 
     @RemoteAction
-    global static Map<String, Object> RollbackForRetryPaymentMethods(Map<String, Object> options){
+    global static Map<String, Object> RollbackForRetryPaymentMethods(Map<String, Object> options) {
         String orderId = (String) options.get('orderId');
         AnulaStockReserved(orderId);
         taSalesAnnulmentHandler.call_S457_Hot_Invoice_Rollback(orderId);
@@ -1408,7 +1408,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> PopulateDPFInstallmentsFromObject(Map<String, Object> input){
+    global static Map<String, Object> PopulateDPFInstallmentsFromObject(Map<String, Object> input) {
         ta_sales_paymentMethodLogic paymentMethodClass = new ta_sales_paymentMethodLogic();
         Map<String, Object> outMap = new Map<String, Object>();
         Map<String, Object> options = new Map<String, Object>();
@@ -1416,7 +1416,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         return outMap;
     }
 
-    public static List<vlocity_cmt__PaymentAdjustment__c> GetPaymentAdjustmentsWithCFT(String OrderId){
+    public static List<vlocity_cmt__PaymentAdjustment__c> GetPaymentAdjustmentsWithCFT(String OrderId) {
         List<vlocity_cmt__PaymentAdjustment__c> payments = [
             SELECT
                 Id,
@@ -1435,7 +1435,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         return payments;
     }
 
-    public void GetPaymentsAdjustments(Map<String, Object> input, Map<String, Object> outMap, Map<String, Object> options){
+    public void GetPaymentsAdjustments(Map<String, Object> input, Map<String, Object> outMap, Map<String, Object> options) {
         System.debug('GetPaymentsAdjustments');
         String OrderId = String.valueOf(options.get('OrderId'));
         // System.debug('OrderId: ' + OrderId);
@@ -1445,7 +1445,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         outMap.put('data', payments);
     }
 
-    public static List<vlocity_cmt__PaymentAdjustment__c> GetPaymentsAdjustments(String OrderId){
+    public static List<vlocity_cmt__PaymentAdjustment__c> GetPaymentsAdjustments(String OrderId) {
         List<vlocity_cmt__PaymentAdjustment__c> payments = [
             SELECT
                 Id,
@@ -1470,7 +1470,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> getFinancialPromotions(Map<String, Object> input){
+    global static Map<String, Object> getFinancialPromotions(Map<String, Object> input) {
         Map<String, Object> outMap = new Map<String, Object>();
 
         String userId = (String) input.get('userId');
@@ -1542,9 +1542,9 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         outMap.put('options', serializedList);
         return outMap;
     }
+
     /*JARN: No borrar*/
-    public static List<vlocity_cmt__PaymentAdjustment__c> GetCashPayments(String OrderId)
-    {
+    public static List<vlocity_cmt__PaymentAdjustment__c> GetCashPayments(String OrderId) {
         List<vlocity_cmt__PaymentAdjustment__c> payments = [
             SELECT
             Id,
@@ -1571,8 +1571,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         return payments;
     }
 
-    public static List<vlocity_cmt__PaymentAdjustment__c> GetCardsPayments(String OrderId)
-    {
+    public static List<vlocity_cmt__PaymentAdjustment__c> GetCardsPayments(String OrderId) {
         List<vlocity_cmt__PaymentAdjustment__c> payments = [
             SELECT
             Id,
@@ -1603,7 +1602,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     // son los descuentos agrupados por order item
-    public static Map<String, List<vlocity_cmt__OrderPriceAdjustment__c>> GetPriceAdjustmentsGroupByOrderItem(string orderId){
+    public static Map<String, List<vlocity_cmt__OrderPriceAdjustment__c>> GetPriceAdjustmentsGroupByOrderItem(string orderId) {
         List<vlocity_cmt__OrderPriceAdjustment__c> lstOrderPriceAdjustment = [
             SELECT
                 vlocity_cmt__OrderItemId__c,
@@ -1611,6 +1610,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
                 vlocity_cmt__Amount__c,
                 vlocity_cmt__PricingVariableCode__c,
                 vlocity_cmt__AdjustmentValue__c,
+                vlocity_cmt__Sequence__c,
                 vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__Code__c,
                 vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__DisplayText__c
             FROM vlocity_cmt__OrderPriceAdjustment__c
@@ -1637,16 +1637,16 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
 
         return hashDescuentos;
     }
-
     /*JARN: No borrar FIN*/
+
     //JARN: Controlaor creado para ser invocado desde la voualforce pagAprobalADV.page PFTA-9428
     private final Order o;
-    public taOrderController(ApexPages.StandardController stdController)
-    {
+    
+    public taOrderController(ApexPages.StandardController stdController) {
         this.o = (Order)stdController.getRecord();
     }
-    public PageReference rechazarOrderADV()
-    {
+
+    public PageReference rechazarOrderADV() {
         String theId = ApexPages.currentPage().getParameters().get('id');
         String motivo = ApexPages.currentPage().getParameters().get('j_id0:j_id1:motivo');
         String descr = ApexPages.currentPage().getParameters().get('j_id0:j_id1:desc');
@@ -1659,6 +1659,9 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
                                                     Work_Team__r.Id
                                                 from Team_Member__c WHERE User_member__c =: order1.OwnerId and Is_Active__c = true
                                              ];
+        System.debug('rechazarOrderADV:lstTeamMember ->' +  lstTeamMember);
+
+
         WorkTeam__c lstTeam = [ Select 
                                                     Id,Is_Active__c,Manager__r.email 
                                                     from WorkTeam__c WHERE Id =: lstTeamMember.Work_Team__c and Is_Active__c = true
@@ -1674,8 +1677,8 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         pageRef.setRedirect(true);
         return pageRef;
     }
-    public PageReference devolverOrderADV()
-    {
+
+    public PageReference devolverOrderADV() {
         String theId = ApexPages.currentPage().getParameters().get('id');
         String motivo = ApexPages.currentPage().getParameters().get('j_id0:j_id1:motivo');
         String descr = ApexPages.currentPage().getParameters().get('j_id0:j_id1:desc');
@@ -1687,6 +1690,9 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
                                                     Work_Team__r.Id
                                                 from Team_Member__c WHERE User_member__c =: order1.OwnerId and Is_Active__c = true
                                              ];
+
+        System.debug('devolverOrderADV:lstTeamMember ->' +  lstTeamMember);
+        
         WorkTeam__c lstTeam = [ Select 
                                                     Id,Is_Active__c,Manager__r.email 
                                                     from WorkTeam__c WHERE Id =: lstTeamMember.Work_Team__c and Is_Active__c = true
@@ -1701,9 +1707,9 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         return pageRef;
     }
     //Fin JARN PFTA-9428
-  // Filitto : PFTA-9428
-  public PageReference aprobarOrderADV()
-  {
+
+    // Filitto : PFTA-9428
+    public PageReference aprobarOrderADV() {
         String theId = ApexPages.currentPage().getParameters().get('id');
         system.debug('test Id page ===> '+theId);
         list<Order> lstorder1 = [SELECT Id,OrderApprovalStatus__c FROM Order WHERE Id = :theId];
@@ -1716,13 +1722,12 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         PageReference pageRef = new PageReference('/' + theId);
         pageRef.setRedirect(true);
         return pageRef;
-  }
-  // FIN  Filitto : PFTA-9428
-
+    }
+    // FIN Filitto : PFTA-9428
 
     /* AM 25/04/2018 PFTA-6992 COMPRA PACKS*/
     @RemoteAction
-    global static Map<String, Object> getCarts(String cartId){
+    global static Map<String, Object> getCarts(String cartId) {
         System.debug('getCarts');
         String methodName='getCarts';
         System.debug('cartId: ' +cartId);
@@ -1744,7 +1749,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> getExpandedPacksItems(String cartId, String itemId, String productHierarchyPath){
+    global static Map<String, Object> getExpandedPacksItems(String cartId, String itemId, String productHierarchyPath) {
         System.debug('getExpandedPacksItems');
         String methodName='getExpandedItems';
         Map<String, Object> input = new Map<String, Object>();
@@ -1795,7 +1800,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> addToCartItems(Map<String, Object> inputMap){
+    global static Map<String, Object> addToCartItems(Map<String, Object> inputMap) {
         System.debug('addToCartItems');
         vlocity_cmt.CPQAppHandler app = new vlocity_cmt.CPQAppHandler ();
         Map<String,Object> input = new Map<String,Object>();
@@ -1814,26 +1819,26 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         Map<String, Object> parentRecordFields = new Map<String, Object>();
         
         mappa.put('itemId', itemId);
-        if(parentId != null){
+        if(!String.isEmpty(parentId)){
             mappa.put('parentId', parentId);
         }
         
-        if(parentHierarchyPath != null){
+        if(!String.isEmpty(parentHierarchyPath)){
             mappa.put('parentHierarchyPath', parentHierarchyPath);
             parentRecordFields.put('productHierarchyPath', parentHierarchyPath);
         }
 
-        if(product2Id != null){
+        if(!String.isEmpty(product2Id)){
             parentRecordFields.put('Product2Id', product2Id);
             parentRecordFields.put('isVirtualItem', true);
             parentRecordFields.put('hasChildren', true);
         }
 
-        if(name != null){
+        if(!String.isEmpty(name)){
             parentRecordFields.put('Name', name);
         }
         
-        if(id != null){
+        if(!String.isEmpty(id)){
             parentRecordFields.put('Id', id);
         }
 
@@ -1867,7 +1872,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> getCartsProductsById(Map<String, Object> inputMap){
+    global static Map<String, Object> getCartsProductsById(Map<String, Object> inputMap) {
         System.debug('taOrderController:getCartsProductsById');
         String cartId = (String) inputMap.get('cartId');
         String productId = (String) inputMap.get('productId');
@@ -1928,10 +1933,10 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
     }
 
     @RemoteAction
-    global static Map<String, Object> deleteCartItem(Map<String, Object> inputMap){
-
+    global static Map<String, Object> deleteCartItem(Map<String, Object> inputMap) {
         System.debug('deleteCartItem');
-        String methodName = (String) inputMap.get('methodName');
+        //String methodName = (String) inputMap.get('methodName');
+        String methodName = 'deleteCartsItems';
         String cartId = (String) inputMap.get('cartId');
         String id = (String) inputMap.get('Id');
         String parentHierarchyPath = (String) inputMap.get('parentHierarchyPath');
@@ -1944,11 +1949,23 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         List<Map<String,Object>> items = new List<Map<String,Object>>();
         Map<String,Object> mappa = new Map<String,Object>();
         Map<String, Object> parentRecordFields = new Map<String, Object>();
-        parentRecordFields.put('productHierarchyPath', parentHierarchyPath);
-        parentRecordFields.put('isVirtualItem', true);
-        parentRecordFields.put('Product2Id', product2Id);
-        parentRecordFields.put('Name', name);
-        parentRecordFields.put('Id', groupId);
+
+        if(!String.isEmpty(parentHierarchyPath)){
+            parentRecordFields.put('productHierarchyPath', parentHierarchyPath);
+        }
+
+        if(!String.isEmpty(product2Id)){
+            parentRecordFields.put('Product2Id', product2Id);
+        }
+
+        if(!String.isEmpty(name)){
+            parentRecordFields.put('Name', name);
+        }
+
+        if(!String.isEmpty(groupId)){
+            parentRecordFields.put('Id', groupId);
+        }
+
         if(!String.isEmpty(inCartQuantityId)){
             Map<String,Object> inCartQuantity = new Map<String,Object>();
             inCartQuantity.put(inCartQuantityId, 1);
@@ -1957,14 +1974,18 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
             value.put('value', inCartQuantity);
 
             parentRecordFields.put('vlocity_cmt__InCartQuantityMap__c', value);
+        }
+
+        if(!parentRecordFields.isEmpty()){
+            parentRecordFields.put('isVirtualItem', true);
             Map<String, Object> parentRecord = new Map<String, Object>();
             parentRecord.put('records', new List<Object>());
-
             ((List<Object>)parentRecord.get('records')).add(parentRecordFields);
             mappa.put('parentRecord', parentRecord);
             items.add(mappa);
-        }
-        
+            input.put('items', items);
+        }     
+
         input.put('cartId', cartId);
         input.put('id', id);
         input.put('hierarchy', -1);
@@ -1972,7 +1993,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         input.put('pagesize', 20);
         input.put('price', true);
         input.put('validate', true);
-        input.put('items', items);
+
         System.debug('deleteCartItem->input data: ' + JSON.serialize(input));
         vlocity_cmt.CpqAppHandler cpqAppHandler = new vlocity_cmt.CpqAppHandler();
         if(!Test.isRunningTest()){
@@ -1982,8 +2003,7 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
         return outputMap;
     }
 
-    void CanUseBalanceDiscount(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
-    {
+    void CanUseBalanceDiscount(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         System.debug('CanUseBalanceDiscount');
 
         Boolean canUseBalanceDiscount = false;
@@ -2035,64 +2055,152 @@ public void CegStockMovement(Map<String,String> serialNumbersForReturn, Map<Stri
 
         outMap.put('canUseBalanceDiscount', canUseBalanceDiscount);
     }
-
     /* FIN AM PFTA-6992 COMPRA PACKS*/
-    /*
-    public static void ReserveSerialNumber(Map<String,String> serialNumbers, String codDeposito, String deliveryMethod){
-    try{
-    Map<string, Object> response = TaMatrixUtils.getStockMovementOperation('VTAN','RESERVA', deliveryMethod, 'NOAPLICA');
-    if(response != null){
-    String codOperation =  (String) response.get('StockMovementOperation__OperationCode');
-    String destinationDepositCode = (String) response.get('StockMovementOperation__DestinationDepositCode');
-    System.debug('RESERVA -> Codigo operacion: ' + codOperation + ' Codigo deposito: ' + destinationDepositCode );
-    if(destinationDepositCode == 'VICLIE')
-    codDeposito = 'VICLIE0001';
-    if (String.isNotBlank(codOperation) && String.isNotBlank(destinationDepositCode))
-    StockUtils.StockMovement(serialNumbers, codOperation, codDeposito);
-    }
-    }
-    catch(FuncException e){
-    System.debug('taOrderController:ICCIDManager:ReserveSerialNumber -> exception: '+e);
-    throw new ServiceException('Error al realizar la reserva de las series');
-    }
-    catch(Exception e){
-    System.debug('taOrderController:ICCIDManager:ReserveSerialNumber -> exception: '+e);
-    throw new ServiceException('Error al realizar la reserva de las series');
-    }
-    }*/
-    //(JARN) se comentarea ya que no se esta utilizando.
-    /*public static Boolean CreateMACD(String accountId, String assetId, List<String> assetIdList){
-    Boolean outB = false;
-    try{
-    System.debug('CreateMACD');
-    Date reqDa = GetMACDRequestDate(assetId, assetIdList);
-    Map<String,Object> inMap = new Map<String,Object>();
-    Map<String,Object> outMap = new Map<String,Object>();
-    Map<String,Object> optMap = new Map<String,Object>();
-    inMap.put('accountId', accountId);
-    inMap.put('assetIdList', assetIdList);
-    inMap.put('RequestDate', reqDa);
-    vlocity_cmt.OmniFDOWrapper ow = new vlocity_cmt.OmniFDOWrapper();
-    ow.invokeMethod('canCreateFDO',inMap,outMap,optMap);
-    System.debug('outMap: ' + outMap);
-    outB = (Boolean) outMap.get('canCreateFDO');
-    inMap.put('canCreateFDO',true);
-    inMap.put('disconnectedAssets', false);
-    vlocity_cmt.CpqAppHandler cp = new vlocity_cmt.CpqAppHandler();
-    inMap.put('id', assetId);
-    //inMap.put('requestDate', reqDa);
-    inMap.put('requestDate', reqDa);
-    cp.invokeMethod('assetToOrder',inMap,outMap,optMap);
-    //ow.invokeMethod('CreateFDO',inMap,outMap,optMap);
-    System.debug('outMap create: ' + outMap);
-    System.debug('outB: ' + outB);
-    }
-    catch(Exception e){
-    System.debug('CreateMACD Msg: ' + e.getMessage());
-    System.debug('CreateMACD Cause: ' + e.getCause());
-    System.debug('CreateMACD Stack Trace: ' + e.getStackTraceString());
-    }
-    return outB;
-    }*/
 
+    // PFTA-7756 - INI
+    void AddToCartItemsDelivery(Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, Object> options) {
+        try {
+            String orderId = String.valueOf(options.get('orderId'));
+            String deliveryMethodService = String.valueOf(options.get('deliveryMethodService'));
+
+            if (orderId != null) {
+                Map<String, Object> deliveryMethodServiceNode = taMatrixUtils.getDeliveryMethodServiceCode(deliveryMethodService);
+                deliveryMethodService = (String) deliveryMethodServiceNode.get('DeliveryMethodServiceCodes__DeliveryMethodServiceCode');
+
+                // SE AGREGA ENVIO BASE
+                List<Product2> listProductos = [SELECT Id FROM Product2 WHERE ProductCode = :COD_PRODUCTO_ENVIO_BASE];
+
+                List<Pricebook2> listPricebook = [SELECT Id FROM Pricebook2 WHERE Id IN (SELECT Pricebook2Id FROM PricebookEntry WHERE Product2Id = :listProductos[0].Id) AND IsActive = true];
+
+                List<PricebookEntry> listPricebookEntry = [SELECT Id FROM PricebookEntry WHERE Pricebook2Id = :listPricebook[0].Id AND Product2Id = :listProductos[0].Id];
+
+                inputMap.put('itemId', listPricebookEntry[0].Id);
+                inputMap.put('cartId', orderId);
+                Map<String, Object> response = taOrderController.addToCartItems(inputMap);
+                if(!Test.isRunningTest()){
+                    vlocity_cmt.JSONResult result = (vlocity_cmt.JSONResult) response.get(vlocity_cmt.JSONResult.JSON_KEY_RESULT);
+                    List<vlocity_cmt.JSONRecord> pbeList  =  (List<vlocity_cmt.JSONRecord>) result.records;
+                    
+                    for (vlocity_cmt.JSONRecord record : pbeList) {
+                        Product2 product2Fields = (Product2) record.fields.get('Product2');
+                        vlocity_cmt.JSONField idFields = (vlocity_cmt.JSONField) record.fields.get('Id');
+                        String idFieldValue = (String) idFields.value;
+                        
+                        vlocity_cmt.JSONResult resultChildProducts = (vlocity_cmt.JSONResult) record.nameResult.get('childProducts');
+                        if(resultChildProducts != null) {
+                            List<vlocity_cmt.JSONRecord> pbeChildList = (List<vlocity_cmt.JSONRecord>) resultChildProducts.records;
+
+                            for (vlocity_cmt.JSONRecord recordChild : pbeChildList) {
+                                Map<String, Object> productCodeFields = (Map<String, Object>) recordChild.fields.get('ProductCode');
+                                String productCodeValue = (String) productCodeFields.get('value');
+
+                                if (productCodeValue == deliveryMethodService) {
+                                    vlocity_cmt.JSONAction actionAddToCart = (vlocity_cmt.JSONAction) recordChild.actions.get('addtocart');
+                                    vlocity_cmt.JSONAction.JSONRemoteAction actionAddToCartRemote = (vlocity_cmt.JSONAction.JSONRemoteAction) actionAddToCart.remote;
+                                    Map<String, Object> params = (Map<String, Object>) actionAddToCartRemote.params;
+                                    String methodName = (String) params.get('methodName');
+                                    String cartId = (String) params.get('cartId');
+                                    List<Map<String, Object>> items = (List<Map<String, Object>>) params.get('items');
+                                    String itemId = (String) items[0].get('itemId');
+                                    String parentId = (String) items[0].get('parentId');
+                                    String parentHierarchyPath = (String) items[0].get('parentHierarchyPath');
+                                    String product2Id = (String) product2Fields.get('Id');
+                                    String name = (String) product2Fields.get('Name');
+
+                                    Map<String, Object> inputMapChild = new Map<String, Object>();
+                                    inputMapChild.put('methodName', methodName);
+                                    inputMapChild.put('cartId', cartId);
+                                    inputMapChild.put('itemId', itemId);
+                                    inputMapChild.put('parentHierarchyPath', parentHierarchyPath);
+                                    inputMapChild.put('parentId', parentId);
+                                    inputMapChild.put('product2Id', product2Id);
+                                    inputMapChild.put('name', name);
+                                    inputMapChild.put('id', idFieldValue);
+
+                                    // AddToCart splitted in two methods (add for Envio & add for product child) to avoid Governor Limit
+                                    // OS flow continues in the AddToCartItemsDeliveryChild with the data gathered here
+                                    // Map<String, Object> responseChildAdd = taOrderController.addToCartItems(inputMapChild);
+                                    outMap.put('inputMapChild', inputMapChild);
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            System.debug('Exception Msg: ' + e.getMessage());
+            System.debug('Exception Cause: ' + e.getCause());
+            System.debug('Exception Stack Trace: ' + e.getStackTraceString());
+            throw e;
+        }
+    }
+
+    void AddToCartItemsDeliveryChild(Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, Object> options) {
+        try {
+            System.debug('AddToCartItemsDeliveryChild');
+            System.debug('INPUT: ' + inputMap);
+            System.debug('OPTIONS: ' + options);
+
+            Map<String, Object> inputMapChild = new Map<String, Object>();
+            inputMapChild = (Map<String, Object>) options.get('inputMapChild');
+
+            Map<String, Object> responseChildAdd = taOrderController.addToCartItems(inputMapChild);
+            outMap.put('responseChild', responseChildAdd);
+            System.debug('responseChildAdd: ' + responseChildAdd);
+        }
+        catch (Exception e) {
+            System.debug('Exception Msg: ' + e.getMessage());
+            System.debug('Exception Cause: ' + e.getCause());
+            System.debug('Exception Stack Trace: ' + e.getStackTraceString());
+            throw e;
+        }
+    }
+
+    void DeleteCartItemsDelivery(Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, Object> options) {
+        try {
+            String orderId = String.valueOf(options.get('orderId'));
+
+            List<OrderItem> listOrderItems = [SELECT Id FROM OrderItem WHERE OrderId = :orderId AND ProductCode__c = :COD_PRODUCTO_ENVIO_BASE];
+
+            Map<String, Object> inputMapDelete = new Map<String, Object>();
+            inputMapDelete.put('cartId', orderId);
+            inputMapDelete.put('Id', listOrderItems[0].Id);
+
+            Map<String, Object> responseDelete = taOrderController.deleteCartItem(inputMapDelete);
+        }
+        catch (Exception e) {
+            System.debug('Exception Msg: ' + e.getMessage());
+            System.debug('Exception Cause: ' + e.getCause());
+            System.debug('Exception Stack Trace: ' + e.getStackTraceString());
+            throw e;
+        }
+    }
+
+    void DeleteCartItemsDeliveryChild(Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, Object> options) {
+        try {
+            String orderId = String.valueOf(options.get('orderId'));
+
+            List<OrderItem> listProdEnvio = [SELECT Id FROM OrderItem WHERE OrderId = :orderId AND ProductCode__c = 'FAN_ENV_000'];
+
+            List<OrderItem> listProdEnvioChild = [SELECT Id FROM OrderItem WHERE OrderId = :orderId AND vlocity_cmt__ParentItemId__c = :listProdEnvio[0].Id];
+
+            if (listProdEnvioChild.size() == 1) {
+                Map<String, Object> inputMapDelete = new Map<String, Object>();
+                inputMapDelete.put('cartId', orderId);
+                inputMapDelete.put('Id', listProdEnvioChild[0].Id);
+
+                Map<String, Object> responseDelete = taOrderController.deleteCartItem(inputMapDelete);
+            }
+        }
+        catch (Exception e) {
+            System.debug('Exception Msg: ' + e.getMessage());
+            System.debug('Exception Cause: ' + e.getCause());
+            System.debug('Exception Stack Trace: ' + e.getStackTraceString());
+            throw e;
+        }
+    }
+    // PFTA-7756 - FIN
 }

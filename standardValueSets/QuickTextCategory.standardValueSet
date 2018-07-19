@@ -2,18 +2,18 @@
 <StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <sorted>false</sorted>
     <standardValue>
-        <fullName>Greetings</fullName>
+        <fullName>Saludos</fullName>
         <default>true</default>
-        <label>Greetings</label>
+        <label>Saludos</label>
     </standardValue>
     <standardValue>
-        <fullName>FAQ</fullName>
+        <fullName>Preguntas más frecuentes</fullName>
         <default>false</default>
-        <label>FAQ</label>
+        <label>Preguntas más frecuentes</label>
     </standardValue>
     <standardValue>
-        <fullName>Closings</fullName>
+        <fullName>Cierres</fullName>
         <default>false</default>
-        <label>Closings</label>
+        <label>Cierres</label>
     </standardValue>
 </StandardValueSet>

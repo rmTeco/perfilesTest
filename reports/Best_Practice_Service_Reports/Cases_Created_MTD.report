@@ -24,7 +24,7 @@
         <field>OWNER</field>
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
-    <name>Cases Created MTD</name>
+    <name>Casos creados MTD</name>
     <params>
         <name>units</name>
         <value>d</value>

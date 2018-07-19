@@ -105,7 +105,7 @@
                         </span>
 
                         <span style="float:left;">
-                            <c:showVideo />
+                            <a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/rykBfmIrres"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
                         </span>
                     </h2>
                     <div class="row paddingRight">
@@ -240,7 +240,7 @@
                                     <apex:outputText value="{!$ObjectType.SCP_Certa_GC__Business_Landscape__c.fields.SCP_Certa_GC__Service__c.label}"/>
                                 </th>
                                 <th class="headerRow">                          
-                                    <apex:outputText value="Editar Estado"/>
+                                    <apex:outputText value="{!$Label.scp_certa_gc__editar_estado}"/>
                                 </th>
                                 <th class="headerRow">                          
                                     <apex:outputText value="{!$ObjectType.SCP_Certa_GC__Business_Landscape__c.fields.SCP_Certa_GC__CurrentProvider__c.label}"/>
@@ -249,7 +249,7 @@
                                     <apex:outputText value="{!$ObjectType.SCP_Certa_GC__Business_Landscape__c.fields.SCP_Certa_GC__AnnualSpend__c.label}"/>
                                 </th>
                                 <th class="headerRow">                          
-                                    <apex:outputText value="Tomar acción antes de"/>
+                                    <apex:outputText value="{!$Label.scp_certa_gc__tomar_acci_n_antes_de}"/>
                                 </th>
                                 <th class="headerRow">                          
                                     <apex:outputText value="{!$ObjectType.SCP_Certa_GC__Business_Landscape__c.fields.SCP_Certa_GC__Country__c.label}"/>
@@ -283,7 +283,7 @@
                                     <td class="dataCell level{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__Level__c}">         
                                         <span style="display:none;">
                                             <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__Category_Service__c}">
-                                                <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                                <apex:inlineEditSupport event="ondblclick"/>
                                             </apex:outputField>
                                             
                                         </span>
@@ -292,42 +292,42 @@
                                     </td>                   
                                     <td class="dataCell">       
                                         <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__Level__c}" >
-                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                            <apex:inlineEditSupport event="ondblclick"/>
                                         </apex:outputField>
                                     </td>
                                     <td class="dataCell">       
                                         <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__CurrentProvider__c}" >
-                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                            <apex:inlineEditSupport event="ondblclick"/>
                                         </apex:outputField>
                                     </td>   
                                     <td class="dataCell">       
                                         <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__AnnualSpend__c}" >
-                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                            <apex:inlineEditSupport event="ondblclick"/>
                                         </apex:outputField>
                                     </td>   
                                     <td class="dataCell">       
                                         <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__ContractEndDate__c}" >
-                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                            <apex:inlineEditSupport event="ondblclick"/>
                                         </apex:outputField>
                                     </td>   
                                     <td class="dataCell">       
                                         <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__Country__c}" >
-                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                            <apex:inlineEditSupport event="ondblclick"/>
                                         </apex:outputField>
                                     </td>
                                     <td class="dataCell">       
                                         <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__Compra_a_nivel__c}" >
-                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                            <apex:inlineEditSupport event="ondblclick"/>
                                         </apex:outputField>
                                     </td> 
                                     <td class="dataCell">       
                                         <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__Decision_maker__c}" >
-                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                            <apex:inlineEditSupport event="ondblclick"/>
                                         </apex:outputField>
                                     </td> 
                                     <td class="dataCell">       
                                         <apex:outputField value="{!businessLabusinessLandscapeWrapperService.servicio.SCP_Certa_GC__OtherInformation__c}" >
-                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                            <apex:inlineEditSupport event="ondblclick"/>
                                         </apex:outputField>
                                     </td>                       
                                 </tr>                       

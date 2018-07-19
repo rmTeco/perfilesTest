@@ -18,12 +18,15 @@
                 <behavior>Edit</behavior>
                 <field>ActivityDate</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Customer_Phone__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
+            <layoutItems>
+                <height>200</height>
+                <page>AnularPagoButton</page>
+                <showLabel>false</showLabel>
+                <showScrollbars>false</showScrollbars>
+                <width>100%</width>
+            </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>WhatId</field>
@@ -107,7 +110,7 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>false</editHeading>
-        <label>Custom Links</label>
+        <label>Vínculos personalizados</label>
         <layoutColumns/>
         <layoutColumns/>
         <layoutColumns/>

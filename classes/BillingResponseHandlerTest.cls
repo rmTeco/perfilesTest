@@ -1,19 +1,20 @@
 @isTest
-private class BillingResponseHandlerTest {
-	
-	@testSetup static void createDataTest(){
-		//List<Account> accounts = TestDataFactory.createAccounts(1,'Consumer');
-		TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
+public with sharing class BillingResponseHandlerTest {
+    
+    @testSetup static void createDataTest(){
+        //List<Account> accounts = TestDataFactory.createAccounts(1,'Consumer');
+        TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
         /*
-		List<Order> orders = new List<Order>();
-		for (Account a: accounts) {
-			orders.addAll(TestDataFactory.createOrders(1,a));
-		}
+        List<Order> orders = new List<Order>();
+        for (Account a: accounts) {
+            orders.addAll(TestDataFactory.createOrders(1,a));
+        }
         */
         MockUpFactory.generate();
-	}
+    }
     
-    static testMethod void BillingResponse_Handler() {
+    @isTest
+    static void BillingResponse_Handler() {
         
         Map<String, Object> inputMap = new Map<String, Object>();
         Map<String, Object> outMap = new Map<String, Object>();
@@ -43,9 +44,9 @@ private class BillingResponseHandlerTest {
         Map<String, Object> outMap = null;
         Map<String, Object> options = new Map<String, Object>();
         
-        Order order = [SELECT Id FROM Order LIMIT 1];
+        Order order = [SELECT Id, OrderNumber FROM Order LIMIT 1];
         
-        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.Id+'","Status":"payment succeed","StatusInvoice":"invoice succeed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
+        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.OrderNumber+'","Status":"payment succeed","StatusInvoice":"invoice succeed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
         
         options.put('JSONResponse',JSONResponse);
         
@@ -59,23 +60,41 @@ private class BillingResponseHandlerTest {
         //GIVEN
         String methodName = 'callBackService224';
         
+        String mockResponse = '{"txId":"12345"}';
+        VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S143', mockResponse);
+
+        mockResponse = '{"IPResult":{"executionCode":"OK"}}';
+        VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S159', mockResponse);
+        
+        Id recordType = [SELECT Id FROM RecordType WHERE Name = 'SMS Template'].Id;
+        CrossObject__c template = new CrossObject__c(String1__c = 'pepe', RecordTypeId = recordType, Picklist1__c = 'Recarga Exitosa');
+        insert template;
+        insert new SMSSender__c(Name='S-Confirmacion-SMS',Sender__c='S-Confirmacion-SMS');
+        
         Map<String, Object> inputMap = new Map<String, Object>();
         Map<String, Object> outMap = null;
         Map<String, Object> options = new Map<String, Object>();
         
-        Order order = [SELECT Id, Gestion__c, OriginStoreLocation__c FROM Order LIMIT 1];
+        /*Order order = [SELECT Id, Gestion__c, OriginStoreLocation__c, OrderNumber FROM Order LIMIT 1];
         order.Gestion__c = 'Recarga';
-        update order;
-        
+        update order;*/
         Account account = [SELECT Id FROM Account LIMIT 1];
+        Id pricebookId = Test.getStandardPricebookId();
+        Order orderNew = new Order(AccountId = account.Id, Status = 'Draft', Gestion__c = 'Recarga', Operation_Code__c = 'VTNLCE', EffectiveDate = Date.today(), Pricebook2Id = pricebookId,vlocity_cmt__OriginatingChannel__c ='Agentes',Delivery_Method__c ='Presencial', Received224_Date__c = Date.Today());
+        insert orderNew;
+        
+        Order order = [SELECT Id, Gestion__c, OriginStoreLocation__c, OrderNumber FROM Order WHERE Id=:orderNew.Id];
+
+        System.debug('callBackService224_OKWithOrderStatusSuccedRecarga: ' + order);
+        
         List<Product2> product = TestDataFactory.createProduct(1);
-        List<Asset> assets = TestDataFactory.createAssets(1,product.get(0),account);
+        List<Asset> assets = TestDataFactory.createAssets(1,account,'453343636363');
         List<OrderItem> orderItems = TestDataFactory.createOrderItemsWithAsset(1,order,assets.get(0));
         String MSISDN = '{"MSISDN":[{"attributedisplayname__c":"MSISDN","attributeRunTimeInfo":{"value":"nroLinea"}}]}';
         orderItems.get(0).vlocity_cmt__JSONAttribute__c = MSISDN;
         update orderItems.get(0);
         
-        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.Id+'","Status":"payment succeed","StatusInvoice":"invoice succeed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
+        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.OrderNumber+'","Status":"payment succeed","StatusInvoice":"invoice succeed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
         
         options.put('JSONResponse',JSONResponse);
         
@@ -93,13 +112,13 @@ private class BillingResponseHandlerTest {
         Map<String, Object> outMap = null;
         Map<String, Object> options = new Map<String, Object>();
         
-        Order order = [SELECT Id FROM Order LIMIT 1];
+        Order order = [SELECT Id, OrderNumber FROM Order LIMIT 1];
         
         String ReasonCode = 'ReasonCode';
         
         insert new Order_Failed_Payment_Messages__c(Name = 'Error_Code__c', Error_Code__c=ReasonCode);
                 
-        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.Id+'","ReasonCode":"'+ReasonCode+'","Status":"Draft","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
+        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.OrderNumber+'","ReasonCode":"'+ReasonCode+'","Status":"Draft","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
         
         options.put('JSONResponse',JSONResponse);
         
@@ -117,7 +136,7 @@ private class BillingResponseHandlerTest {
         Map<String, Object> outMap = null;
         Map<String, Object> options = new Map<String, Object>();
         
-        Order order = [SELECT Id FROM Order LIMIT 1];
+        Order order = [SELECT Id, OrderNumber FROM Order LIMIT 1];
         
         TASalesCodeValue__c cod2 = new TASalesCodeValue__c();
         cod2.Name= 'IF224ReasonAnulada';
@@ -127,7 +146,7 @@ private class BillingResponseHandlerTest {
         String ReasonCode = '2';
         insert new Order_Failed_Payment_Messages__c(Name = 'Error_Code__c', Error_Code__c=ReasonCode);
                 
-        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.Id+'","ReasonCode":"'+ReasonCode+'","Status":"payment failed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
+        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.OrderNumber+'","ReasonCode":"'+ReasonCode+'","Status":"payment failed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
         
         options.put('JSONResponse',JSONResponse);
         
@@ -146,7 +165,7 @@ private class BillingResponseHandlerTest {
         Map<String, Object> outMap = null;
         Map<String, Object> options = new Map<String, Object>();
         
-        Order order = [SELECT Id FROM Order LIMIT 1];
+        Order order = [SELECT Id, OrderNumber FROM Order LIMIT 1];
         
         TASalesCodeValue__c cod3 = new TASalesCodeValue__c();
         cod3.Name= 'IF224ReasonCancelada';
@@ -156,7 +175,7 @@ private class BillingResponseHandlerTest {
         String ReasonCode = '3';
         insert new Order_Failed_Payment_Messages__c(Name = 'Error_Code__c', Error_Code__c=ReasonCode);
                 
-        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.Id+'","ReasonCode":"'+ReasonCode+'","Status":"payment failed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
+        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.OrderNumber+'","ReasonCode":"'+ReasonCode+'","Status":"payment failed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
         
         options.put('JSONResponse',JSONResponse);
         
@@ -175,14 +194,14 @@ private class BillingResponseHandlerTest {
         Map<String, Object> outMap = null;
         Map<String, Object> options = new Map<String, Object>();
         
-        Order order = [SELECT Id FROM Order LIMIT 1];
+        Order order = [SELECT Id, OrderNumber FROM Order LIMIT 1];
         order.Delivery_Method__c = 'Store Pick Up';
         update order;
         
         String ReasonCode = 'ReasonCode';
         insert new Order_Failed_Payment_Messages__c(Name = 'Error_Code__c', Error_Code__c=ReasonCode);
                 
-        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.Id+'","Status":"payment succeed","StatusInvoice":"invoice succeed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
+        String JSONResponse = '{"invoiceAndPaymentNotification":{"SalesOrderId":"'+order.OrderNumber+'","Status":"payment succeed","StatusInvoice":"invoice succeed","LegalInvoiceNumber":"LegalInvoiceNumber"}}';
         
         options.put('JSONResponse',JSONResponse);
         
@@ -243,17 +262,73 @@ private class BillingResponseHandlerTest {
         Test.stopTest();
     }
 
-    static testMethod void SendSuccesfulOrderClientNotification() {
+    @isTest
+    static void SendSuccesfulOrderClientNotification() {
         Test.startTest();
         Order order = [SELECT Id FROM Order LIMIT 1];
         BillingResponseHandler.SendSuccesfulOrderClientNotification(order.Id);
         Test.stopTest();
     }
 
-    static testMethod void SendSuccesfulPaymentClientNotification() {
+    @isTest
+    static void SendSuccesfulPaymentClientNotification() {
         Test.startTest();
         Order order = [SELECT Id FROM Order LIMIT 1];
         BillingResponseHandler.SendSuccesfulPaymentClientNotification(order.Id);
+        Test.stopTest();
+    }
+    
+    @isTest static void callBackService224_NullException() {
+       
+        Map<String, Object> inputMap = new Map<String, Object>();
+        Map<String, Object> outMap = null;
+        Map<String, Object> options = new Map<String, Object>();
+        
+        Test.startTest();
+        BillingResponseHandler BResp = new BillingResponseHandler();
+        try
+        {
+            BResp.invokeMethod(null, inputMap, outMap, options);
+        }
+        catch (Exception ex)
+        {
+            Boolean expectedExceptionThrown =  ex.getMessage().contains('Attempt to de-reference a null object') ? true : false;
+            System.AssertEquals(expectedExceptionThrown, true);
+        }
+        Test.stopTest();
+    }
+
+    @isTest static void callNominationCheckout_Exception() {
+        String methodName = 'callNominationCheckout';
+        
+        Map<String, Object> inputMap = new Map<String, Object>();
+        Map<String, Object> outMap = null;
+        Map<String, Object> options = new Map<String, Object>();
+        
+        Test.startTest();
+        BillingResponseHandler BResp = new BillingResponseHandler();
+        BResp.invokeMethod(methodName, inputMap, outMap, options);
+        Test.stopTest();
+    }
+
+    @isTest static void getNominationAssets_Exception() {
+        String methodName = 'getNominationAssets';
+        
+        Map<String, Object> inputMap = new Map<String, Object>();
+        Map<String, Object> outMap = null;
+        Map<String, Object> options = new Map<String, Object>();
+        
+        Test.startTest();
+        BillingResponseHandler BResp = new BillingResponseHandler();
+        try
+        {
+            BResp.invokeMethod(methodName, inputMap, outMap, options);
+        }
+        catch (Exception ex)
+        {
+            Boolean expectedExceptionThrown =  ex.getMessage().contains('Attempt to de-reference a null object') ? true : false;
+            System.AssertEquals(expectedExceptionThrown, true);
+        }
         Test.stopTest();
     }
  }

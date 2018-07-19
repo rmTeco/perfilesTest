@@ -429,35 +429,28 @@ global with sharing class ConsumptionDetailsHandler implements vlocity_cmt.Vloci
             } 
        }
 
-		
+
        if(familyScope == 'Pospaid')
       {
-          system.debug('familyScope = ' + familyScope);
             for(Integer i = 0; i < 25; i++)
             {
-                
-                system.debug('familyScope  i = ' + i);
               node = new Map<String, String>();
-                 system.debug('HOLAAAAA 1 ');
+                
               String io=  arrayListIO[randomWithLimit(4)];
               String phone=  arrayListMobileOperator[randomWithLimit(3)];
-              String tipo=  arrayListConsumoPospago[randomWithLimit(3)];
-                  system.debug('HOLAAAAA 2 ');
+              String tipo=  arrayListConsumoPospago[randomWithLimit(7)];
+                  
               if(io=='Saliente' && (tipo=='Llamadas de voz' || tipo=='SMS') && isAgent){
-                  system.debug('HOLAAAAA 3 ');
                   node.put('DestinationNumber',phoneMask( arrayListDestinationNumber[randomWithLimit(19)])); 
               }
               else if (io=='Entrante' && (tipo=='Llamadas de voz') && isAgent) {
-                  system.debug('HOLAAAAA 4 ');
                   node.put('DestinationNumber',phoneMask( arrayListDestinationNumber[randomWithLimit(19)])); 
               }
               else{
-                  system.debug('HOLAAAAA 5 ');
                   node.put('DestinationNumber',arrayListDestinationNumber[randomWithLimit(19)]); 
               }
                 
               node.put('Family', 'Pospaid');
-                system.debug('familyScope 3 = ' + familyScope);
               node.put('ConsumptionType', tipo);
               node.put('StartDate', ((system.today()-i).format()));
               node.put('EndDate', system.today().format());

@@ -172,6 +172,34 @@ public class CaseTriggerHandlerTest {
     }
 
     @isTest
+    public static void setAdjustment9Test () {
+        //GIVE
+        Account account = [SELECT Id FROM Account LIMIT 1];
+        Asset asset = [SELECT Id FROM Asset LIMIT 1];
+        asset.Subscription_Id__c = 'Subscription_Id__c';
+        update asset;
+        Case c = new Case(
+                                Subject='Inconvenientes con cargos tasados y facturados',
+                                AccountId = account.Id,
+                                AssetId = asset.Id,
+                                TipoSeleccion__c = 'Servicio',
+                                UnidadAjuste__c = 'Credito',
+                                TipoOperacionAjuste__c = 'DEBITO',
+                                vlocity_cmt__Amount__c = 400,
+                                vlocity_cmt__ServiceId__c = asset.Id);
+        insert c;
+
+        Set<Id> casesId = new Set<Id>();
+        casesId.add(c.Id);
+
+        //WHEN
+        CaseTriggerHandler.setAdjustment(casesId);
+
+        //THEN
+        System.assert(true);
+    }
+
+    @isTest
     public static void setAdjustment1Test () {
         //GIVE
         Account account = [SELECT Id FROM Account LIMIT 1];
@@ -184,6 +212,7 @@ public class CaseTriggerHandlerTest {
                                 AssetId = asset.Id,
                                 TipoSeleccion__c = 'Servicio',
                                 UnidadAjuste__c = 'Credito',
+                                TipoOperacionAjuste__c = 'CREDITO',
                                 vlocity_cmt__Amount__c = 400,
                                 vlocity_cmt__ServiceId__c = asset.Id);
         insert c;
@@ -265,6 +294,7 @@ public class CaseTriggerHandlerTest {
                                 AssetId = asset.Id,
                                 TipoSeleccion__c = 'Servicio',
                                 UnidadAjuste__c = 'Credito',
+                                TipoOperacionAjuste__c = 'CREDITO',
                                 vlocity_cmt__Amount__c = 400,
                                 vlocity_cmt__ServiceId__c = asset.Id);
         insert c;
@@ -289,6 +319,7 @@ public class CaseTriggerHandlerTest {
                                 AssetId = asset.Id,
                                 TipoSeleccion__c = 'Servicio',
                                 UnidadAjuste__c = 'Credito',
+                                TipoOperacionAjuste__c = 'CREDITO',
                                 vlocity_cmt__Amount__c = 400,
                                 vlocity_cmt__ServiceId__c = asset.Id);
         insert c;
@@ -410,7 +441,7 @@ public class CaseTriggerHandlerTest {
         insert testHistory;
         
         
-        User testUser = TestDataFactory.createUser('Vlocity_Developer');
+        User testUser = TestDataFactory.createUser('System Administrator');
         Map<id,id> idQueueMap = New Map<Id,Id>();
         idQueueMap.put(caseObj2.Id,testUser.Id);
         Map<id,String> casesMap = New Map<id,String>();
@@ -463,5 +494,32 @@ public class CaseTriggerHandlerTest {
         casesMap.put(caseObj2.Id,caseString);
         
     }*/
+    
+    @IsTest static void SetOwnerTeam_Test(){
+        List<Account> accountTest = TestDataFactory.createAccounts(1,'Business');
+        //vlocity_cmt__BusinessSite__c storeLoc = TestDataFactory.createStoreLocation('Test location',accountTest[0].Id);
+        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c();
+        storeLocation.Name = 'test name';
+        storeLocation.BillingMode__c = 'Fiscal';
+        storeLocation.Channel__c = 'Digital';
+        storeLocation.Channel_Type__c = 'SMS';
+        storeLocation.Channel_Type_2__c = 'SMS';
+        storeLocation.Channel_Type_3__c = 'SMS';
+        storeLocation.Vlocity_cmt__OrganizationId__c = accountTest[0].Id;
+        insert storeLocation;
+        
+        WorkTeam__c workTeam = TestDataFactory.createWorkTeam('wt Test',storeLocation);
+        User userTest = TestDataFactory.createUser('System Administrator');
+        Team_Member__c tmTest = TestDataFactory.setTeamMember('testwk',userTest.Id,workTeam);
+        List<Case> caseTest = TestDataFactory.createCases(1,accountTest[0].Id,'test');
+        
+        Test.startTest();
+        caseTest[0].OwnerId = userTest.Id;
+        update caseTest;
+        Test.stopTest();
+        
+        Case caseDummy = [SELECT id,OwnerId,Owner_Team__c FROM Case WHERE Id =: caseTest[0].Id];
+        System.assertNotEquals(null, caseDummy.Owner_Team__c);
+    }
 
 }

@@ -27,6 +27,7 @@ localStorage.removeItem('jstree');
                                             <apex:inputText id="customPermissionInputId" list="{!customPermissionLabelList}" value="{!selectedPermissionName}" styleClass="slds-input" />
                                             <input type="button" onclick="callGetWTeams();" class="slds-button slds-button--brand" value="Buscar" />
                                             <button class="slds-button slds-button--brand" onclick="saveState();">Guardar</button>
+                                            <apex:commandButton action="{!reloadPage}" value="Refrescar" styleClass="slds-button slds-button--brand"/>
                                           </div>
                                         </div>
                                        </div> 

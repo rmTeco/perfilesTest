@@ -14,58 +14,62 @@ public with sharing class WorkTeamPermissionHelper {
 
     @future
     public static void processGroupQueue(String[] wtpIDs){
-        Set<String> wtQueueNames = new Set<String>();
-        Set<String> wtpQueueNames = new Set<String>();
-        Map<String, Id> grpPublicMap = new Map<String, Id>();
-        Map<String, Id> grpQueueMap = new Map<String, Id>();
-        List<GroupMember> grpMemberToInsert = new List<GroupMember>();
-        List<GroupMember> grpMemberToDelete = new List<GroupMember>();
-        
-        system.debug('wtpIDs: '+ wtpIDs);
+        try {
+            Set<String> wtQueueNames = new Set<String>();
+            Set<String> wtpQueueNames = new Set<String>();
+            Map<String, Id> grpPublicMap = new Map<String, Id>();
+            Map<String, Id> grpQueueMap = new Map<String, Id>();
+            List<GroupMember> grpMemberToInsert = new List<GroupMember>();
+            List<GroupMember> grpMemberToDelete = new List<GroupMember>();
+            
+            system.debug('wtpIDs: '+ wtpIDs);
 
-        List<Work_Team_Permission__c> wtpLst = [SELECT Id, Work_Team__c, Work_Team__r.PublicGroupAPIName__c, 
-                                                Queue_API_Name__c, Is_Active__c
-                                                FROM Work_Team_Permission__c WHERE Id IN :wtpIDs];
-        
-        system.debug('Work_Team_Permission__c: '+ wtpLst);
+            List<Work_Team_Permission__c> wtpLst = [SELECT Id, Work_Team__c, Work_Team__r.PublicGroupAPIName__c, 
+                                                    Queue_API_Name__c, Is_Active__c
+                                                    FROM Work_Team_Permission__c WHERE Id IN :wtpIDs];
+            
+            system.debug('Work_Team_Permission__c: '+ wtpLst);
 
-        for(Work_Team_Permission__c wtP :wtpLst ){
-            wtpQueueNames.add(wtP.Queue_API_Name__c);
-            wtQueueNames.add(wtP.Work_Team__r.PublicGroupAPIName__c);
-        }
-
-        List<Group> grpPublic = [SELECT Id,Name FROM Group 
-                                WHERE Type = 'Regular' AND Name IN :wtQueueNames];
-        for(Group grpP : grpPublic){
-            grpPublicMap.put(grpP.Name, grpP.Id);
-        }
-
-        List<Group> grpList = [SELECT Id,Name FROM Group 
-                               WHERE Type = 'Queue' AND Name IN :wtpQueueNames];        
-        for(Group grpQ : grpList){
-            grpQueueMap.put(grpQ.Name, grpQ.Id);
-        }
-
-        for(Work_Team_Permission__c wtP :wtpLst ){
-            if(wtP.Is_Active__c){               
-                GroupMember grpMember = new GroupMember();
-                grpMember.GroupId = grpQueueMap.get(wtP.Queue_API_Name__c);
-                grpMember.UserOrGroupId = grpPublicMap.get(wtP.Work_Team__r.PublicGroupAPIName__c);
-                grpMemberToInsert.add(grpMember);
-            }else{
-                grpMemberToDelete.add([SELECT GroupId,Id,UserOrGroupId FROM GroupMember 
-                                       WHERE GroupId =: grpQueueMap.get(wtP.Queue_API_Name__c)
-                                       AND UserOrGroupId =: grpPublicMap.get(wtP.Work_Team__r.PublicGroupAPIName__c)]);
+            for(Work_Team_Permission__c wtP :wtpLst ){
+                wtpQueueNames.add(wtP.Queue_API_Name__c);
+                wtQueueNames.add(wtP.Work_Team__r.PublicGroupAPIName__c);
             }
-        }
-        if(grpMemberToInsert.size() > 0){
-            system.debug('grpMemberToInsert: '+ grpMemberToInsert);
-            insert grpMemberToInsert;
-        }
-        if(grpMemberToDelete.size() > 0){
-            system.debug('grpMemberToDelete: '+ grpMemberToDelete);
-            delete grpMemberToDelete;
-        }       
+
+            List<Group> grpPublic = [SELECT Id,Name FROM Group 
+                                    WHERE Type = 'Regular' AND Name IN :wtQueueNames];
+            for(Group grpP : grpPublic){
+                grpPublicMap.put(grpP.Name, grpP.Id);
+            }
+
+            List<Group> grpList = [SELECT Id,Name FROM Group 
+                                WHERE Type = 'Queue' AND Name IN :wtpQueueNames];        
+            for(Group grpQ : grpList){
+                grpQueueMap.put(grpQ.Name, grpQ.Id);
+            }
+
+            for(Work_Team_Permission__c wtP :wtpLst ){
+                if(wtP.Is_Active__c){               
+                    GroupMember grpMember = new GroupMember();
+                    grpMember.GroupId = grpQueueMap.get(wtP.Queue_API_Name__c);
+                    grpMember.UserOrGroupId = grpPublicMap.get(wtP.Work_Team__r.PublicGroupAPIName__c);
+                    grpMemberToInsert.add(grpMember);
+                }else{
+                    grpMemberToDelete.add([SELECT GroupId,Id,UserOrGroupId FROM GroupMember 
+                                        WHERE GroupId =: grpQueueMap.get(wtP.Queue_API_Name__c)
+                                        AND UserOrGroupId =: grpPublicMap.get(wtP.Work_Team__r.PublicGroupAPIName__c)]);
+                }
+            }
+            if(grpMemberToInsert.size() > 0){
+                system.debug('grpMemberToInsert: '+ grpMemberToInsert);
+                insert grpMemberToInsert;
+            }
+            if(grpMemberToDelete.size() > 0){
+                system.debug('grpMemberToDelete: '+ grpMemberToDelete);
+                delete grpMemberToDelete;
+            } 
+        }catch(Exception ex){
+            system.debug('EX: ' + ex );
+        }              
     }
 
     @future

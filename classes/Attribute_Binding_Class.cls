@@ -2,12 +2,7 @@ public class Attribute_Binding_Class {
   static List<Attributes_Binding__c> parameters =  [Select id,Name,Field__c,Attribute_Name__c,Object__c,Attribute_Category__c from Attributes_Binding__c WHERE Object__c = 'Asset' and Active__c = true];
   
     public static void ins(List<Asset> newMap){
-        try{
-            Attribute_Binding_Class.getAttributesAndReplace(newMap);
-        }
-        catch(Exception ex){
-            System.debug(ex);
-        }
+        Attribute_Binding_Class.getAttributesAndReplace(newMap);
     } 
 
     public static void getAttributesAndReplace(List<Asset> assetsToUpdate){
@@ -36,7 +31,7 @@ public class Attribute_Binding_Class {
         }
         catch(Exception ex){
             system.debug('exception on: ' + ex.getLineNumber() + ex);
-            //throw ex;
+            throw ex;
         }
     }
 }

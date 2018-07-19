@@ -44,8 +44,7 @@ global class POCTreeController {
                                         AND Permission_Set_API_Name__c = :selectedPermissionAPIName
                                 ) 
                                 FROM WorkTeam__c 
-                                WHERE Is_Active__c = true 
-                                    AND WorkteamLevel__c != null  
+                                WHERE Is_Active__c = true
                                 ORDER BY Parent_Team__c NULLS FIRST]) {
 
             WorkTeamTree wTT = new WorkTeamTree(wT.Id, wT.Name);
@@ -87,6 +86,8 @@ global class POCTreeController {
         } catch (Exception ex) {
             system.debug('EX: ' + ex +  ' - ' + ex.getLineNumber());
         }
+
+        reloadPage();
     }
 
     private static List<String> extractId(Object nodesIds){
@@ -113,6 +114,15 @@ global class POCTreeController {
             wTP.Is_Active__c = false;
         }
         update wTPList;
+
+        reloadPage();
+    }
+
+
+    public static PageReference reloadPage(){
+        PageReference tempPage = ApexPages.currentPage();            
+        tempPage.setRedirect(true);
+        return tempPage;
     }
 
     private static Id getRecordType() {

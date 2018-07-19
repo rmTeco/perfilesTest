@@ -262,10 +262,10 @@ global with sharing class ta_sales_paymentMethod implements vlocity_cmt.VlocityO
         Asset asset = [SELECT Id, MSISDN__c FROM Asset WHERE Id =: assetId LIMIT 1];
 
         Map<String, Object> tempMap = new Map<String, Object>();
-        //tempMap.put('identificadorRecurso', asset.vlocity_cmt__LineNumber__c);
+        tempMap.put('identificadorRecurso', asset.MSISDN__c);
 
-        //Por ahora usar Dato mock
-        tempMap.put('identificadorRecurso', '1138305304');
+        //Dato mock para mock desa01
+        //tempMap.put('identificadorRecurso', '1138305304');
         outMap.put('params', tempMap);
     }
 
@@ -397,7 +397,8 @@ global with sharing class ta_sales_paymentMethod implements vlocity_cmt.VlocityO
                     System.debug(' Asset Line Number: ' + asset);
                     //Boolean validate = ValidateCheckAvailableCredit(asset.MSISDN__c);
                     /*NRO LINEA MOCK S439 */
-                    validateSuccess = ValidateCheckAvailableCredit('1138305304', amountPaymentMethod);
+                    //validateSuccess = ValidateCheckAvailableCredit('1138305304', amountPaymentMethod);
+                    validateSuccess = ValidateCheckAvailableCredit(asset.MSISDN__c, amountPaymentMethod);
                 }
 
                 //Si hay datos de tarjeta de crédito, los obtengo

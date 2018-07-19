@@ -142,15 +142,23 @@ public class WorkTeamControllerTest {
     
     static testMethod void createWorkTeamTest() {
         //GIVEN
+        Account acc = new Account(Name='Test Account');
+        insert acc;
+
         WorkTeam__c workTeamParent = new WorkTeam__c(Team_Name__c = 'Test Parent', Name = 'Test Parent');
         insert workTeamParent;
+
+        vlocity_cmt__BusinessSite__c workTeamLocation = new vlocity_cmt__BusinessSite__c(Name = 'Test Parent', vlocity_cmt__OrganizationId__c = acc.Id);
+        insert workTeamLocation;
+
         String manager = UserInfo.getUserId();
         String parent = workTeamParent.Id;
+        String location = workTeamLocation.Id;
         WorkTeam__c workTeam = new WorkTeam__c(Team_Name__c = 'Test', Name = 'Test');
         
         //WHEN
         Test.startTest();
-        WorkTeam__c result = WorkTeamController.createWorkTeam(workTeam, manager, parent);
+        WorkTeam__c result = WorkTeamController.createWorkTeam(workTeam, manager, parent, location);
         Test.stopTest();
         
         //THEN

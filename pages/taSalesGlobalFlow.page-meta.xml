@@ -7,7 +7,7 @@
     <label>taSalesGlobalFlow</label>
     <packageVersions>
         <majorNumber>900</majorNumber>
-        <minorNumber>134</minorNumber>
+        <minorNumber>131</minorNumber>
         <namespace>vlocity_cmt</namespace>
     </packageVersions>
 </ApexPage>

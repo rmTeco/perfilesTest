@@ -124,7 +124,7 @@ public class IFS_S224_invoiceAndPaymentNotiTest {
         System.debug('---------- Entre en createAccount()');
         List<Account> lstAcc = new List<Account>();
         Account a = new Account(Name=K_ACCOUNT_NAME, AccountIntegrationId__c=String.valueOf(10000));
-		a.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId();
+        a.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId();
         lstAcc.add(a);
         Account b = new Account(Name='TelecomTest', AccountIntegrationId__c=String.valueOf(10001));
         b.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Billing').getRecordTypeId();
@@ -210,14 +210,14 @@ public class IFS_S224_invoiceAndPaymentNotiTest {
     }
 
 
-	static void createOrder(vlocity_cmt__PriceList__c pTAPriceList, Account pAccount) {
-		Order order = new Order(Name=K_ORDER_NAME, AccountId=pAccount.Id, EffectiveDate=Date.today(),
-									Status='Draft', Pricebook2Id =Test.getStandardPricebookId(),
-										vlocity_cmt__PriceListId__c=pTAPriceList.Id, Delivery_Method__c='Delivery',
-													vlocity_cmt__OriginatingChannel__c='Agentes');
+    static void createOrder(vlocity_cmt__PriceList__c pTAPriceList, Account pAccount) {
+        Order order = new Order(Name=K_ORDER_NAME, AccountId=pAccount.Id, EffectiveDate=Date.today(),
+                                    Status='Draft', Pricebook2Id =Test.getStandardPricebookId(),
+                                        vlocity_cmt__PriceListId__c=pTAPriceList.Id, Delivery_Method__c='Delivery',
+                                                    vlocity_cmt__OriginatingChannel__c='Agentes');
 
-		insert order;
-	}
+        insert order;
+    }
 
 
     static Id getPricebookId () {
@@ -233,14 +233,20 @@ public class IFS_S224_invoiceAndPaymentNotiTest {
         System.debug('------------ Antes de crear el Account (Organization) ----');
         Account orgAcc = getCreatedAccount('TelecomTest');
         System.debug('------------ Despues de crear el Account (Organization) ----');
+        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Centro de Servicio Santa Fe', 
+            vlocity_cmt__OrganizationId__c=orgAcc.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
+             Channel_Type__c='Oficinas Comerciales', Channel_Type_2__c='Oficinas Comerciales', Channel_Type_3__c='Oficinas Comerciales',
+             Region__c='AMBA', RecordTypeId=Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId());
+        insert storeLocation;     
+        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Centro de Servicio Santa Fe'];     
 
-        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte', 
+/*        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte', 
             vlocity_cmt__OrganizationId__c=orgAcc.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
              Channel_Type__c='Agentes', Channel_Type_2__c='Agentes', Channel_Type_3__c='Agentes',
              Region__c='AMBA');
         insert storeLocation;     
-        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Barrio Norte'];     
-    }
+        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Barrio Norte'];    */
+}
 
     private static WorkTeam__c createWorkTeam (Id pStoreLocationId) {
         System.debug('---------- Entre en createWorkTeam()');

@@ -14,7 +14,7 @@
             <errorMessage><!-- El Taller no existe o no coincide con los criterios de filtro. --></errorMessage>
         </lookupFilter>
         <name>DerivationTechnicalCenter__c</name>
-        <relationshipLabel><!-- Site Offerings (Derivation technical center) --></relationshipLabel>
+        <relationshipLabel><!-- Store Offerings (Derivation technical center) --></relationshipLabel>
     </fields>
     <fields>
         <label><!-- Order --></label>
@@ -37,14 +37,14 @@
         </picklistValues>
     </fields>
     <fields>
-        <label><!-- Business Site --></label>
+        <label><!-- Store Location --></label>
         <name>vlocity_cmt__BusinessSiteId__c</name>
-        <relationshipLabel><!-- Site Offerings (Business Site) --></relationshipLabel>
+        <relationshipLabel><!-- Store Offerings --></relationshipLabel>
     </fields>
     <fields>
         <label><!-- Product --></label>
         <name>vlocity_cmt__ProductId__c</name>
-        <relationshipLabel><!-- Site Offerings --></relationshipLabel>
+        <relationshipLabel><!-- Store Offerings --></relationshipLabel>
     </fields>
     <fields>
         <label><!-- Product Name --></label>

@@ -13,7 +13,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__Product2Id__c</field>
+                <field>vlocity_cmt__OrchestrationItemDefinitionId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>vlocity_cmt__OrchestrationPlanDefinitionId__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -22,10 +26,6 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>vlocity_cmt__SystemInterfaceId__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__OrderItemCondition__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -39,11 +39,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__OrchestrationPlanDefinitionId__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__OrchestrationItemDefinitionId__c</field>
+                <field>vlocity_cmt__GlobalKey__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -83,7 +79,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h6C000000Ej5j</masterLabel>
+        <masterLabel>00hc0000000YJlE</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

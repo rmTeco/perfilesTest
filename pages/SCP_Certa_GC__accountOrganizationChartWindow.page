@@ -27,9 +27,9 @@
 	    					{!$Label.scp_certa_gc__influence_org}
 	    				</span> 
 
-	    				<span style="float:left;">
-	    					<c:showVideo />
-	    				</span>
+                        <span style="float:left;">
+                            <a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/q4FMC3XaKC0"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
+                        </span>
 	    			</h3>
 	    			<div class="row paddingRight">
 	    				<apex:actionFunction action="{!goToNewContact}" name="goToNewContact" />

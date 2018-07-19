@@ -106,11 +106,6 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>Parent</fullName>
-                    <default>false</default>
-                    <label>Parent</label>
-                </value>
-                <value>
                     <fullName>Bundle</fullName>
                     <default>false</default>
                     <label>Bundle</label>
@@ -134,11 +129,6 @@
         <valueSet>
             <valueSetDefinition>
                 <sorted>false</sorted>
-                <value>
-                    <fullName>Parent</fullName>
-                    <default>false</default>
-                    <label>Parent</label>
-                </value>
                 <value>
                     <fullName>Bundle</fullName>
                     <default>false</default>
@@ -369,10 +359,11 @@
     <listViews>
         <fullName>vlocity_cmt__All</fullName>
         <columns>NAME</columns>
-        <columns>vlocity_cmt__Product2Id__c</columns>
-        <columns>vlocity_cmt__RelationshipType__c</columns>
-        <columns>vlocity_cmt__RelatedProductId__c</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>vlocity_cmt__Product2Id__c</field>
+            <operation>equals</operation>
+        </filters>
         <label>All</label>
         <language>en_US</language>
     </listViews>

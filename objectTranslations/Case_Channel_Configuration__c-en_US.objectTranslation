@@ -28,5 +28,6 @@
             <translation><!-- Vlocity_Developer --></translation>
         </picklistValues>
     </fields>
+    <nameFieldLabel><!-- CaseChannelConfiguration Name --></nameFieldLabel>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

@@ -65,11 +65,6 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
-                    <fullName>NoChange</fullName>
-                    <default>false</default>
-                    <label>NoChange</label>
-                </value>
-                <value>
                     <fullName>Add</fullName>
                     <default>true</default>
                     <label>Add</label>
@@ -83,6 +78,11 @@
                     <fullName>Disconnect</fullName>
                     <default>false</default>
                     <label>Disconnect</label>
+                </value>
+                <value>
+                    <fullName>NoChange</fullName>
+                    <default>false</default>
+                    <label>NoChange</label>
                 </value>
                 <value>
                     <fullName>Suspend</fullName>
@@ -168,34 +168,14 @@
                     <label>Move-Disconnect</label>
                 </value>
                 <value>
-                    <fullName>Baja-Baja</fullName>
+                    <fullName>Suspend</fullName>
                     <default>false</default>
-                    <label>Baja-Baja</label>
+                    <label>Suspend</label>
                 </value>
                 <value>
-                    <fullName>REPRO</fullName>
+                    <fullName>Resume</fullName>
                     <default>false</default>
-                    <label>REPRO</label>
-                </value>
-                <value>
-                    <fullName>Baja-PortOut</fullName>
-                    <default>false</default>
-                    <label>Baja-PortOut</label>
-                </value>
-                <value>
-                    <fullName>Suspend-Fraude</fullName>
-                    <default>false</default>
-                    <label>Suspend-Fraude</label>
-                </value>
-                <value>
-                    <fullName>Suspend-Portabilidad</fullName>
-                    <default>false</default>
-                    <label>Suspend-Portabilidad</label>
-                </value>
-                <value>
-                    <fullName>Suspend-Voluntaria</fullName>
-                    <default>false</default>
-                    <label>Suspend-Voluntaria</label>
+                    <label>Resume</label>
                 </value>
                 <value>
                     <fullName>Suspend-Siniestro</fullName>
@@ -203,14 +183,44 @@
                     <label>Suspend-Siniestro</label>
                 </value>
                 <value>
+                    <fullName>Suspend-Fraude</fullName>
+                    <default>false</default>
+                    <label>Suspend-Fraude</label>
+                </value>
+                <value>
+                    <fullName>Suspend-Voluntaria</fullName>
+                    <default>false</default>
+                    <label>Suspend-Voluntaria</label>
+                </value>
+                <value>
+                    <fullName>Suspend-Portabilidad</fullName>
+                    <default>false</default>
+                    <label>Suspend-Portabilidad</label>
+                </value>
+                <value>
+                    <fullName>Baja-Baja</fullName>
+                    <default>false</default>
+                    <label>Baja-Baja</label>
+                </value>
+                <value>
+                    <fullName>Baja-PortOut</fullName>
+                    <default>false</default>
+                    <label>Baja-PortOut</label>
+                </value>
+                <value>
+                    <fullName>REPRO</fullName>
+                    <default>false</default>
+                    <label>REPRO</label>
+                </value>
+                <value>
                     <fullName>Resume-Voluntaria</fullName>
                     <default>false</default>
                     <label>Resume-Voluntaria</label>
                 </value>
                 <value>
-                    <fullName>Resume-Fraude</fullName>
+                    <fullName>Resume-Portabilidad</fullName>
                     <default>false</default>
-                    <label>Resume-Fraude</label>
+                    <label>Resume-Portabilidad</label>
                 </value>
                 <value>
                     <fullName>Resume-Siniestro</fullName>
@@ -218,39 +228,14 @@
                     <label>Resume-Siniestro</label>
                 </value>
                 <value>
+                    <fullName>Resume-Fraude</fullName>
+                    <default>false</default>
+                    <label>Resume-Fraude</label>
+                </value>
+                <value>
                     <fullName>Conciliate</fullName>
                     <default>false</default>
                     <label>Conciliate</label>
-                </value>
-                <value>
-                    <fullName>Suspend-Robo</fullName>
-                    <default>false</default>
-                    <label>Suspend-Robo</label>
-                </value>
-                <value>
-                    <fullName>Suspend-Hurto</fullName>
-                    <default>false</default>
-                    <label>Suspend-Hurto</label>
-                </value>
-                <value>
-                    <fullName>Suspend-Extravio</fullName>
-                    <default>false</default>
-                    <label>Suspend-Extravio</label>
-                </value>
-                <value>
-                    <fullName>Robo</fullName>
-                    <default>false</default>
-                    <label>Robo</label>
-                </value>
-                <value>
-                    <fullName>Hurto</fullName>
-                    <default>false</default>
-                    <label>Hurto</label>
-                </value>
-                <value>
-                    <fullName>Extravío</fullName>
-                    <default>false</default>
-                    <label>Extravío</label>
                 </value>
             </valueSetDefinition>
         </valueSet>

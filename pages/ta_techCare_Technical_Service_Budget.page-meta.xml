@@ -6,7 +6,7 @@
     <label>AcceptanceBadgeCases</label>
     <packageVersions>
         <majorNumber>900</majorNumber>
-        <minorNumber>107</minorNumber>
+        <minorNumber>155</minorNumber>
         <namespace>vlocity_cmt</namespace>
     </packageVersions>
 </ApexPage>

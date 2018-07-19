@@ -342,20 +342,14 @@ global with sharing class taSalesSimulationInvoiceHandler implements vlocity_cmt
         Map<String, Object> output = new Map<String, Object>();
         Map<String, Object> options2 = new Map<String, Object>();
         vlocity_cmt.IntegrationProcedureService integProcService = new vlocity_cmt.IntegrationProcedureService();
-        if (!Test.isRunningTest()) {
-            integProcService.invokeMethod('IFS_S013', input, output, options2);
-        } else {
-            String responsetest = '{"calculoImpuestosRespuesta":{"importeComprobante":"224.2800","infoResCalculoImpuestos":[{"impuestoxItemInfo":{"listaDescuentosImpuestos":[],"importeItemComprobante":"224.28","listaInfoImpuestos":[{"infoImpuesto":{"codMoneda":"ARS","tipoCategoriaImpositiva":"IVA","alicuotaImpuesto":"21","precioBase":"185.3528","importeImpuestoAplicado":"224.28","codImpuesto":"IMP21"}}],"secuenciaProductoAdquirido":"1"}}],"idCliente":"13800010033"}}';
-            Map<String, Object> resultAux = (Map<String, Object>)JSON.deserializeUntyped(responsetest);
-            output.put('IPResult', resultAux);
-        }
+        integProcService.invokeMethod('IFS_S013', input, output, options2);
         System.debug('response s013: ' + JSON.serialize(output));
         Map<String, Object> response = (Map<String, Object>)output.get('IPResult');
 
         Map<String, Object> calculoImpuestosRespuesta = (Map<String, Object>)response.get('calculoImpuestosRespuesta');
         List<Object> infoResCalculoImpuestos = (List<Object>)calculoImpuestosRespuesta.get('infoResCalculoImpuestos');
         
-        if(response == null || calculoImpuestosRespuesta == null || infoResCalculoImpuestos == null){
+        if(response == null || calculoImpuestosRespuesta == null){
             throw new FuncException('Respuesta incorrecta en el servicio S013');
         }
 
@@ -383,28 +377,32 @@ global with sharing class taSalesSimulationInvoiceHandler implements vlocity_cmt
 
         // agrego descripciones de items y de descuentos a la respuesta para mostrar en la simulacion
         i = 0;
-        for(OrderItem orderItem : orderItems){
-            Map<String, Object> auxinfoResCalculoImpuesto = (Map<String, Object>)infoResCalculoImpuestos.get(i);
-            Map<String, Object> impuestoxItemInfo = (Map<String, Object>)auxinfoResCalculoImpuesto.get('impuestoxItemInfo');
-            impuestoxItemInfo.put('descripcion', orderItem.vlocity_cmt__Product2Id__r.Name);
-            
-            if(hashDescuentos != null && hashDescuentos.size() > 0){
-                List<vlocity_cmt__OrderPriceAdjustment__c> descuentos = hashDescuentos.get(orderItem.Id);
-                if(descuentos != null){
-                    List<Object> listaDescuentosImpuestos = (List<Object>)impuestoxItemInfo.get('listaDescuentosImpuestos');
-                    if(listaDescuentosImpuestos != null){
-                        Integer j =0;
-                        for(vlocity_cmt__OrderPriceAdjustment__c descuento : descuentos){
-                            Map<String, Object> auxDescuentosImpuestos = (Map<String, Object>)listaDescuentosImpuestos.get(j);
-                            auxDescuentosImpuestos.put('descripcion', descuento.vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__DisplayText__c);
-                            j++;
+        if(infoResCalculoImpuestos != null){
+            for(OrderItem orderItem : orderItems){
+                Map<String, Object> auxinfoResCalculoImpuesto = (Map<String, Object>)infoResCalculoImpuestos.get(i);
+                Map<String, Object> impuestoxItemInfo = (Map<String, Object>)auxinfoResCalculoImpuesto.get('impuestoxItemInfo');
+                impuestoxItemInfo.put('descripcion', orderItem.vlocity_cmt__Product2Id__r.Name);
+                
+                if(hashDescuentos != null && hashDescuentos.size() > 0){
+                    List<vlocity_cmt__OrderPriceAdjustment__c> descuentos = hashDescuentos.get(orderItem.Id);
+                    if(descuentos != null){
+                        List<Object> listaDescuentosImpuestos = (List<Object>)impuestoxItemInfo.get('listaDescuentosImpuestos');
+                        if(listaDescuentosImpuestos != null){
+                            Integer j =0;
+                            for(vlocity_cmt__OrderPriceAdjustment__c descuento : descuentos){
+                                Map<String, Object> auxDescuentosImpuestos = (Map<String, Object>)listaDescuentosImpuestos.get(j);
+                                Map<String, Object> infoDescuento = (Map<String, Object>)auxDescuentosImpuestos.get('infoDescuento');
+                                infoDescuento.put('descripcion', descuento.vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__DisplayText__c);
+                                j++;
+                            }
                         }
                     }
                 }
+    
+                i++;
             }
-
-            i++;
         }
+        
 
         outMap.put('IPResult', response);
     }
@@ -502,12 +500,13 @@ global with sharing class taSalesSimulationInvoiceHandler implements vlocity_cmt
 
                             //Decimal discount = getDiscount(descuento.vlocity_cmt__OrderItemId__r.vlocity_cmt__PricingLogData__c, descuento.vlocity_cmt__PriceListEntryId__c);
                             System.debug('antes baseDiscount: ');
-                            Decimal baseDiscount = GetBaseDiscount(orderItem.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c, descuento.vlocity_cmt__OrderItemId__r.vlocity_cmt__PricingLogData__c, descuento.vlocity_cmt__PriceListEntryId__c);
+                            Decimal baseDiscount = GetBaseDiscount(orderItem.vlocity_cmt__Product2Id__r.Alicuota__c, orderItem.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c, descuento.vlocity_cmt__OrderItemId__r.vlocity_cmt__PricingLogData__c, descuento.vlocity_cmt__PriceListEntryId__c);
                             System.debug('baseDiscount: ' + baseDiscount);
 
                             totalBasePrice = totalBasePrice - baseDiscount;
                             
-                            auxInfoDescuentos.put('codDescuentoPrecioProducto', descuento.vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__Code__c);
+                            //auxInfoDescuentos.put('codDescuentoPrecioProducto', descuento.vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__Code__c);
+                            auxInfoDescuentos.put('codDescuentoPrecioProducto', descuento.vlocity_cmt__Sequence__c);
                             auxInfoDescuentos.put('cantidadDescuento', 1);
                             auxInfoDescuentos.put('montoDescuentoPrecioProducto', IntegrationUtils.ParseAmount(baseDiscount));
                             auxInfoDescuentos.put('descripcionDescuentoPrecioProducto', descuento.vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__DisplayText__c);
@@ -629,13 +628,22 @@ global with sharing class taSalesSimulationInvoiceHandler implements vlocity_cmt
     // por lo tanto vamos a buscar la alicuota aplicada a un nodo particular del jsonAttribute
     public static Decimal GetBasePrice(OrderItem orderItem){
         Decimal alicuota = 0;
-        Map<String, Object> attrbAlicuota = AssetAttributesUtils.GetJSONAttribute(orderItem.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c, 'Alicuota');
-        if(attrbAlicuota != null){
-            // System.debug('alicuota: ' + attrbAlicuota.get('value__c'));
-            alicuota = Decimal.valueOf(String.valueOf(attrbAlicuota.get('value__c')));
-            // convierto el 21 a 1.21 para poder dividirlo luego
-            alicuota = (alicuota / 100) + 1;
+        if(orderItem.vlocity_cmt__Product2Id__r.Alicuota__c != null){
+            alicuota = Decimal.valueOf(orderItem.vlocity_cmt__Product2Id__r.Alicuota__c);
+            alicuota = alicuota+1;
+        } else {
+            Map<String, Object> attrbAlicuota = AssetAttributesUtils.GetJSONAttribute(orderItem.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c, 'Alicuota');
+            if(attrbAlicuota != null){
+                // System.debug('alicuota: ' + attrbAlicuota.get('value__c'));
+                alicuota = Decimal.valueOf(String.valueOf(attrbAlicuota.get('value__c')));
+                // convierto el 21 a 1.21 para poder dividirlo luego
+                alicuota = (alicuota / 100) + 1;
+            }
         }
+        /*AM Sacar else donde se busca el attributo*/
+
+        System.debug('GetBasePrice:alicuota -> ' + alicuota);
+
         Decimal basePrice = getPrice(orderItem);
         if(alicuota > 0){
             basePrice = basePrice / alicuota;
@@ -648,8 +656,15 @@ global with sharing class taSalesSimulationInvoiceHandler implements vlocity_cmt
     private static Decimal getPrice(OrderItem orderItem){
         Decimal ret = 0;
         Map<String, Object> attribute = null;
+        System.debug('pricinglogdata: ' + JSON.serialize(orderItem.vlocity_cmt__PricingLogData__c));
         if(orderItem.vlocity_cmt__PricingLogData__c == null){
-            ret = orderItem.vlocity_cmt__EffectiveOneTimeTotal__c + orderItem.vlocity_cmt__EffectiveRecurringTotal__c;
+            System.debug('orderItem.vlocity_cmt__EffectiveRecurringTotal__c: ' + orderItem.vlocity_cmt__EffectiveRecurringTotal__c);
+            if(orderItem.vlocity_cmt__EffectiveOneTimeTotal__c != null){
+                ret = orderItem.vlocity_cmt__EffectiveOneTimeTotal__c;
+            }
+            if(orderItem.vlocity_cmt__EffectiveRecurringTotal__c != null){
+                ret += orderItem.vlocity_cmt__EffectiveRecurringTotal__c;
+            }
         } else {
             Map<String, Object> priceLog = (Map<String, Object>)JSON.deserializeUntyped(orderItem.vlocity_cmt__PricingLogData__c);
             System.debug('vlocity_cmt__PricingLogData__c: ' + orderItem.vlocity_cmt__PricingLogData__c);
@@ -662,19 +677,26 @@ global with sharing class taSalesSimulationInvoiceHandler implements vlocity_cmt
             Map<String, Object> aux = (Map<String, Object>)ot_std_prc[0];
             ret = Decimal.valueOf(String.valueOf(aux.get('BaseValue')));
         }
-
+        System.debug('getPrice:alicuota -> ' + ret);
         return ret;
     }
 
-    public static Decimal GetBaseDiscount(String jsonAttribute, String priceLog, String priceListEntryId){
+    public static Decimal GetBaseDiscount(String orderItemAlicuota, String jsonAttribute, String priceLog, String priceListEntryId){
         Decimal alicuota = 0;
-        Map<String, Object> attrbAlicuota = AssetAttributesUtils.GetJSONAttribute(jsonAttribute, 'Alicuota');
-        if(attrbAlicuota != null){
-            // System.debug('alicuota: ' + attrbAlicuota.get('value__c'));
-            alicuota = Decimal.valueOf(String.valueOf(attrbAlicuota.get('value__c')));
-            // convierto el 21 a 1.21 para poder dividirlo luego
-            alicuota = (alicuota / 100) + 1;
+        if(orderItemAlicuota != null){
+            alicuota = Decimal.valueOf(orderItemAlicuota);
+            alicuota = alicuota+1;
+        } else {
+            Map<String, Object> attrbAlicuota = AssetAttributesUtils.GetJSONAttribute(jsonAttribute, 'Alicuota');
+            if(attrbAlicuota != null){
+                // System.debug('alicuota: ' + attrbAlicuota.get('value__c'));
+                alicuota = Decimal.valueOf(String.valueOf(attrbAlicuota.get('value__c')));
+                // convierto el 21 a 1.21 para poder dividirlo luego
+                alicuota = (alicuota / 100) + 1;
+            }
         }
+        System.debug('GetBaseDiscount:alicuota -> ' + alicuota);
+        /*AM Sacar else donde se busca por json attribute */
         Decimal baseDiscount = getDiscount(priceLog, priceListEntryId);
         if(alicuota > 0){
             baseDiscount = baseDiscount / alicuota;

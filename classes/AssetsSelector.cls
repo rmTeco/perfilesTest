@@ -10,7 +10,8 @@ public class AssetsSelector extends ApplicationSelector {
             Asset.Sub_Status__c,
             Asset.AccountId,
             Asset.CreatedDate,
-            Asset.Vlocity_cmt__RootItemId__c
+            Asset.Vlocity_cmt__RootItemId__c,
+            Asset.Imei__c
         };
     }
 
@@ -48,5 +49,11 @@ public class AssetsSelector extends ApplicationSelector {
             assets.add(orderItem.vlocity_cmt__AssetId__r);
 
         return assets;
+    }
+
+    public List<Asset> SelectByIMEI(Set<String> imeis) {
+        return (List<Asset>) Database.Query(
+            this.NewQueryFactory().SetCondition('Imei__c IN :imeis AND Status = \'Active\'').ToSOQL()
+        );
     }
 }

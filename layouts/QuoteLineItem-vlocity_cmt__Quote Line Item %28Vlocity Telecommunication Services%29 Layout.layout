@@ -153,10 +153,15 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <multilineLayoutFields>Product2Id</multilineLayoutFields>
     <multilineLayoutFields>QuoteId</multilineLayoutFields>
-    <multilineLayoutFields>Quantity</multilineLayoutFields>
+    <multilineLayoutFields>Product2Id</multilineLayoutFields>
     <multilineLayoutFields>UnitPrice</multilineLayoutFields>
+    <multilineLayoutFields>Quantity</multilineLayoutFields>
+    <multilineLayoutFields>ListPrice</multilineLayoutFields>
+    <multilineLayoutFields>Subtotal</multilineLayoutFields>
+    <multilineLayoutFields>Description</multilineLayoutFields>
+    <multilineLayoutFields>Discount</multilineLayoutFields>
+    <multilineLayoutFields>TotalPrice</multilineLayoutFields>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>

@@ -160,3 +160,12 @@
 .THIS #error p{
     color: red;
 }
+
+/* -- Responsive -- */
+@media only screen and (max-width: 412px) {
+    .THIS .form-container {
+          width: 100% !important;
+          padding-right: 12px;
+          padding-left: 12px;
+    }
+}

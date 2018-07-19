@@ -48,12 +48,12 @@ public class TestDataFactory {
     }
 
     public static vlocity_cmt__PriceList__c createPriceList(String name){
-        String priceBookId = createPriceBook('TA Price Book').Id;
+        //String priceBookId = createPriceBook('TA Price Book').Id;
 
         vlocity_cmt__PriceList__c taPriceList =
             new vlocity_cmt__PriceList__c(Name=name,
                                                                         vlocity_cmt__Code__c='1',
-                                                                        vlocity_cmt__Pricebook2Id__c=priceBookId);
+                                                                        vlocity_cmt__Pricebook2Id__c=Test.getStandardPricebookId());
 
         insert taPriceList;
 
@@ -81,11 +81,13 @@ public class TestDataFactory {
 
     public static List<Order> createOrders(Integer numOrders, Account acc) {
         vlocity_cmt__PriceList__c taPriceList = createPriceList('Telecom Price List');
+        Id orderRecordTypeForAcc = [SELECT Id FROM RecordType WHERE SobjectType = 'Order' AND DeveloperName = 'MobilePhoneOrder' LIMIT 1].Id;
 
         List<Order> orders = new List<Order>();
 
         for(Integer i=0;i<numOrders;i++) {
             Order o = new Order(Name='TestOrder' + i,
+                                                    RecordTypeId = orderRecordTypeForAcc,
                                                     AccountId=acc.Id,
                                                     EffectiveDate=Date.today(),
                                                     Status='Draft',
@@ -134,14 +136,14 @@ public class TestDataFactory {
     public static List<OrderItem> createOrderItem(Integer numOrders, Order Ord) {
 
          List<OrderItem> OIList = new List<OrderItem>();
-         List<product2>Prod=createProduct(1);
+         List<Product2> prod=createProduct(1);
             PricebookEntry standardPrice = new PricebookEntry(
                         Pricebook2Id =Test.getStandardPricebookId(),
-                        Product2Id = Prod[0].Id,
+                        Product2Id = prod[0].Id,
                         UnitPrice = 10000, IsActive = true);
 
                 insert standardPrice;
-
+     System.debug(Ord.id);
      for(Integer i=0;i<numOrders;i++) {
             OrderItem oi = new OrderItem(OrderId=Ord.id,Quantity=decimal.valueof('1'),UnitPrice=1,PricebookEntryId=standardPrice.id, Product2Id=Prod[0].Id);
 
@@ -182,7 +184,7 @@ public class TestDataFactory {
             a.Name='TestAccount' + Math.round(Math.random()*10000);
             a.AccountIntegrationId__c = String.ValueOf(Decimal.valueOf('10000000000')+Datetime.now().millisecond()+i);
             a.CustomerIntegrationId__c = Decimal.valueOf('10000000001')+Datetime.now().millisecond()+i;
-            
+
             system.debug('AccountIntegrationId__c = '+a.AccountIntegrationId__c);
             system.debug('recordTypeName = '+recordTypeName);
 
@@ -392,7 +394,10 @@ public class TestDataFactory {
     }
 
     public static vlocity_cmt__BusinessSite__c createStoreLocation(String name){
+        Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
+        // Id idRecordType = [Select Id From RecordType where Name='Punto de venta OC' LIMIT 1].Id;
         vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(
+            RecordTypeId = idRecordType,
             Name = name,
             BillingMode__c = 'Fiscal',
             Channel__c = 'Físico',
@@ -405,11 +410,20 @@ public class TestDataFactory {
         );
 
         insert storeLocation;
+
+        // storeLocation.Channel__c = 'Físico';
+        // storeLocation.Channel_Type__c = 'Oficinas Comerciales';
+        // storeLocation.Channel_Type_2__c = 'Oficinas Comerciales';
+        // storeLocation.Channel_Type_3__c = 'Oficinas Comerciales';
+        // update storeLocation;
+
         return storeLocation;
     }
 
     public static vlocity_cmt__BusinessSite__c createStoreLocation(String name, String accountId){
+        Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
         vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(
+            RecordTypeId = idRecordType,
             Name = name,
             BillingMode__c = 'Fiscal',
             Channel__c = 'Físico',
@@ -427,8 +441,8 @@ public class TestDataFactory {
 
     public static WorkTeam__c createWorkTeam(String name, Vlocity_cmt__BusinessSite__c storeLocation){
         WorkTeam__c wt = new WorkTeam__c(
-            Name = 'Test',
-            Team_Name__c = 'Test',
+            Name = name,
+            Team_Name__c = 'testWorkTeam',
             Is_Active__c = true
         );
 
@@ -752,6 +766,91 @@ public class TestDataFactory {
         lstSegments.add(objSegment2);
         insert lstSegments;
     }
+    //JARN
+  public static Location__c createLocations()
+    {
+        Location__c objLocation = new Location__c();
+        objLocation.Postal_Code__c='1643';
+        objLocation.Region__c='AMBA';
+        objLocation.StateCode__c='B';
+        objLocation.StateName__c='BUENOS AIRES';
+        objLocation.Status__c=true;
+        objLocation.LOCALIDADMU__c='BECCAR';
+        objLocation.LocationCode__c='B1603';
+        objLocation.Municipality__c='SAN ISIDRO';
+        objLocation.Name='BECCAR';
+        objLocation.DEPARTAMENTOMU__c='SAN ISIDRO';
+        objLocation.DepartmentCode__c='BJR';
+        objLocation.CountryCode__c='AR';
+        objLocation.CountryName__c='ARGENTINA';
+    insert objLocation;
+    return objLocation;
+    }
+  //JARN
+  public static Street__c createStreet (String strIdLocation)
+  {
+    Street__c objStreet = new Street__c();
+    objStreet.IsActive__c=true;
+    if(strIdLocation != null || strIdLocation != '')
+    {
+      objStreet.Location__c=strIdLocation;
+    }
+    objStreet.Name='MENDOZA BP S ISIDRO CATED';
+    objStreet.Postal_Code__c='1643';
+    objStreet.Range_From__c=1323.0;
+    objStreet.Range_To__c=1323.0;
+    objStreet.StreetCode__c='B16030016';
+    Insert objStreet;
+    return objStreet;
+  }
+  //Jarn
+  public static List<Product2> createProduct2(Integer numProd) {
+      List<Product2> prods = new List<Product2>();
+
+      for(Integer i=0;i<numProd;i++) {
+          Product2 a = new Product2(Name='TestProduct '+i, ProductCode='FAN_ENV_000', Tangible__c = true, vlocity_cmt__Type__c='TestType', IsActive = true);
+          prods.add(a);
+      }
+
+      insert prods;
+      system.debug(' prods ====> '+prods);
+      return prods;
+  }
+  //Jarn
+  public static List<OrderItem> createOrderItemgetDeliveryMethod(Integer numOrders, Order Ord) {
+
+       List<OrderItem> OIList = new List<OrderItem>();
+       List<Product2> prod = createProduct2(1);
+          PricebookEntry standardPrice = new PricebookEntry(
+                      Pricebook2Id =Test.getStandardPricebookId(),
+                      Product2Id = prod[0].Id,
+                      UnitPrice = 10000, IsActive = true);
+
+              insert standardPrice;
+   System.debug(Ord.id);
+   for(Integer i=0;i<numOrders;i++) {
+          OrderItem oi = new OrderItem(OrderId=Ord.id,Quantity=decimal.valueof('1'),UnitPrice=1,PricebookEntryId=standardPrice.id, vlocity_cmt__Product2Id__c=Prod[0].Id);
+
+          OIList.add(oi);
+      }
+      insert OIList;
+
+      return OIList;
+  }
+  public static OrderItem CreateOrderItemParent (String orderId, String productId)
+  {
+    PricebookEntry standardPrice1 = [Select id From PricebookEntry Where Product2Id =: productId];
+    OrderItem ord = [Select Id From OrderItem Where OrderId =: orderId LIMIT 1];
+    OrderItem objOrderItem = new OrderItem();
+    objOrderItem.OrderId = orderId;
+    objOrderItem.Quantity = decimal.valueof('1');
+    objOrderItem.UnitPrice = 1;
+    objOrderItem.PricebookEntryId = standardPrice1.Id;
+    insert objOrderItem;
+    objOrderItem.vlocity_cmt__ParentItemId__c = ord.Id;
+    update objOrderItem;
+    return objOrderItem;
+  }
 
     public static List<vlocity_cmt__VlocityTrackingEntry__c> createTrackingEntry(Integer numTrack) {
         List<vlocity_cmt__VlocityTrackingEntry__c> TrackingEntry = new List<vlocity_cmt__VlocityTrackingEntry__c>();
@@ -807,14 +906,14 @@ public class TestDataFactory {
             listTransactionHistory.add(transactionHistory);
             Insert  transactionHistory;
         }
-        
+
         return listTransactionHistory;
     }
 
     public static List<Transaction_History__c> CreateTransactionHistory(Integer transactionsHistoryToCreate,
         Id accountId, Id assetId, String type, String description, String status) {
         List<Transaction_History__c> listTransactionHistory = new List<Transaction_History__c>();
-        
+
         for (Integer i = 0; i < transactionsHistoryToCreate; i++) {
             Transaction_History__c transactionHistory = new Transaction_History__c();
 
@@ -828,7 +927,27 @@ public class TestDataFactory {
         }
 
         insert listTransactionHistory;
-        
+
+        return listTransactionHistory;
+    }
+    public static List<Transaction_History__c> CreateTransactionHistory(Integer transactionsHistoryToCreate, Id accountId, String type, String description, String newStatus, Id recordTypeId)
+    {
+        List<Transaction_History__c> listTransactionHistory = new List<Transaction_History__c>();
+
+        for (Integer i = 0; i < transactionsHistoryToCreate; i++) {
+            Transaction_History__c transactionHistory = new Transaction_History__c();
+
+            transactionHistory.Account__c = accountId;
+            transactionHistory.RecordTypeId = recordTypeId;
+            transactionHistory.Type__c = type;
+            transactionHistory.Description__c = description;
+            transactionHistory.New_Status__c = newStatus;
+
+            listTransactionHistory.add(transactionHistory);
+        }
+
+        insert listTransactionHistory;
+
         return listTransactionHistory;
     }
 }

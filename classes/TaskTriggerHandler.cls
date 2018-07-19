@@ -5,11 +5,10 @@
  *
  * Version: 1.2
  */
-
 public class TaskTriggerHandler {
 
     public static void initiateBillingIntegrationProcess(List<Task> triggerNew) {
-        Boolean debug = true;
+        Boolean debug = false;
 
         if(debug){System.debug('triggerNew Task: ' + triggerNew);}
         // Setting values to null to reset them on each loop
@@ -106,8 +105,6 @@ public class TaskTriggerHandler {
             c.RepeatedCalls__c = (Integer) ar.get('TaskCount');
             casesToRollup.add(c);
         }
-        
-        system.debug('casesToRollup = '+casesToRollup);
 
         update casesToRollup;
     }

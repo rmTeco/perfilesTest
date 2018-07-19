@@ -126,6 +126,10 @@
             <translation><!-- Recarga Exitosa --></translation>
         </picklistValues>
         <picklistValues>
+            <masterLabel>Renovacion de datos Exitosa</masterLabel>
+            <translation><!-- Renovacion de datos Exitosa --></translation>
+        </picklistValues>
+        <picklistValues>
             <masterLabel>Sms</masterLabel>
             <translation><!-- Sms --></translation>
         </picklistValues>
@@ -202,10 +206,15 @@
         <label><!-- Text Area --></label>
         <name>TextArea__c</name>
     </fields>
+    <nameFieldLabel><!-- Crossobject Number --></nameFieldLabel>
     <recordTypes>
         <description><!-- Account Attribute --></description>
         <label><!-- Account Attribute --></label>
         <name>Account_Attribute</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Email Template --></label>
+        <name>EmailTemplate</name>
     </recordTypes>
     <recordTypes>
         <label><!-- Email to send --></label>

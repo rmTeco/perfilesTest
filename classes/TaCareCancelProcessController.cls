@@ -12,7 +12,7 @@ global with sharing class TaCareCancelProcessController {
             ];
 
             selectedCase.Status = 'Anulada';
-            selectedCase.Resolution_Comment__c = 'El proceso fue anulado.';
+            selectedCase.Resolution_Comment__c = 'La gestión fue cancelada.';
 
             update selectedCase;
             

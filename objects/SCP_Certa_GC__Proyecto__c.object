@@ -50,7 +50,7 @@
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
-    <enableSearch>false</enableSearch>
+    <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
@@ -116,7 +116,6 @@
         <externalId>false</externalId>
         <label>Oportunidad</label>
         <referenceTo>Opportunity</referenceTo>
-        <relationshipLabel>Proyectos</relationshipLabel>
         <relationshipName>Proyectos</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
@@ -178,7 +177,6 @@
         <externalId>false</externalId>
         <label>Producto</label>
         <referenceTo>Product2</referenceTo>
-        <relationshipLabel>Proyectos</relationshipLabel>
         <relationshipName>Proyectos</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -208,6 +206,11 @@
     </fields>
     <gender>Masculine</gender>
     <label>Proyecto</label>
+    <listViews>
+        <fullName>SCP_Certa_GC__All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>Todos</label>
+    </listViews>
     <nameField>
         <label>Nombre de Proyecto</label>
         <type>Text</type>

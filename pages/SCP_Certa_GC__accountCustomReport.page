@@ -11,21 +11,21 @@
     			<h3 class="panel-title">
     				<span style="float:left;">
     					{!$Label.scp_certa_gc__custom_report}
-    				</span>
-
-    				<span style="float:left;">
-    					<c:showVideo />
-    				</span>	    				
-    			</h3>
+                    </span>
+                    
+                    <span style="float:left;">
+                        <a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/GzsMQTI10as"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
+                    </span>	    				
+                </h3>
     			<div class="row paddingRight" style="margin-top: 20px;">
 	    			<div class="btn-group pull-right">
-	    			 	<apex:outputText rendered="{!canEdit}">
+	    			 	<apex:outputText >
 	           				<button type="button" class="btn btn-default btn-sm" onclick="SaveChanges()">
 		   						<span class="glyphicon glyphicon-floppy-disk icon-btn-left"></span>&nbsp;{!$Label.save}
 		                    </button>
 		                </apex:outputText>    
            				<button type="button" class="btn btn-default btn-sm" onclick="ExportToWord()">
-	   						<span class="glyphicon glyphicon-file icon-btn-left"></span>&nbsp;{!$Label.Export_to_Word}
+	   						<span class="glyphicon glyphicon-file icon-btn-left"></span>&nbsp;Exportar a Word
 	                    </button>					                    
     				</div>
    				</div>

@@ -1,11 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssignmentRules xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignmentRule>
-        <fullName>Proyecto FAN Case Assigment Rules</fullName>
-        <active>true</active>
+        <fullName>FAN Case Assigment Rules</fullName>
+        <active>false</active>
         <ruleEntry>
-            <assignedTo>X13</assignedTo>
+            <assignedTo>Back_Office_Centralizado</assignedTo>
             <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.Type</field>
+                <operation>equals</operation>
+                <value>Problemas con recargas</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>Postsales</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Subject</field>
+                <operation>equals</operation>
+                <value>Problemas con recargas</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Status</field>
+                <operation>equals</operation>
+                <value>En espera del cliente</value>
+            </criteriaItems>
+        </ruleEntry>
+    </assignmentRule>
+    <assignmentRule>
+        <fullName>Port OUT</fullName>
+        <active>false</active>
+    </assignmentRule>
+    <assignmentRule>
+        <fullName>Technical Care</fullName>
+        <active>false</active>
+        <ruleEntry>
+            <assignedTo>daniel.dobies@teco.com.ar</assignedTo>
+            <assignedToType>User</assignedToType>
             <booleanFilter>1 AND (2 OR ((3 OR 4) AND 5))</booleanFilter>
             <criteriaItems>
                 <field>Case.Status</field>
@@ -33,8 +65,8 @@
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
-            <assignedTo>X1</assignedTo>
-            <assignedToType>Queue</assignedToType>
+            <assignedTo>daniel.dobies@teco.com.ar</assignedTo>
+            <assignedToType>User</assignedToType>
             <criteriaItems>
                 <field>Case.Status</field>
                 <operation>equals</operation>
@@ -47,8 +79,8 @@
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
-            <assignedTo>X2</assignedTo>
-            <assignedToType>Queue</assignedToType>
+            <assignedTo>daniel.dobies@teco.com.ar</assignedTo>
+            <assignedToType>User</assignedToType>
             <criteriaItems>
                 <field>Case.Status</field>
                 <operation>equals</operation>
@@ -61,8 +93,8 @@
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
-            <assignedTo>X3</assignedTo>
-            <assignedToType>Queue</assignedToType>
+            <assignedTo>daniel.dobies@teco.com.ar</assignedTo>
+            <assignedToType>User</assignedToType>
             <criteriaItems>
                 <field>Case.Status</field>
                 <operation>equals</operation>
@@ -75,8 +107,8 @@
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
-            <assignedTo>X4</assignedTo>
-            <assignedToType>Queue</assignedToType>
+            <assignedTo>daniel.dobies@teco.com.ar</assignedTo>
+            <assignedToType>User</assignedToType>
             <criteriaItems>
                 <field>Case.Status</field>
                 <operation>equals</operation>
@@ -89,8 +121,8 @@
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
-            <assignedTo>Back_Office_Centralizado</assignedTo>
-            <assignedToType>Queue</assignedToType>
+            <assignedTo>daniel.dobies@teco.com.ar</assignedTo>
+            <assignedToType>User</assignedToType>
             <criteriaItems>
                 <field>Case.Status</field>
                 <operation>equals</operation>
@@ -103,8 +135,8 @@
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
-            <assignedTo>TechCareTestingQueueCommercial</assignedTo>
-            <assignedToType>Queue</assignedToType>
+            <assignedTo>daniel.dobies@teco.com.ar</assignedTo>
+            <assignedToType>User</assignedToType>
             <criteriaItems>
                 <field>Case.RecordTypeId</field>
                 <operation>equals</operation>
@@ -117,8 +149,8 @@
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
-            <assignedTo>TechCareTestingQueueTechnical</assignedTo>
-            <assignedToType>Queue</assignedToType>
+            <assignedTo>daniel.dobies@teco.com.ar</assignedTo>
+            <assignedToType>User</assignedToType>
             <criteriaItems>
                 <field>Case.RecordTypeId</field>
                 <operation>equals</operation>
@@ -130,76 +162,5 @@
                 <value>En espera de ejecución</value>
             </criteriaItems>
         </ruleEntry>
-        <ruleEntry>
-            <assignedTo>BAckOfficeTestCentralizado</assignedTo>
-            <assignedToType>Queue</assignedToType>
-            <criteriaItems>
-                <field>Case.Priority</field>
-                <operation>equals</operation>
-                <value>High</value>
-            </criteriaItems>
-            <criteriaItems>
-                <field>Case.Origin</field>
-                <operation>equals</operation>
-                <value>Web</value>
-            </criteriaItems>
-            <criteriaItems>
-                <field>Case.Subject</field>
-                <operation>equals</operation>
-                <value>Problemass Recargas</value>
-            </criteriaItems>
-        </ruleEntry>
-        <ruleEntry>
-            <assignedTo>BackOfficeTest</assignedTo>
-            <assignedToType>Queue</assignedToType>
-            <criteriaItems>
-                <field>Case.Priority</field>
-                <operation>equals</operation>
-                <value>Medium</value>
-            </criteriaItems>
-            <criteriaItems>
-                <field>Case.Origin</field>
-                <operation>equals</operation>
-                <value>Web</value>
-            </criteriaItems>
-            <criteriaItems>
-                <field>Case.Subject</field>
-                <operation>equals</operation>
-                <value>Cambios Titularidad</value>
-            </criteriaItems>
-            <criteriaItems>
-                <field>Case.Status</field>
-                <operation>equals</operation>
-                <value>New</value>
-            </criteriaItems>
-        </ruleEntry>
-        <ruleEntry>
-            <assignedTo>BAckOfficeTestCentralizado</assignedTo>
-            <assignedToType>Queue</assignedToType>
-            <criteriaItems>
-                <field>Case.Priority</field>
-                <operation>equals</operation>
-                <value>High</value>
-            </criteriaItems>
-            <criteriaItems>
-                <field>Case.Origin</field>
-                <operation>equals</operation>
-                <value>Web</value>
-            </criteriaItems>
-            <criteriaItems>
-                <field>Case.Subject</field>
-                <operation>equals</operation>
-                <value>Desconocimientos</value>
-            </criteriaItems>
-            <criteriaItems>
-                <field>Case.Status</field>
-                <operation>equals</operation>
-                <value>New</value>
-            </criteriaItems>
-        </ruleEntry>
-    </assignmentRule>
-    <assignmentRule>
-        <fullName>Prueba</fullName>
-        <active>false</active>
     </assignmentRule>
 </AssignmentRules>

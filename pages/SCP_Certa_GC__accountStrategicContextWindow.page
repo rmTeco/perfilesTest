@@ -223,7 +223,7 @@
                         </span>
 
                         <span style="float:left;">
-                            <c:showVideo />
+                            <a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/9tQfXYLcp1w"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
                         </span>
                     </h2>
                     <div class="row paddingRight">
@@ -336,7 +336,7 @@
                             <img src="{!$Resource.SCP_Certa_GC__AjaxLoader}"/><br/>Loading...
                         </div>
                         <h2>{!$Label.scp_certa_gc__global_strategic_context}</h2>
-                        <apex:outputPanel rendered="{!globalStrategicContext.size > 0}">                
+                        <!--<apex:outputPanel rendered="{!globalStrategicContext.size > 0}">                
                             <table class="table table-striped table-bordered table-condensed">
                                 <thead>
                                     <tr>
@@ -352,24 +352,24 @@
                                     <apex:repeat value="{!globalStrategicContext}" var="item">
                                         <tr>
                                             <td>
-                                                {!item.SCP_Certa_GC__Strategic_Context__c} ({!item.Name})	
+                                                {!item.Strategic_Context__c} ({!item.Name})	
                                             </td>
                                             <td style="text-align: center;">
                                                 <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
-                                                    <apex:param value="{!item.SCP_Certa_GC__Strategic_Context_Last_Update__c}" /> 
+                                                    <apex:param value="{!item.Strategic_Context_Last_Update__c}" /> 
                                                 </apex:outputText>
                                             </td>
                                         </tr>
                                     </apex:repeat>                
                                 </tbody>
                             </table>                    
-                        </apex:outputPanel>
+                        </apex:outputPanel>-->
                         <apex:outputPanel id="contexto">
                             <table id="localTable" class="table table-striped table-bordered table-condensed">
                                 <thead>
                                     <tr>
                                         <th>
-                                            <apex:outputText rendered="{!globalStrategicContext.size > 0}" value="{!$Label.scp_certa_gc__current_account}"/>
+                                           <!-- <apex:outputText rendered="{!globalStrategicContext.size > 0}" value="{!$Label.scp_certa_gc__current_account}"/>-->
                                         </th>
                                         <th style="width:180px;text-align: center;">
                                             <apex:outputText value="{!$Label.scp_certa_gc__lastmodifieddate}"/>
@@ -382,23 +382,23 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <apex:outputField value="{!account.SCP_Certa_GC__Strategic_Context__c}">
-                                                <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" rendered="{!canEdit}" />
+                                            <apex:outputField value="{!descripcionDelClienteActual.SCP_Certa_GC__Strategic_Context__c}">
+                                                <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" />
                                             </apex:outputField>
                                         </td>
                                         <td style="text-align: center;">
                                             <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
-                                                <apex:param value="{!account.SCP_Certa_GC__Strategic_Context_Last_Update__c}" /> 
+                                                <apex:param value="{!descripcionDelClienteActual.SCP_Certa_GC__Strategic_Context_Last_Update__c}" /> 
                                             </apex:outputText>
                                         </td>
                                         <td>
-                                            <apex:commandButton rendered="{!canEdit}" styleClass="btn btn-default btn-sm" action="{!borra}" value="{!$Label.scp_certa_gc__delete}" rerender="contexto"/>
+                                            <apex:commandButton styleClass="btn btn-default btn-sm" action="{!borra}" value="{!$Label.scp_certa_gc__delete}" rerender="contexto"/>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </apex:outputPanel>
-                        <apex:outputText rendered="{!canEdit}"><div style="clear:both; text-align:center; font-style: italic;border-bottom: 1px solid rgb(237, 239, 240);padding-bottom: 15px;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>			
+                        <apex:outputText ><div style="clear:both; text-align:center; font-style: italic;border-bottom: 1px solid rgb(237, 239, 240);padding-bottom: 15px;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>			
                     </div>
                 </apex:outputPanel>
                 
@@ -516,13 +516,13 @@
                                             <!-- -------------------------------------------------------------------------------------------------------------- -->
                                             <td>
                                                 <apex:outputField value="{!item.SCP_Certa_GC__Title__c}">
-                                                    <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                                    <apex:inlineEditSupport event="ondblclick"/>
                                                 </apex:outputField>
                                             </td>
                                             <!-- -------------------------------------------------------------------------------------------------------------- -->
                                             <td class="initiative">
                                                 <apex:outputField value="{!item.SCP_Certa_GC__Strategic_Initiative__c}" rendered="{!LEN(item.SCP_Certa_GC__Strategic_Initiative__c) < 150}">
-                                                    <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                                    <apex:inlineEditSupport event="ondblclick"/>
                                                 </apex:outputField>
                                                 <apex:outputPanel rendered="{!LEN(item.SCP_Certa_GC__Strategic_Initiative__c) > 150}">
                                                     <span class="lessSpan">
@@ -536,7 +536,7 @@
                                                     </span>
                                                     <span class="moreSpan" style="float:right;display:none;">								
                                                         <apex:outputField value="{!item.SCP_Certa_GC__Strategic_Initiative__c}">
-                                                            <apex:inlineEditSupport rendered="{!canEdit}" event="ondblclick"/>
+                                                            <apex:inlineEditSupport event="ondblclick"/>
                                                         </apex:outputField>
                                                         <button type="button" class="btn btn-default btn-xs showLess" style="float:right;">
                                                             <span class="glyphicon glyphicon-zoom-out icon-btn-left"></span>&nbsp;{!$Label.show_less}
@@ -596,7 +596,7 @@
                                             </td>
                                             <!-- -------------------------------------------------------------------------------------------------------------- -->
                                             <td>
-                                                <apex:commandButton styleClass="btn btn-default btn-sm" value="{!$Label.scp_certa_gc__delete}"  reRender="localStrategicInitiativeTable" status="renderMeStatus" action="{!DeleteStrategicInitiatives}"  rendered="{!canEdit}">
+                                                <apex:commandButton styleClass="btn btn-default btn-sm" value="{!$Label.scp_certa_gc__delete}"  reRender="localStrategicInitiativeTable" status="renderMeStatus" action="{!DeleteStrategicInitiatives}">
                                                     <apex:param assignTo="{!delid}" name="delid" value="{!item.id}"/>
                                                 </apex:commandButton>
                                             </td>
@@ -605,12 +605,12 @@
                                     </apex:repeat>
                                 </tbody>
                             </table>			            
-                            <apex:outputText rendered="{!canEdit}">
+                            <apex:outputText >
                                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">
                                     <span class="glyphicon glyphicon-plus icon-btn-left"></span>&nbsp;{!$Label.add_buttom}&nbsp;{!$Label.Initiative}
                                 </button>
                             </apex:outputText>
-                            <apex:outputText rendered="{!canEdit}"><div style="clear:both; text-align:center; font-style: italic;border-bottom: 1px solid rgb(237, 239, 240);padding-bottom: 15px;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>
+                            <apex:outputText ><div style="clear:both; text-align:center; font-style: italic;border-bottom: 1px solid rgb(237, 239, 240);padding-bottom: 15px;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>
                         </apex:outputPanel>
                     </div>
                 </apex:outputPanel>
@@ -627,7 +627,7 @@
                                             <apex:outputText value="{!$Label.scp_certa_gc__nombre_del_competidor_del_cliente}" />                         
                                         </th>
                                         <th style="width:100%;">                           
-                                            <apex:outputText value="Información Relevante" />
+                                            <apex:outputText value="{!$Label.scp_certa_gc__informaci_n_relevante}" />
                                         </th>
                                         <th style="min-width:230px; text-align: center;">                         
                                             <apex:outputText value="{!$Label.scp_certa_gc__lastmodifieddate}" />
@@ -664,59 +664,60 @@
                                 </tbody>                           
                             </table>
                         </apex:outputPanel>
-                        <apex:outputText rendered="{!canEdit}">
+                        <apex:outputText >
                             <apex:actionFunction action="{!add}" name="add" rerender="errorMsg, competidoresRender" status="renderMeStatus" />
                             <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModalPrincipalCompetidores">
                                 <span class="glyphicon glyphicon-plus icon-btn-left"></span>&nbsp;{!$Label.add}&nbsp;{!$Label.Competitor} 
                             </button>
                         </apex:outputText>
-                        <apex:outputText rendered="{!canEdit}"><div style="clear:both; text-align:center; font-style: italic;border-bottom: 1px solid rgb(237, 239, 240);padding-bottom: 15px;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>
+                        <apex:outputText ><div style="clear:both; text-align:center; font-style: italic;border-bottom: 1px solid rgb(237, 239, 240);padding-bottom: 15px;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>
                     </div>
-                    </apex:outputPanel>
-                    
-                    <!-- Satisfaccion cliente -->
-                    <apex:outputPanel layout="block" styleClass="panel-body" id="satisfaccionCliente">
+                </apex:outputPanel>
+                
+                <!-- Satisfaccion cliente -->
+                <apex:outputPanel layout="block" styleClass="panel-body" id="satisfaccionCliente">
                     <div class = "hiddenTable hidden-csat">
-                    <h2>{!$Label.csat}</h2>                
-                    <table class="table table-striped table-bordered table-condensed">
-                        <thead>                                          
-                            <tr>
-                                <th style="width:20%"></th>
-                                <th style="width:20%">{!$label.Unit}</th>
-                                <th style="text-align:right;width:20%">{!(year)}</th>
-                                <th style="text-align:right;width:20%">{!(year-1)}</th>
-                                <th style="text-align:right;width:20%">{!(year-2)}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>{!$Label.csat}</th>
-                                <td class="inputFullWidth">
-                                    <apex:outputField style="width:100%;" value="{!account.SCP_Certa_GC__CSAT_Unit__c}">
-                                        <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass"  resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
-                                    </apex:outputField>
-                                </td>
-                                <td style="text-align:right;" class="inputFullWidth">
-                                    <apex:outputField value="{!account.SCP_Certa_GC__CSAT_Current_Year__c}">
-                                        <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass"  resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
-                                    </apex:outputField>
-                                </td>
-                                <td style="text-align:right;" class="inputFullWidth">
-                                    <apex:outputField value="{!account.SCP_Certa_GC__CSAT_Last_Year__c}">
-                                        <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass"  resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
-                                    </apex:outputField>
-                                </td>                    
-                                <td style="text-align:right;" class="inputFullWidth">
-                                    <apex:outputField value="{!account.SCP_Certa_GC__CSAT_Second_To_Last_Year__c}">
-                                        <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass"  resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
-                                    </apex:outputField>
-                                </td>                    
-                            </tr>                
-                        </tbody>
-                    </table>
-                    <apex:outputText rendered="{!canEdit}"><div style="clear:both; text-align:center; font-style: italic;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>
+                        <h2>{!$Label.csat}</h2>                
+                        <table class="table table-striped table-bordered table-condensed">
+                            <thead>                                          
+                                <tr>
+                                    <th style="width:20%"></th>
+                                    <th style="width:20%">{!$label.Unit}</th>
+                                    <th style="text-align:right;width:20%">{!(year)}</th>
+                                    <th style="text-align:right;width:20%">{!(year-1)}</th>
+                                    <th style="text-align:right;width:20%">{!(year-2)}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                                <tr>
+                                    <th>{!$Label.csat}</th>
+                                    <td class="inputFullWidth">
+                                        <apex:outputField style="width:100%;" value="{!descripcionDelClienteActual.SCP_Certa_GC__CSAT_Unit__c}">
+                                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass"  resetFunction="resetInlineEdit"/>
+                                        </apex:outputField>
+                                    </td>
+                                    <td style="text-align:right;" class="inputFullWidth">
+                                        <apex:outputField value="{!descripcionDelClienteActual.SCP_Certa_GC__CSAT_Current_Year__c}">
+                                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass"  resetFunction="resetInlineEdit"/>
+                                        </apex:outputField>
+                                    </td>
+                                    <td style="text-align:right;" class="inputFullWidth">
+                                        <apex:outputField value="{!descripcionDelClienteActual.SCP_Certa_GC__CSAT_Last_Year__c}">
+                                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass"  resetFunction="resetInlineEdit"/>
+                                        </apex:outputField>
+                                    </td>                    
+                                    <td style="text-align:right;" class="inputFullWidth">
+                                        <apex:outputField value="{!descripcionDelClienteActual.SCP_Certa_GC__CSAT_Second_To_Last_Year__c}">
+                                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass"  resetFunction="resetInlineEdit"/>
+                                        </apex:outputField>
+                                    </td>                    
+                                </tr> 
+                            </tbody>
+                        </table>
+                        <apex:outputText ><div style="clear:both; text-align:center; font-style: italic;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>
                     </div>
-                    </apex:outputPanel>
+                </apex:outputPanel>
 
                 <!-- -------------------------------------------------------------------------------------------------------------- -->
                 <apex:outputPanel layout="block"  styleClass="panel-footer">		   			
@@ -724,7 +725,7 @@
                         <apex:actionFunction action="{!exportToExcel}" name="exportToExcel"/>
                         <apex:actionFunction action="{!SaveChanges}" name="SaveChanges" oncomplete="siEstaEnSiSeVeLaFlota();" rerender="localStrategicInitiativeTable, competidoresRender, contexto, descripciones" status="renderMeStatus"/>
                         <div class="btn-group pull-right" role="group" aria-label="...">    					
-                            <apex:outputText rendered="{!canEdit}">
+                            <apex:outputText >
                                 <button type="button" class="btn btn-default btn-sm" onclick="SaveChanges()">
                                     <span class="glyphicon glyphicon-floppy-disk icon-btn-left"></span>&nbsp;{!$Label.save}
                                 </button>
@@ -787,7 +788,7 @@
                                 <table style="border-collapse: separate;border-spacing: 5px; width: 100%;">
                                     <tr>
                                         <td style="text-align: right;">
-                                            <apex:outputText value="Nombre del Competidor del Cliente" />:
+                                            <apex:outputText value="{!$Label.scp_certa_gc__nombre_del_competidor_del_cliente}" />:
                                         </td>
                                         <td style="text-align: left;">
                                             
@@ -797,7 +798,7 @@
                                     </tr>
                                     <tr>
                                         <td style="text-align: right;">
-                                            <apex:outputText value="Información Relevante" />:
+                                            <apex:outputText value="{!$Label.scp_certa_gc__informaci_n_relevante}" />:
                                         </td>
                                         <td style="text-align: left;">
                                             <apex:inputField styleClass="competidorFact" id="competidorFact" style="width:335px;" value="{!newCompetitor.SCP_Certa_GC__Fact__c}"/><br/>

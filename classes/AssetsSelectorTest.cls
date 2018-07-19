@@ -26,6 +26,21 @@ public class AssetsSelectorTest{
         return accountIds;
     }
 
+    public static Set<String> getAssetImeis()
+    {
+        Set<String> assetImeis = new Set<String>();
+        Account account = TestDataFactory.createAccounts(1, 'Consumer')[0];
+        Asset asset = TestDataFactory.createAssets(1, account)[0];
+        asset.Imei__c = '834694392850238';
+        asset.Status = 'Active';
+
+        update asset;
+        
+        assetImeis.Add(asset.Imei__c);
+
+        return assetImeis;
+    }
+
     @isTest
     public static void SelectById_Test()
     {
@@ -53,4 +68,12 @@ public class AssetsSelectorTest{
         System.assert(listAsset.size() >= 1);
     }
 
+    @isTest
+    public static void SelectByIMEI_Test()
+    {
+        AssetsSelector assetSelector = new AssetsSelector();
+        List<Asset> listAsset = assetSelector.SelectByIMEI(getAssetImeis());
+
+        System.assert(listAsset.size() >= 1);
+    }
 }

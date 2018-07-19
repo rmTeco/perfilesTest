@@ -54,13 +54,66 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>Criteria__c</fullName>
+        <fullName>ElapsedTime__c</fullName>
         <externalId>false</externalId>
-        <label>Criterios</label>
-        <length>32768</length>
+        <label>ElapsedTime</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
         <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>5</visibleLines>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ElementName__c</fullName>
+        <externalId>false</externalId>
+        <label>ElementName</label>
+        <length>120</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ElementStepNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>ElementStepNumber</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ElementType__c</fullName>
+        <externalId>false</externalId>
+        <label>ElementType</label>
+        <length>120</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OmniScriptId__c</fullName>
+        <externalId>false</externalId>
+        <label>OmniScriptId</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OmniScriptType__c</fullName>
+        <externalId>false</externalId>
+        <label>OmniScriptType</label>
+        <length>120</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>TrackedAction__c</fullName>
@@ -77,6 +130,26 @@
         <externalId>false</externalId>
         <label>TrackedCard</label>
         <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrackingEvent__c</fullName>
+        <externalId>false</externalId>
+        <label>TrackingEvent</label>
+        <length>120</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>User__c</fullName>
+        <externalId>false</externalId>
+        <label>User</label>
+        <length>18</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -174,21 +247,10 @@
     <label>Vlocity Tracking Entry</label>
     <listViews>
         <fullName>All1</fullName>
-        <columns>OBJECT_ID</columns>
-        <columns>vlocity_cmt__VlocityInteractionToken__c</columns>
-        <columns>vlocity_cmt__TrackingService__c</columns>
-        <columns>vlocity_cmt__CustomerInteractionId__c</columns>
-        <columns>vlocity_cmt__CustomerInteractionToken__c</columns>
-        <columns>vlocity_cmt__Timestamp__c</columns>
         <columns>NAME</columns>
-        <columns>Criteria__c</columns>
-        <columns>TrackedAction__c</columns>
-        <columns>TrackedCard__c</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>vlocity_cmt__ContextId__c</columns>
-        <columns>vlocity_cmt__Data__c</columns>
-        <columns>OWNER.FIRST_NAME</columns>
+        <columns>OWNER.ALIAS</columns>
         <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>
@@ -197,9 +259,17 @@
         <fullName>vlocity_cmt__All</fullName>
         <columns>vlocity_cmt__TrackingService__c</columns>
         <columns>NAME</columns>
-        <columns>vlocity_cmt__Data__c</columns>
+        <columns>User__c</columns>
+        <columns>TrackingEvent__c</columns>
+        <columns>ElapsedTime__c</columns>
+        <columns>ElementName__c</columns>
+        <columns>ElementType__c</columns>
+        <columns>ElementStepNumber__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>OmniScriptId__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+        <language>en_US</language>
     </listViews>
     <nameField>
         <label>Vlocity Tracking Entry Name</label>

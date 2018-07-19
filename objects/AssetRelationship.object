@@ -40,26 +40,26 @@
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>AssetId</fullName>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <type>MasterDetail</type>
     </fields>
     <fields>
         <fullName>FromDate</fullName>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>RelatedAssetId</fullName>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <type>Lookup</type>
     </fields>
     <fields>
         <fullName>RelationshipType</fullName>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>ToDate</fullName>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
     </fields>
     <searchLayouts>
         <customTabListAdditionalFields>LastModifiedDate</customTabListAdditionalFields>

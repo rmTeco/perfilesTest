@@ -34,6 +34,7 @@
         <label>Step1_EquipoAprobador</label>
         <name>Step1_EquipoAprobador</name>
     </approvalStep>
+    <emailTemplate>unfiled$public/RAV_Case_Assignment</emailTemplate>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
         <formula>NOT(ISBLANK(Owner_Team__c)) &amp;&amp;  (Subject ==&apos;Inconvenientes con cargos tasados y facturados&apos;) &amp;&amp; ISBLANK( Approver__c ) &amp;&amp; ( NOT(ISBLANK(vlocity_cmt__Amount__c )))</formula>

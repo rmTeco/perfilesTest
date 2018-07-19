@@ -12,6 +12,7 @@ global with sharing class IFS_S506_getAvailableLoans {
 
     //-- Defaults --
     private static boolean K_DEBUG_ON = true;    //-- Enable / Disable Class Debug Mode.
+    private static String guId = null;
 
     @HttpPost
     global static void getPost() {
@@ -20,13 +21,33 @@ global with sharing class IFS_S506_getAvailableLoans {
         RestResponse res = RestContext.response;
         RestRequest req = RestContext.request;
 
+        writeLog ('REQ', req.requestBody.toString());
+
         ResultObj result = procesar(req.requestBody.toString());
 
         res.addHeader('Content-Type', 'application/json');
         res.statuscode = result.resultCode;
         res.responseBody = Blob.valueOf(result.resultMessage);
+
+        writeLog ('RES', result.resultCode + ';' + result.resultMessage);
     }
 
+    /**
+     * Wrapper del IFS_LogRecord.record
+     */
+    private static void writeLog (String pTipo, String pDatos) {
+        printDebug('Entre en writeLog - pTipo --> ' + pTipo + ' - pDatos --> ' + pDatos);
+        DateTime dt = DateTime.now();
+        String dts = dt.format('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'');
+
+        if (pTipo == 'REQ') {
+            guId = GuidUtil.NewGuid(); //-- Calculo el Guid.
+            //-- IFS_LogRecord.record(dts, 'SERVICIO', 'S500', guId, pTipo, pDatos, ''); -- Se habilitara cuando este aprobada la historia.
+        }
+        else {
+            //-- IFS_LogRecord.record(dts, 'SERVICIO', 'S500', guId, pTipo, '', pDatos); -- Se habilitara cuando este aprobada la historia.
+        }
+    }
 
     /**
      * Secuencia principal del servicio.
@@ -43,7 +64,7 @@ global with sharing class IFS_S506_getAvailableLoans {
                 product2Id = Id.valueOf(getProductPlanByMsisdn(jsonBody.choiceId.nroLinea));
             }
             else {
-                product2Id = Id.valueOf(getProductPlanBySubscriptionId(jsonBody.choiceId.subscriberId));
+                product2Id = Id.valueOf(getProductPlanBySubscriptionId(jsonBody.choiceId.codSuscripcion));
             }
 
             if (product2Id == null) {
@@ -69,7 +90,7 @@ global with sharing class IFS_S506_getAvailableLoans {
                 oc.descripcionOfertaProd = cp.vlocity_cmt__ChildProductId__r.Name;
                 oc.codOfertaProducto = cp.vlocity_cmt__ChildProductId__r.ProductCode;
 
-                response.lstOfertas.add(oc);
+                response.listaPrestamos.add(oc);
             }
 
             ro.resultCode = 200;
@@ -77,21 +98,21 @@ global with sharing class IFS_S506_getAvailableLoans {
         }
         catch (CalloutException ce) {
             printDebug('Error --> ' + ce.getMessage());
-            printDebug('Stactrace --> ' + ce.getStackTraceString());
+            printDebug('Stacktrace --> ' + ce.getStackTraceString());
             ro.resultCode = 400;
-            ro.resultMessage = ce.getMessage();
+            ro.resultMessage = JSON.serialize(getRespuestaNoOk('400', ce.getMessage()));
         }
         catch (FunctionalException fe) {
             printDebug('Error --> ' + fe.getMessage());
-            printDebug('Stactrace --> ' + fe.getStackTraceString());
+            printDebug('Stacktrace --> ' + fe.getStackTraceString());
             ro.resultCode = 417;
-            ro.resultMessage = fe.getMessage();
+            ro.resultMessage = JSON.serialize(getRespuestaNoOk('417', fe.getMessage()));
         }
         catch (Exception e) {
             printDebug('Error --> ' + e.getMessage());
-            printDebug('Stactrace --> ' + e.getStackTraceString());
+            printDebug('Stacktrace --> ' + e.getStackTraceString());
             ro.resultCode = 500;
-            ro.resultMessage = e.getMessage();
+            ro.resultMessage = JSON.serialize(getRespuestaNoOk('500', e.getMessage()));
         }
 
         return ro;
@@ -108,9 +129,9 @@ global with sharing class IFS_S506_getAvailableLoans {
             throw new CalloutException('Error en la validacion de los atributos del request. Vino vacio.');
         }
 
-        if (String.isBlank(pJson.choiceId.subscriberId) && String.isBlank(pJson.choiceId.nroLinea)) {
-            printDebug('El subscriber y el nroLinea no vinieron o estan vacios, como es un choice alguno tiene que venir con valor'); 
-            throw new CalloutException('Error en la validacion de los atributos del request. El choice vino vacio y debe contener al menos uno de los dos datos [subscriberId o nroLinea]');
+        if (String.isBlank(pJson.choiceId.codSuscripcion) && String.isBlank(pJson.choiceId.nroLinea)) {
+            printDebug('El codSuscripcion y el nroLinea no vinieron o estan vacios, como es un choice alguno tiene que venir con valor'); 
+            throw new CalloutException('Error en la validacion de los atributos del request. El choice vino vacio y debe contener al menos uno de los dos datos [codSuscripcion o nroLinea]');
         }
     }
 
@@ -152,7 +173,7 @@ global with sharing class IFS_S506_getAvailableLoans {
             }
         }
         catch (Exception e) {
-            throw new FunctionalException('Error al obtener el Product2Id del suscriberId: ' + pSuscriberId + '. Error: ' + e.getMessage());
+            throw new FunctionalException('Error al obtener el Product2Id del codSuscripcion: ' + pSuscriberId + '. Error: ' + e.getMessage());
         }    
     }
 
@@ -182,7 +203,7 @@ global with sharing class IFS_S506_getAvailableLoans {
         }
     }
 
-     /*
+    /**
      * Esta funcion permite obtener de una estructura json ingresada como parametro
      * un atributo determinado, en este caso value__c dentro del tag FAN_ATTCAT_000045
      * devolviendo el valor contenido en value__c en una lista de string.
@@ -237,6 +258,20 @@ global with sharing class IFS_S506_getAvailableLoans {
     }
 
 
+
+    /**
+     * @Objetivo: Arma la estructura de respuesta No Ok.
+     */
+    private static List<Map<String, String>> getRespuestaNoOk(String pCodigo, String pDescripcion) {
+        printDebug('Entre a getRespuestaNoOk()');
+        Map<String, String> mapa = new Map<String, String>();
+        List<Map<String, String>> lstErrors = new List<Map<String, String>>();
+        mapa.put('errorCode', pcodigo);
+        mapa.put('message', pDescripcion);
+        lstErrors.add(mapa);
+        return lstErrors;   
+    }
+
     /**
      * @Objetivo: Muestra el conusmo de heap size y DML + el limite.
      */
@@ -275,15 +310,15 @@ global with sharing class IFS_S506_getAvailableLoans {
     }
 
     private class ChoiceClass {
-        public String subscriberId;
+        public String codSuscripcion;
         public String nroLinea;
     }
 
     //-- Clases para soportar el response --//
     private class ToJson {
-        public List<OfertaClass> lstOfertas = null;
+        public List<OfertaClass> listaPrestamos = null;
         public ToJson () {
-            lstOfertas = new List<OfertaClass>();
+            listaPrestamos = new List<OfertaClass>();
         }
     }
 

@@ -6,7 +6,7 @@
     
     <style>
         
-        .level1, .levelGreen {
+        .level1, .levelGreen { 
         background-color: #CEFD9F;
         }
         
@@ -111,7 +111,7 @@
                             {!$Label.scp_certa_gc__hitos_relevantes}
                         </span>
                         <span style="float:left;">
-                            <c:showVideo />
+                            <a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/D8qDtoE5ccM"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
                         </span>
                     </h2>
                     <div class="row paddingRight">
@@ -162,7 +162,7 @@
                                         </thead>
                                         <tbody>
                                             <apex:variable var="c" value="{!0}"/>
-                                            <apex:repeat value="{!contenedor.Hitos_relevantes__r}" var="hito" id="number">
+                                            <apex:repeat value="{!contenedor.Hitos_Relevantes_2__r}" var="hito" id="number">
                                                 <tr>
                                                     <td id="elemento - {!c+1}">
                                                         <apex:variable var="c" value="{!c+1}"/>

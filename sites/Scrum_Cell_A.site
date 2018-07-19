@@ -9,21 +9,21 @@
     <allowStandardSearch>false</allowStandardSearch>
     <authorizationRequiredPage>CommunitiesLogin</authorizationRequiredPage>
     <bandwidthExceededPage>BandwidthExceeded</bandwidthExceededPage>
-    <browserXssProtection>false</browserXssProtection>
+    <browserXssProtection>true</browserXssProtection>
     <clickjackProtectionLevel>SameOriginOnly</clickjackProtectionLevel>
-    <contentSniffingProtection>false</contentSniffingProtection>
-    <cspUpgradeInsecureRequests>false</cspUpgradeInsecureRequests>
+    <contentSniffingProtection>true</contentSniffingProtection>
+    <cspUpgradeInsecureRequests>true</cspUpgradeInsecureRequests>
     <fileNotFoundPage>FileNotFound</fileNotFoundPage>
     <genericErrorPage>Exception</genericErrorPage>
     <inMaintenancePage>InMaintenance</inMaintenancePage>
     <indexPage>CommunitiesLanding</indexPage>
     <masterLabel>Scrum Cell A</masterLabel>
-    <referrerPolicyOriginWhenCrossOrigin>false</referrerPolicyOriginWhenCrossOrigin>
+    <referrerPolicyOriginWhenCrossOrigin>true</referrerPolicyOriginWhenCrossOrigin>
     <requireHttps>true</requireHttps>
     <requireInsecurePortalAccess>false</requireInsecurePortalAccess>
     <selfRegPage>CommunitiesSelfReg</selfRegPage>
-    <siteAdmin>pabloalberto.febolo@personal.com.ar</siteAdmin>
+    <siteAdmin>gsrueda@vlocity.com.fan</siteAdmin>
     <siteType>ChatterNetwork</siteType>
-    <subdomain>desa01</subdomain>
+    <subdomain>scrumcella</subdomain>
     <urlPathPrefix>scrumcella</urlPathPrefix>
 </CustomSite>

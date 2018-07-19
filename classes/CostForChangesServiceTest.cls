@@ -379,4 +379,4 @@ private class CostForChangesServiceTest {
         //System.assertEquals(null, result);
         System.assert(true);
     }
-}
+  }

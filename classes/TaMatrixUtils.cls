@@ -51,6 +51,12 @@ public with sharing class TaMatrixUtils {
             if(procedureName == 'StockMovementOperation'){
                 responseTest.put('StockMovementOperation__OperationCode', 'MTPL');
                 responseTest.put('StockMovementOperation__DestinationDepositCode', 'VICLIE');
+            } else if(procedureName == 'DeliveryMethodServiceCodes'){
+                responseTest.put('DeliveryMethodServiceCodes__DeliveryMethodServiceCode', 'FAN_ENV_001');       
+            } else if (procedureName == 'ManageableIdentityValidation'){  
+                responseTest.put('ManageableIdentityValidation__ValidationRequired', 'false');
+            } else if (procedureName == 'StockAvailableCode'){  
+                responseTest.put('StockAvailableCode__StockAvailableCode', 'MTPL,MTCA,MCVM');
             } else {
                 responseTest = null; 
             }
@@ -82,6 +88,14 @@ public with sharing class TaMatrixUtils {
         
         return 'NO';
     }
+
+    // PFTA-7756 - INI
+    public static Map<String, Object> getDeliveryMethodServiceCode(String deliveryMethodService){
+        Map<String, String> parameters = new Map<String, String>();
+        parameters.put('DeliveryMethodServiceName', deliveryMethodService.replace(' ', ''));
+        return (Map<String, Object>)checkMatrix('DeliveryMethodServiceCodes', parameters);
+    }
+    // PFTA-7756 - FIN
 
     public static Map<String, Object> getMediosDePago(String canalDeVenta){
         Map<String, String> parameters = new Map<String, String>();

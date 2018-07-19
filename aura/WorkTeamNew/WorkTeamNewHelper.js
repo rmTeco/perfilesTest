@@ -71,13 +71,14 @@
         var workTeam = component.get("v.WorkTeam");
         var manager = component.get("v.Manager.Id");
         var parent = component.get("v.WorkTeamParent.Id");
+        var location = component.get("v.WorkTeamLocation.Id");
         var action = component.get("c.createWorkTeam");
         workTeam.Team_Name__c = workTeam.Name;
         action.setParams({
             "workTeam": workTeam,
             "manager": manager,
-            "parent": parent
-            
+            "parent": parent,
+            "location": location
         });
         
         action.setCallback(this, function(response) {
@@ -138,5 +139,35 @@
                 location.reload();
             }   
         }
+    },
+    searchStoreLocations : function(component,event) {
+        component.set("v.SitesLocation",[]);
+        var siteLocation = component.get("v.WorkTeamLocation");
+        var action = component.get("c.getStoreLocationByWorkTeamName");
+        action.setParams({
+            "keyName": siteLocation.Name
+        });
+        
+        action.setCallback(this, function(response) {
+            if (response.getState() === "SUCCESS") {
+                component.set("v.WorkTeamLocations", response.getReturnValue());
+                this.showStoreLocationsModal();
+            }else{
+                console.log('error: '+response.getState());
+            }
+        });
+        // Send action off to be executed
+        $A.enqueueAction(action);
+    },
+    selectThisStoreLocation : function(component, event) {
+        var WorkTeamLocation = event.getSource().get("v.title");
+        component.set("v.WorkTeamLocation",WorkTeamLocation);
+        this.hiddenStoreLocationsModal();
+    },
+    hiddenStoreLocationsModal : function() {
+        document.getElementById("storeLocationModal__c").style.display = "none";
+    },
+    showStoreLocationsModal : function() {
+        document.getElementById("storeLocationModal__c").style.display = "block";
     }
 })

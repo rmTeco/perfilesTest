@@ -507,7 +507,6 @@
 		    	hasChanged = false;
 		        listNodes = new Array();
 		        createTree($j(".jOrgChart > table"), "Parent");         
-		        //Certa_SCP.AccountOrganizationChart.saveOrg(listNodes, function(){
 		        SCP_Certa_GC.AccountOrganizationChart.saveOrg(listNodes, function(){
 		            location.reload();
 		        });
@@ -525,9 +524,9 @@
 	    				<span style="float:left;">
 	    					{!$Label.scp_certa_gc__influence_org}
 	    				</span>
-	    				<span style="float:left;">
-	    					<c:showVideo />
-	    				</span>
+                        <span style="float:left;">
+                            <a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/q4FMC3XaKC0"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
+                        </span>
 	    			</h3>   			
 	    			<div class="row paddingRight">   					
 						<div class="btn-group pull-right" role="group" aria-label="...">	    					
@@ -548,13 +547,7 @@
 	                        <button type="button" class="btn btn-default btn-sm save">
 		   						<span class="glyphicon glyphicon-floppy-disk icon-btn-left"></span>&nbsp;{!$Label.save_changes}
 		                    </button>
-		                    
-		                    <button type="button" class="btn btn-default btn-sm" onclick="backToContacts();">
-		   						<span class="glyphicon glyphicon-circle-arrow-left icon-btn-left"></span>&nbsp;{!$Label.back_to_contact}
-		                    </button>
-	                        <!-- 
-	                        <a href="{!$Page.accountOrganizationChartWindow}?id={!account.id}"><span class="myBtn"><apex:outputText value="{!$Label.back_to_contact}"/></span></a>
-	                         -->
+
 	    				</div>
 	    			</div>
 	    		</div>
@@ -626,7 +619,7 @@
 		                			<tfoot>
 			                			<tr>		                			
 			                				<td colspan="2" style="text-align: center">
-			                					<apex:commandButton styleClass="btn btn-default btn-sm" action="{!saveContacts}" value="{!$Label.scp_certa_gc__save}" oncomplete="saveClick()" reRender=" "/> 
+			                					<apex:commandButton styleClass="btn btn-default btn-sm" action="{!saveContacts}" value="{!$Label.scp_certa_gc__save}" oncomplete="saveClick()" reRender="null"/> 
 			                				</td>
 			                			</tr> 
 		                			</tfoot>
@@ -668,9 +661,7 @@
 	                        <button type="button" class="btn btn-default btn-sm save">
 		   						<span class="glyphicon glyphicon-floppy-disk icon-btn-left"></span>&nbsp;{!$Label.save_changes}
 		                    </button>
-		                    <button type="button" class="btn btn-default btn-sm" onclick="backToContacts();">
-		   						<span class="glyphicon glyphicon-circle-arrow-left icon-btn-left"></span>&nbsp;{!$Label.back_to_contact}
-		                    </button>
+
 						</div>
 	    			</div>
 	    		</div>

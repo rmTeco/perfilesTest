@@ -80,6 +80,18 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>SCP_Certa_GC__Hito_Relevante_2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Hito Relevante 2</label>
+        <referenceTo>SCP_Certa_GC__Hito_Relevante_2__c</referenceTo>
+        <relationshipLabel>Actividades</relationshipLabel>
+        <relationshipName>Actividades</relationshipName>
+        <required>false</required>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>SCP_Certa_GC__URL__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>

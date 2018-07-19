@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <customConsoleComponents>
-        <primaryTabComponents>
-            <containers>
-                <isContainerAutoSizeEnabled>true</isContainerAutoSizeEnabled>
-                <region>Right</region>
-                <sidebarComponents>
-                    <componentType>VisualForcePage</componentType>
-                    <height>100</height>
-                    <page>ta_Care_ConsoleRightSidebar</page>
-                    <unit>Percentage</unit>
-                </sidebarComponents>
-                <style>Stack</style>
-                <unit>Pixel</unit>
-                <width>300</width>
-            </containers>
-        </primaryTabComponents>
-    </customConsoleComponents>
+    <excludeButtons>DataDotComAccountInsights</excludeButtons>
+    <excludeButtons>DataDotComClean</excludeButtons>
+    <excludeButtons>DataDotComCompanyHierarchy</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -118,11 +104,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>CuitNumber__c</field>
+                <field>AccountIntegrationId__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>AccountIntegrationId__c</field>
+                <behavior>Edit</behavior>
+                <field>CuitNumber__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -175,22 +161,6 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>UserLevel__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Billing_Address__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Migrated__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Shipping_Address__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Club_SubscriptionDate__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -389,41 +359,6 @@
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedNoteList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <fields>Case__c</fields>
-        <fields>OWNER.FIRST_NAME</fields>
-        <fields>OWNER.LAST_NAME</fields>
-        <relatedList>Transaction_History__c.Account__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>GP_Socio__c.Cuenta__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>DRAsset__c.Account__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>DRAsset__c.AssetProvidedBy__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>DRAsset__c.AssetServicedBy__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>DRAsset__c.BillingAccount__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>DRAsset__c.Service_AccountId__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>GP_Aviso_Vencimiento__c.Cuenta__c</relatedList>
     </relatedLists>
     <relatedObjects>ParentId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>

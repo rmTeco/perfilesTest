@@ -6,8 +6,9 @@ public class taSalesAnnulmentHandlerTest
     Account account = TestDataFactory.createAccounts(1, 'Consumer')[0];
     account.AccountIntegrationId__c = '10000000564';
     update account;
-
+    Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
     vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(
+      RecordTypeId = idRecordType,
       Name = 'Barrio Norte',
       vlocity_cmt__OrganizationId__c = Account.Id,
       Status__c = 'Activo',
@@ -87,10 +88,50 @@ public class taSalesAnnulmentHandlerTest
 
     OrderItem item = TestDataFactory.createOrderItem(1, order)[0];
     item.vlocity_cmt__SerialNumber__c = '89543410307680582547';
+    update item;
+    
+    options.put('orderId', order.id);
 
     Test.startTest();
       taSalesAnnulmentHandler tsah = new taSalesAnnulmentHandler();
       tsah.invokeMethod('ReturnSerialsToStock', inputMap, outMap, options);
+    Test.stopTest();
+  }
+  
+  @isTest static void ReturnSerialsToStockCEG()
+  {
+    Map<String, Object> inputMap = new Map<String, Object>();
+    Map<String, Object> outMap = new Map<String, Object>();
+    Map<String, Object> options = new Map<String, Object>();
+
+    Account account = TestDataFactory.createAccounts(1, 'Consumer')[0];
+    
+    vlocity_cmt__BusinessSite__c bsns = TestDataFactory.createStoreLocation('Test');
+    bsns.Channel_Type_3__c = 'Oficinas Comerciales';
+    bsns.Channel_Type_2__c = 'Oficinas Comerciales';
+    bsns.Channel_Type__c = 'Oficinas Comerciales';
+    bsns.Channel__c = 'Físico';
+    update bsns;
+    
+    Order order = TestDataFactory.createOrders(1, account)[0];
+    order.Gestion__c = 'Cambio en Garantia';
+    //order.Gestion__c = 'Venta';
+    order.OriginStoreLocation__c = bsns.id;
+    update order;
+
+    OrderItem item = TestDataFactory.createOrderItem(1, order)[0];
+    item.vlocity_cmt__SerialNumber__c = '89543410307680582547';
+    update item;
+    
+    options.put('orderId', order.id);
+    options.put('annulmentOrderId', order.id);
+
+    Test.startTest();
+      taSalesAnnulmentHandler tsah = new taSalesAnnulmentHandler();
+      tsah.invokeMethod('ValidateOrderCEG', inputMap, outMap, options);
+      tsah.invokeMethod('ValidatePuntoDeVenta', inputMap, outMap, options);
+      tsah.invokeMethod('ValidateCanalPresencial', inputMap, outMap, options);
+      tsah.invokeMethod('ReturnSerialsToStockCEG', inputMap, outMap, options);
     Test.stopTest();
   }
 
@@ -160,8 +201,9 @@ public class taSalesAnnulmentHandlerTest
     Account account = TestDataFactory.createAccounts(1, 'Consumer')[0];
     account.AccountIntegrationId__c = '10000000564';
     update account;
-
+    Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
     vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(
+      RecordTypeId = idRecordType,
       Name = 'Barrio Norte',
       vlocity_cmt__OrganizationId__c = Account.Id,
       Status__c = 'Activo',
@@ -275,8 +317,9 @@ public class taSalesAnnulmentHandlerTest
     Map<String, Object> options = new Map<String, Object>();
 
     Account account = TestDataFactory.createAccounts(1, 'Consumer')[0];
-
+    Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
     vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(
+      RecordTypeId = idRecordType,
       Name = 'Test',
       vlocity_cmt__OrganizationId__c = Account.Id,
       Status__c = 'Activo',

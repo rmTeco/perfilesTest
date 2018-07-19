@@ -59,7 +59,7 @@
                             </aura:renderIf>
                         </span>
 
-                        <ui:button aura:id="forgotPasswordButton" label="Olvidé mi contraseña" press="{!c.navigateToForgotPassword}" class="sfdc_button forgot input"/>
+                        
                             
                     </div>
 
@@ -68,6 +68,8 @@
                     <div class="sfdc">
                         <ui:button aura:id="submitButton" label="Ingresar" press="{!c.handleLogin}" class="sfdc_button loginBtn"/>
                     </div>
+                    
+                    <ui:button aura:id="forgotPasswordButton" label="Olvidé mi contraseña" press="{!c.navigateToForgotPassword}" class="sfdc_button forgot input"/>
                 </div>
                 <hr class="hr-bottom"/>
                 <div class="form-container">

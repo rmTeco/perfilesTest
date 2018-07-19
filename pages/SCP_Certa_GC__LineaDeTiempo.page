@@ -256,8 +256,12 @@
             <div class="panel-heading" style="height: 107px;">
                 <h2 class="panel-title">
                     <span style="float:left;">
-                        Cronograma de Cuenta
+                        {!$Label.Cronograma_de_Cuenta}
                     </span>
+                    
+                    <span style="float:left;">
+    					<a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/a3I95tKsT_o"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
+    				</span>
                 </h2>
                 
                 <div class="row paddingRight">

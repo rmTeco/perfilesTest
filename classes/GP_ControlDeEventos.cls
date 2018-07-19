@@ -1,7 +1,7 @@
 public with sharing class GP_ControlDeEventos{
 
-    public static List<GP_sumarRestarPuntosItem> controlarSocios(List<GP_sumarRestarPuntosItem> datosTransaccion) {
-        List<GP_sumarRestarPuntosItem> datosFiltrados = new List<GP_sumarRestarPuntosItem>();
+    public static List<GP_datosTransaccion> controlarSocios(List<GP_datosTransaccion> datosTransaccion) {
+        List<GP_datosTransaccion> datosFiltrados = new List<GP_datosTransaccion>();
 
         List<GP_Evento_descriptor__c> descEventos = new List<GP_Evento_descriptor__c>();
         Map<String,GP_Evento_descriptor__c> descEventoMap = new Map<String,GP_Evento_descriptor__c>();
@@ -20,28 +20,23 @@ public with sharing class GP_ControlDeEventos{
         listaSocioEvento.add('notNull');
 
         //Preparo los sets para las queries
-        for(GP_sumarRestarPuntosItem datos : datosTransaccion) {
-           
-            if(!String.isBlank(datos.suscriptorID) && datos.suscriptorID != '0') {
+        for(GP_datosTransaccion datos : datosTransaccion) {
+            if(!String.isBlank(datos.suscriptorID)) {
                 idGPAUX = datos.suscriptorID + datos.titularId;
             } else {
                 idGPAUX = datos.titularId + '0';    //Quizas se borre el '0'
             }
-            
-            system.debug(idGPAUX);
-            
             if(!idGPSocios.contains(idGPAUX)) {
                 idGPSocios.add(idGPAUX);
             }
-            
-            if(datos.tipoDeEvento != null && !tiposDeEvento.contains(datos.tipoDeEvento)) {
-                tiposDeEvento.add(datos.tipoDeEvento);
+            if(datos.tipoEvento != null && !tiposDeEvento.contains(datos.tipoEvento)) {
+                tiposDeEvento.add(datos.tipoEvento);
             }
         }
 
         //Consigo las reglas de control de eventos
         if(tiposDeEvento.size() > 0) {
-            descEventos = [ Select Id,Tipo_de_evento__c,Frecuencia_permitida__c
+            descEventos = [ Select Id,Tipo_de_evento__c,Frecuencia_permitida__c,Json_attribute__c 
                             From GP_Evento_descriptor__c 
                             Where Tipo_de_evento__c in: tiposDeEvento];
         } else {
@@ -59,10 +54,7 @@ public with sharing class GP_ControlDeEventos{
         if(idGPSocios.size() > 0) {
             List<GP_Socio__c> socios = [Select Id, Id_GP__c
                                         From GP_Socio__c
-                                        Where Id_GP__c in :idGPSocios];
-                                        
-                                        system.debug(idGPSocios);
-                                        system.debug(socios);
+                                        Where Id_GP__c in :idGPSocios]; 
             if(socios.size() > 0) {
                 for(GP_Socio__c socio : socios) {
                     if(!idsSocios.contains(socio.Id)){
@@ -96,23 +88,20 @@ public with sharing class GP_ControlDeEventos{
             }
         }
 
-        for(GP_sumarRestarPuntosItem datos : datosTransaccion) {
+        for(GP_datosTransaccion datos : datosTransaccion) {
 
-            if(!String.isBlank(datos.suscriptorID) && datos.suscriptorID != '0') {
+            if(!String.isBlank(datos.suscriptorID)) {
                 idGPAUX = datos.suscriptorID + datos.titularId;
             } else {
                 idGPAUX = datos.titularId + '0';    //Quizas se borre el '0'
             }
-            
-            if(String.isBlank(datos.tipoDeEvento)) {
+            if(String.isBlank(datos.tipoEvento)) {
                 error += 'El Tipo de Evento es obligatorio y no acepta valor nulo ++ ';
                 break;
             }
             GP_Socio__c socioAUX = new GP_Socio__c();
             if(sociosMap.size() > 0) {
                 socioAUX = sociosMap.get(idGPAUX);
-                system.debug(sociosMap);
-                system.debug(idGPAUX);
             } else {
                 error += 'No se procesaron los socios requeridos ++';
                 break;
@@ -121,82 +110,70 @@ public with sharing class GP_ControlDeEventos{
             // existeSocioEvento = true; Si existe un control de evento para ese socio
             Boolean existeSocioEvento = false;
             if(ctrlEventoMap.size() > 0) {
-                system.debug(datos.tipoDeEvento);
-                system.debug(socioAUX);
-                existeSocioEvento = ctrlEventoMap.containsKey(socioAUX.Id + datos.tipoDeEvento);
+                existeSocioEvento = ctrlEventoMap.containsKey(socioAUX.Id + datos.tipoEvento);
             }
             if(existeSocioEvento) {
-                ctrlEventoSocio = ctrlEventoMap.get(socioAUX.Id + datos.tipoDeEvento);
+                ctrlEventoSocio = ctrlEventoMap.get(socioAUX.Id + datos.tipoEvento);
             }
 
             GP_Evento_descriptor__c descEventoAUX = new GP_Evento_descriptor__c();
             Boolean existeTipoEvento = false;
             if(descEventoMap.size() > 0) {
-                existeTipoEvento = descEventoMap.containsKey(datos.tipoDeEvento);
+                existeTipoEvento = descEventoMap.containsKey(datos.tipoEvento);
             }
             if(existeTipoEvento) {
-                descEventoAUX = descEventoMap.get(datos.tipoDeEvento);
+                descEventoAUX = descEventoMap.get(datos.tipoEvento);
             } else {
                 descEventoAUX = new GP_Evento_descriptor__c(Frecuencia_permitida__c = 'Sin restriccion');
             }
             //fueProcesadoHoy = true; Si el socio realizo el evento en ciclo anterior del for
-            system.debug(socioAUX);
-            Boolean fueProcesadoHoy = listaSocioEvento.contains(socioAUX.Id + datos.tipoDeEvento);
+            Boolean fueProcesadoHoy = listaSocioEvento.contains(socioAUX.Id + datos.tipoEvento);
 
             if(descEventoAUX.Frecuencia_permitida__c == 'Diaria') {
                 //veo si el evento ya sucedio en el día
                 if(!fueProcesadoHoy && !existeSocioEvento) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 } else if(!fueProcesadoHoy && ctrlEventoSocio.Fecha_ultimo_evento__c < Date.Today()) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 }
             } else if(descEventoAUX.Frecuencia_permitida__c == 'Semanal') {
                 //veo si el evento ya sucedio en la semana
                 if(!fueProcesadoHoy && !existeSocioEvento) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 } else if(!fueProcesadoHoy && ctrlEventoSocio.Fecha_ultimo_evento__c < Date.Today().toStartOfWeek()) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 }
             } else if(descEventoAUX.Frecuencia_permitida__c == 'Mensual') {
                 //veo si el evento ya sucedio en el mes
                 if(!fueProcesadoHoy && !existeSocioEvento) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 } else if(!fueProcesadoHoy && ctrlEventoSocio.Fecha_ultimo_evento__c.Month() < Date.Today().Month()) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
-                }
-            } else if(descEventoAUX.Frecuencia_permitida__c == 'Tres Meses') {
-                //veo si el evento ya sucedio en los ultimos tres meses
-                if(!fueProcesadoHoy && !existeSocioEvento) {
-                    datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
-                } else if(!fueProcesadoHoy && ctrlEventoSocio.Fecha_ultimo_evento__c.addMonths(3) < Date.Today()) {
-                    datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 }
             } else if(descEventoAUX.Frecuencia_permitida__c == 'Anual') {
                 //veo si el evento ya sucedio en el año
                 if(!fueProcesadoHoy && !existeSocioEvento) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 } else if(!fueProcesadoHoy && ctrlEventoSocio.Fecha_ultimo_evento__c.Year() < Date.Today().Year()) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 }
             } else if(descEventoAUX.Frecuencia_permitida__c == 'Unica Vez' && !existeSocioEvento) {
                 //veo si el evento ya sucedio alguna vez
                 if(!fueProcesadoHoy) {
                     datosFiltrados.add(datos);
-                    listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                    listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
                 }
             } else if(descEventoAUX.Frecuencia_permitida__c == 'Sin restriccion') {
                 datosFiltrados.add(datos);
-                listaSocioEvento.add(socioAUX.Id + datos.tipoDeEvento);
+                listaSocioEvento.add(socioAUX.Id + datos.tipoEvento);
             }
         }
         if(error != '') {

@@ -9,9 +9,10 @@ public class MktgMCSyncTest {
         //List<Campaign> campaignList = TestDataFactory.createCampaigns(1);
         List<Campaign> campaignList = new List<Campaign>();
         for(Integer i = 0; i < 50 ; i++) {
-            Campaign cp = new Campaign(Name = 'Test Campaign ' + i,                                      
-                                       Channel_Type__c  = 'OUT', Channel__c  = 'SMS',  Type = 'Desarrollo',
-                                       Destination__c = 'Masivo',SubtypeL1__c = 'Fidelización', SubtypeL2__c = 'Club Personal');
+            Campaign cp = new Campaign(Name = 'Test Campaign ' + i, Campaign_Type__c = 'Desarrollo',
+                                       Campaign_Subtype__c = 'Fidelización', Campaign_Subtype_2__c = 'Club Personal', 
+                                       Channel_Type__c  = 'OUT', Channel__c  = 'SMS', Campaign_Destiny__c = 'Masivo', Type = 'Desarrollo',
+                                       Destination__c = 'Masivo',SubtypeL1__c = 'Activ. Comercial', SubtypeL2__c = 'Cambio de Terminal');
             campaignList.add(cp);
         }
        
@@ -35,5 +36,4 @@ public class MktgMCSyncTest {
             
         Test.stopTest();
     }
-
 }

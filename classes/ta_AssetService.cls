@@ -55,6 +55,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
             Map<String, Object> assetBalance = new Map<String, Object>();
             String statusAsset;
             System.debug('Linea: '+String.valueOf(PlanAsset.get('LineNumber')));
+            System.debug('AssetId: '+String.valueOf(PlanAsset.get('AssetId')));
 
             if(String.valueOf(PlanAsset.get('LineNumber')) != null)
             {
@@ -64,7 +65,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
                 if(assetBalance != null) 
                 {
                     System.debug('assetBalance: ' + assetBalance);
-                    List<Map<String, Object>> freeUnits = GetFreeUnits(assetBalance, String.valueOf(PlanAsset.get('LineNumber')));
+                    List<Map<String, Object>> freeUnits = GetFreeUnits(assetBalance, String.valueOf(PlanAsset.get('LineNumber')),String.valueOf(PlanAsset.get('AssetId')));
 
                     if(freeUnits != null)
                     {
@@ -81,7 +82,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
                     {
                         Map<String, Object> totalUnidadesLibres = new Map<String, Object>();
                         Map<String, Object> unidadLibre = new Map<String, Object>();
-                        unidadLibre.put('unidadLibre', notBalanceFound(String.valueOf(PlanAsset.get('LineNumber')), statusAsset));
+                        unidadLibre.put('unidadLibre', notBalanceFound(String.valueOf(PlanAsset.get('LineNumber')), statusAsset, String.valueOf(PlanAsset.get('AssetId'))));
                         totalUnidadesLibres.put('totalUnidadesLibres',unidadLibre);
                         PlanAsset.put('Balance', totalUnidadesLibres);
                     }
@@ -90,7 +91,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
                 {
                     Map<String, Object> totalUnidadesLibres = new Map<String, Object>();
                     Map<String, Object> unidadLibre = new Map<String, Object>();
-                    unidadLibre.put('unidadLibre', notBalanceFound(String.valueOf(PlanAsset.get('LineNumber')), statusAsset));
+                    unidadLibre.put('unidadLibre', notBalanceFound(String.valueOf(PlanAsset.get('LineNumber')), statusAsset,String.valueOf(PlanAsset.get('AssetId'))));
                     totalUnidadesLibres.put('totalUnidadesLibres',unidadLibre);
                     PlanAsset.put('Balance', totalUnidadesLibres);
                 }
@@ -99,7 +100,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
             {
                 Map<String, Object> totalUnidadesLibres = new Map<String, Object>();
                 Map<String, Object> unidadLibre = new Map<String, Object>();
-                unidadLibre.put('unidadLibre', notBalanceFound(String.valueOf(PlanAsset.get('LineNumber')), statusAsset));
+                unidadLibre.put('unidadLibre', notBalanceFound(String.valueOf(PlanAsset.get('LineNumber')), statusAsset, String.valueOf(PlanAsset.get('AssetId'))));
                 totalUnidadesLibres.put('totalUnidadesLibres',unidadLibre);
                 PlanAsset.put('Balance', totalUnidadesLibres);
             }
@@ -111,7 +112,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
     }
 
     @TestVisible 
-    private List<Map<String, Object>> notBalanceFound(String lineNumber, String statusAsset) {
+    private List<Map<String, Object>> notBalanceFound(String lineNumber, String statusAsset, String assetId) {
         try
         {
             Map<String, Object> noBalanceFoundVoice = new Map<String, Object>();
@@ -128,6 +129,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
             noBalanceFoundVoice.put('codUsoUnidadesLibres','Voice');
             noBalanceFoundVoice.put('lineNumber',lineNumber);
             noBalanceFoundVoice.put('status',statusAsset);
+            noBalanceFoundVoice.put('AssetId',assetId);
             ul.add(noBalanceFoundVoice);
             noBalanceFoundSMS.put('freeUnitCode', '');
             noBalanceFoundSMS.put('remainingSecondaryUnits', 'Sin datos');
@@ -138,6 +140,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
             noBalanceFoundSMS.put('codUsoUnidadesLibres','SMS');
             noBalanceFoundSMS.put('lineNumber',lineNumber);
             noBalanceFoundSMS.put('status',statusAsset);
+            noBalanceFoundSMS.put('AssetId',assetId);
             ul.add(noBalanceFoundSMS);
             noBalanceFoundInternet.put('freeUnitCode', 'Internet');
             noBalanceFoundInternet.put('remainingSecondaryUnits', 'Sin datos');
@@ -148,6 +151,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
             noBalanceFoundInternet.put('codUsoUnidadesLibres','Data');
             noBalanceFoundInternet.put('lineNumber', lineNumber);
             noBalanceFoundInternet.put('status',statusAsset);
+            noBalanceFoundInternet.put('AssetId',assetId);
             ul.add(noBalanceFoundInternet);
 
             return ul;
@@ -219,7 +223,7 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
     }
 
     @TestVisible 
-    private List<Map<String, Object>> GetFreeUnits(Map<String, Object> assetBalance, String lineNumber) 
+    private List<Map<String, Object>> GetFreeUnits(Map<String, Object> assetBalance, String lineNumber, String assetId) 
     {
         try {
             List<Map<String, Object>> newFreeUnitsList = new List<Map<String, Object>>();
@@ -277,7 +281,9 @@ global with sharing class ta_AssetService  implements vlocity_cmt.VlocityOpenInt
                 freeUnit.put('remainingSecondaryUnits', remainingSecondaryUnits);
                 freeUnit.put('freeUnitCode', newFreeUnitCode);
                 freeUnit.put('lineNumber', lineNumber); //Agregamos el nodo para poder leerlo en el Flyout
+                freeUnit.put('AssetId', assetId); //PFTA-11225. Necesitamos el AssetId para poder mandarlo como parametro en el flyout
 
+                System.debug('newFreeUnit: '+JSON.serialize(newFreeUnit));
                 newFreeUnitsList.add(newFreeUnit);
             }
 

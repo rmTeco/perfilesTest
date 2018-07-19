@@ -137,7 +137,7 @@
             </defaultShortcuts>
             <defaultShortcuts>
                 <action>TOGGLE_RIGHT_SIDEBAR</action>
-                <active>true</active>
+                <active>false</active>
                 <keyCommand>SHIFT+RIGHT ARROW</keyCommand>
             </defaultShortcuts>
             <defaultShortcuts>
@@ -170,8 +170,9 @@
     <defaultLandingTab>standard-home</defaultLandingTab>
     <isServiceCloudConsole>true</isServiceCloudConsole>
     <label>Consola FAN</label>
+    <logo>SharedDocuments/TelecomLogo.png</logo>
     <preferences>
-        <enableCustomizeMyTabs>false</enableCustomizeMyTabs>
+        <enableCustomizeMyTabs>true</enableCustomizeMyTabs>
         <enableKeyboardShortcuts>true</enableKeyboardShortcuts>
         <enableListViewHover>true</enableListViewHover>
         <enableListViewReskin>true</enableListViewReskin>
@@ -187,44 +188,23 @@
     <tabs>Case_Channel_Configuration__c</tabs>
     <tabs>standard-Order</tabs>
     <tabs>standard-Asset</tabs>
+    <tabs>standard-Opportunity</tabs>
+    <tabs>standard-home</tabs>
     <tabs>vlocity_cmt__Premises__c</tabs>
+    <tabs>vlocity_cmt__ObjectClass__c</tabs>
     <tabs>vlocity_cmt__ObjectLayout__c</tabs>
     <tabs>vlocity_cmt__AttributeAssignment__c</tabs>
     <tabs>vlocity_cmt__BusinessSite__c</tabs>
     <tabs>vlocity_cmt__PromotionItem__c</tabs>
-    <tabs>vlocity_cmt__PricingElement__c</tabs>
-    <tabs>vlocity_cmt__Datastore__c</tabs>
     <tabs>Eventos_Masivos</tabs>
     <tabs>Servicio_Tecnico</tabs>
-    <tabs>Crossobject__c</tabs>
-    <tabs>standard-home</tabs>
-    <tabs>Transaction_History__c</tabs>
-    <tabs>ReglasGestorPuntos</tabs>
-    <tabs>FinancialPromotion__c</tabs>
-    <tabs>standard-Knowledge</tabs>
-    <tabs>GP_Atributo_de_una_transaccion__c</tabs>
-    <tabs>GP_Socio__c</tabs>
-    <tabs>Work_Team_Permission__c</tabs>
-    <tabs>vlocity_cmt__InboundRESTInterface__c</tabs>
-    <tabs>DRAsset__c</tabs>
-    <tabs>Work_Team_Management</tabs>
-    <tabs>standard-KnowledgePublishing</tabs>
-    <tabs>KB_Interface</tabs>
-    <tabs>Address2__c</tabs>
-    <tabs>ManageMyWorkTeams</tabs>
-    <tabs>ManageCrossTeamMembers</tabs>
     <tabs>vlocity_cmt__SyncDeltaObject__c</tabs>
-    <tabs>Mantenimiento_de_Eventos</tabs>
-    <tabs>GP_Evento_General__c</tabs>
-    <tabs>Permissions_by_workteam</tabs>
-    <tabs>DebugInfo__c</tabs>
-    <tabs>UI_ReproReporter</tabs>
-    <tabs>standard-OmniSupervisor</tabs>
-    <tabs>vlocity_cmt__OrchestrationItemDefinition__c</tabs>
+    <tabs>Team_Member__c</tabs>
+    <tabs>vlocity_cmt__InboundRESTInterface__c</tabs>
+    <tabs>Repro_Reporter</tabs>
+    <tabs>Permissions_by_Work_Team</tabs>
+    <tabs>standard-Contact</tabs>
     <workspaceConfig>
-        <mappings>
-            <tab>Address2__c</tab>
-        </mappings>
         <mappings>
             <tab>Case_Channel_Configuration__c</tab>
         </mappings>
@@ -232,61 +212,19 @@
             <tab>Case_Resolution_Time__c</tab>
         </mappings>
         <mappings>
-            <tab>Crossobject__c</tab>
-        </mappings>
-        <mappings>
-            <tab>DRAsset__c</tab>
-        </mappings>
-        <mappings>
-            <tab>DebugInfo__c</tab>
-        </mappings>
-        <mappings>
             <tab>Eventos_Masivos</tab>
         </mappings>
         <mappings>
-            <tab>FinancialPromotion__c</tab>
+            <tab>Permissions_by_Work_Team</tab>
         </mappings>
         <mappings>
-            <tab>GP_Atributo_de_una_transaccion__c</tab>
-        </mappings>
-        <mappings>
-            <tab>GP_Evento_General__c</tab>
-        </mappings>
-        <mappings>
-            <tab>GP_Socio__c</tab>
-        </mappings>
-        <mappings>
-            <tab>KB_Interface</tab>
-        </mappings>
-        <mappings>
-            <tab>ManageCrossTeamMembers</tab>
-        </mappings>
-        <mappings>
-            <tab>ManageMyWorkTeams</tab>
-        </mappings>
-        <mappings>
-            <tab>Mantenimiento_de_Eventos</tab>
-        </mappings>
-        <mappings>
-            <tab>Permissions_by_workteam</tab>
-        </mappings>
-        <mappings>
-            <tab>ReglasGestorPuntos</tab>
+            <tab>Repro_Reporter</tab>
         </mappings>
         <mappings>
             <tab>Servicio_Tecnico</tab>
         </mappings>
         <mappings>
-            <tab>Transaction_History__c</tab>
-        </mappings>
-        <mappings>
-            <tab>UI_ReproReporter</tab>
-        </mappings>
-        <mappings>
-            <tab>Work_Team_Management</tab>
-        </mappings>
-        <mappings>
-            <tab>Work_Team_Permission__c</tab>
+            <tab>Team_Member__c</tab>
         </mappings>
         <mappings>
             <tab>standard-Account</tab>
@@ -298,13 +236,10 @@
             <tab>standard-Case</tab>
         </mappings>
         <mappings>
-            <tab>standard-Knowledge</tab>
+            <tab>standard-Contact</tab>
         </mappings>
         <mappings>
-            <tab>standard-KnowledgePublishing</tab>
-        </mappings>
-        <mappings>
-            <tab>standard-OmniSupervisor</tab>
+            <tab>standard-Opportunity</tab>
         </mappings>
         <mappings>
             <tab>standard-Order</tab>
@@ -319,22 +254,16 @@
             <tab>vlocity_cmt__BusinessSite__c</tab>
         </mappings>
         <mappings>
-            <tab>vlocity_cmt__Datastore__c</tab>
+            <tab>vlocity_cmt__InboundRESTInterface__c</tab>
         </mappings>
         <mappings>
-            <tab>vlocity_cmt__InboundRESTInterface__c</tab>
+            <tab>vlocity_cmt__ObjectClass__c</tab>
         </mappings>
         <mappings>
             <tab>vlocity_cmt__ObjectLayout__c</tab>
         </mappings>
         <mappings>
-            <tab>vlocity_cmt__OrchestrationItemDefinition__c</tab>
-        </mappings>
-        <mappings>
             <tab>vlocity_cmt__Premises__c</tab>
-        </mappings>
-        <mappings>
-            <tab>vlocity_cmt__PricingElement__c</tab>
         </mappings>
         <mappings>
             <tab>vlocity_cmt__PromotionItem__c</tab>

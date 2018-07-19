@@ -17,5 +17,5 @@
     </customValue>
     <description>Client Segments</description>
     <masterLabel>Client Segments</masterLabel>
-    <sorted>true</sorted>
+    <sorted>false</sorted>
 </GlobalValueSet>

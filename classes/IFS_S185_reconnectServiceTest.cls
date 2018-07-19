@@ -26,7 +26,7 @@ public class IFS_S185_reconnectServiceTest {
         jsonObj.reconnectService.OrderParam.add(orderParam2);
 
         FromJSON_2 orderParam3 = new FromJSON_2();
-        orderParam3.Code='OpTStatusTimeype';
+        orderParam3.Code='StatusTime';
         orderParam3.value='20141120085457';
         jsonObj.reconnectService.OrderParam.add(orderParam3);
         

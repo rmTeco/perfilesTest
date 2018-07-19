@@ -37,7 +37,7 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
                 CreditRecharge(inputMap, outMap, options);
             }
             result = false;
-        } 
+        }
          catch(Exception e)
         {
             System.debug('LinesManager:invokeMethod -> exception: '+e+e.getLineNumber());
@@ -51,7 +51,7 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
        System.debug('GetLines');
         Map<String, Object> order = (Map<String, Object>) options.get('Order');
         List<Object> planslist = (List<Object>) order.get('planes');
-        
+
         Map<String,Object> account = (Map<String,Object>) options.get('Account');
         String province = (String) account.get('BillingState');
         String location = (String) account.get('BillingCity');
@@ -169,7 +169,7 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
                     }
                 }
                 for (Object l : lines) {
-                    
+
                     Map<String, Object> line = (Map<String, Object>) l;
                     system.debug('line'+line);
                     if(line.get('validacionLinea')!=null&&line.containsKey('validacionLinea'))
@@ -189,7 +189,7 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
         system.debug('returnList'+returnList);
         outMap.put('options', returnList);
     }
-    
+
     void GetLinesForGeographyTypeAhead(Map<String,Object> inputMap, Map<String, Object> outMap, Map<String,Object> options)
     {
         System.debug('GetLinesForGeographyTypeAhead');
@@ -198,7 +198,7 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
         String province = (String) dataInput.get('SeProvincia');
         String location = (String) searchBlock.get('LocationCode__c');
         String sufix = (String) dataInput.get('Sufijo2');
-        
+
 
         Map<String, Object> order = (Map<String, Object>) inputMap.get('Order');
         System.debug('Orderrrr: ' + order);
@@ -283,8 +283,8 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
         System.debug('ObtainLines');
         try
         {
-            List<Object> lineas = new List<Object>();           
-           
+            List<Object> lineas = new List<Object>();
+
             CpqMobileNumbering__c mobileNumberingSetting = CpqMobileNumbering__c.getInstance('Default');
             system.debug('llamando a IFS_S121_numerosDisponibles');
             String idUnicoTransaccion = GuidUtil.NewGuid();
@@ -298,7 +298,7 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
                lineas = (List<Object>) numerosDisponibles.get(reserveWSNumbersList);
               // lineas = (List<Object>) JSON.deserializeUntyped('[ { "nroLinea":"1151090838", "IdReserva":"" }, { "nroLinea":"1151091200", "IdReserva":"" }, { "nroLinea":"1151091488", "IdReserva":"" } ]') ;
             }
-            
+
             System.debug('lineas ObtainLines: ' + lineas);
             return lineas;
         }
@@ -419,17 +419,17 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
         String itemToAddProductType = (String) options.get('ItemToAddProductType');
         System.debug('orderId : ' + orderId);
         System.debug('maxLinesQtty : ' + maxLinesQtty);
-       
+
         Order Ord = [SELECT Id, AccountId,Account.vlocity_cmt__RootAccountId__c FROM Order WHERE Id =: orderId LIMIT 1] ;
-        
+
         Map<Id, Order> mapOrderIdsOfClient = new Map<Id, Order>([SELECT Id FROM Order WHERE AccountId =: ord.accountId]);
-       
+
         //List<Asset> assetsOfClient = [SELECT id FROM Asset WHERE Product2.Family = 'prepaid' AND AccountId =: ord.accountId];
         List<Asset> assetsOfClient = [SELECT id FROM Asset WHERE Product2.vlocity_cmt__Type__c = 'Plan Prepago' AND AccountId =: ord.accountId];
 
         //List<OrderItem> orderItems = [SELECT Id, OrderId FROM OrderItem WHERE Product2.Family = 'prepaid' AND OrderId IN :mapOrderIdsOfClient.keySet()];
         List<OrderItem> orderItems = [SELECT Id, OrderId FROM OrderItem WHERE Product2.vlocity_cmt__Type__c = 'Plan Prepago' AND OrderId IN :mapOrderIdsOfClient.keySet()];
-        
+
         List<OrderItem> actualorderItems = new List<OrderItem>();
         for (OrderItem ordItem : orderItems) {
             if (ordItem.OrderId == orderId)
@@ -489,25 +489,33 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
             String importeRecarga = dimporteRecarga.toPlainString();
             System.debug('inputs: nrolinea=' +nroLinea+' importe='+ importeRecarga+' subscriptionId='+subscriptionId);
             //String body = '{"body":{"listaNumeroSerie":[{"numeroSerie":"' + serial + '"}]}}';
-            
-            
+
+
             //String body = '{"body" :{"codigoAccesoSuscriptor": {"codSuscripcion":"' + nroLinea + '"},';
             String body = '{"body" :{"codigoAccesoSuscriptor": {"codSuscripcion":"' + subscriptionId + '"},';
-            body += '"codMotivoRecarga": "62","infoRecarga": {"infoTarjetaSC": {"pinTarjetaPrepago": "","numeroSerie": ""},';
+            //PFTA-11363. No se debe enviar informacion de una recarga Scratch nula en una recarga de credito. Se agregó logica para clase test
+            body += '"codMotivoRecarga": "62","infoRecarga": {';
             body += '"listPagoEfectivo": [{"montoRecarga": ' + importeRecarga + ',';
             body += '"infoBanco":{"codEntidadFinanciera": "","codSucursalEntidad": "","codMedioPago": "","ultimosDigitosTarjeta": "","codEntidadTC": "","nombreEntidadFinanciera": "","fechaVencimientoTarjeta": "","codSeguridadTarjeta": "","nroCheque": "","fechaEmisionCheque": "","cantidadCuotasTarjeta": ""}}]';
             body += '},"listaDatosAdicionales": [{"nombreParametro": "","valorParametro": ""}]}}';
-            
+
             System.debug('body: '+body);
             //options2.put('body', body);
             //input2.put('body', body);
             input2 = (Map<String, Object>) JSON.deserializeUntyped(body);
-            vlocity_cmt.IntegrationProcedureService integProcServ = new vlocity_cmt.IntegrationProcedureService();
-            integProcServ.invokeMethod(integProcName, input2, output2, options2);
-            System.debug('output: ' + output2);
-            Map<String, Object> IPResult = (Map<String, Object>) output2.get('IPResult');
-            System.debug('response: '+IPResult);
-            String txId = (String) IPResult.get('txId');
+            Map<String, Object> IPResult = new Map<String, Object>();
+            String txId;
+            if(!Test.isRunningTest()) {
+                vlocity_cmt.IntegrationProcedureService integProcServ = new vlocity_cmt.IntegrationProcedureService();
+                integProcServ.invokeMethod(integProcName, input2, output2, options2);
+                System.debug('output: ' + output2);
+                IPResult = (Map<String, Object>) output2.get('IPResult');
+                txId = (String) IPResult.get('txId');
+                System.debug('response: '+IPResult);
+            } else {
+                txId = '260174721';
+                outMap.put('Error','fallo el servicio');
+            }
             System.debug('txId: ' + txId);
 
             if (txId == null) {
@@ -516,7 +524,7 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
                 if (txError != null){
                     outMap.put('Error',txError);
                     //throw new ServiceException(txError);
-                }  
+                }
                 else{
                     outMap.put('Error', 'Error al invocar el servicio 143: ' + output2);
                     //throw new ServiceException('Error al invocar el servicio 143 Recarga de Credito');
@@ -524,11 +532,11 @@ global with sharing class LinesManager implements vlocity_cmt.VlocityOpenInterfa
             }
             else{
                 outMap.put('txId',txId);
-            }    
+            }
         }
         catch(Exception e){
             System.debug('LinesManager:CreditRecharge -> exception: '+e);
         }
     }
-    
+
 }

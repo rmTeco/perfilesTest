@@ -41,7 +41,7 @@ public class IFS_S158_pinValidationSMSTest {
 
         IFS_S158_pinValidationSMS.getData();
 
-        System.debug('Response: ' + RestContext.response.responseBody.toString());
+        //System.debug('Response: ' + RestContext.response.responseBody.toString());
 
         System.assertEquals(Integer.valueOf('200'), RestContext.response.statuscode); 
 
@@ -53,7 +53,7 @@ public class IFS_S158_pinValidationSMSTest {
         FromJSON jsonObj = new FromJSON();
 
         jsonObj.pinValidationSMS.nroLinea = K_MSISDN;
-        jsonObj.pinValidationSMS.mensaje = 'Cambio Plan Nacional Prepago';
+        jsonObj.pinValidationSMS.mensaje = '';
 
         Test.startTest();
         RestRequest req = new RestRequest();
@@ -73,7 +73,7 @@ public class IFS_S158_pinValidationSMSTest {
         ErrorClass errorResp = (ErrorClass)lstResMap.get(0);
         System.assertEquals(417, Integer.valueOf(errorResp.errorCode));
 
-        System.debug('Response: ' + RestContext.response.responseBody.toString());
+        //System.debug('Response: ' + RestContext.response.responseBody.toString());
 
         Test.stopTest();
     }
@@ -82,19 +82,19 @@ public class IFS_S158_pinValidationSMSTest {
     @TestSetup
     static void crearDatosPrueba () {
         System.debug('----- Entre en crearDatosPrueba');
-		Team_Member__c teamMember = setTeamMember('Test', userinfo.getUserId(), null);
-		createExpectedMessage();
-		
-		Account acc = createAccounts(1,'Business')[0];
-		Order ord = createOrders(1, acc)[0];
-		acc.phone = '1234567890';
-		update acc; 
-		
-		String smsRecordType = Schema.SObjectType.CrossObject__c.getRecordTypeInfosByName().get('SMS Template').getRecordTypeId();
-		String logRecordType = Schema.SObjectType.CrossObject__c.getRecordTypeInfosByName().get('Log Identity Validation').getRecordTypeId();
-		String trkRecordType = Schema.SObjectType.CrossObject__c.getRecordTypeInfosByName().get('SMS Tracking').getRecordTypeId();
-		
-		DateTime fechaLimiteVencimiento = Datetime.Now().addMinutes(300);
+        Team_Member__c teamMember = setTeamMember('Test', userinfo.getUserId(), null);
+        createExpectedMessage();
+        
+        Account acc = createAccounts(1,'Business')[0];
+        Order ord = createOrders(1, acc)[0];
+        acc.phone = '1234567890';
+        update acc; 
+        
+        String smsRecordType = Schema.SObjectType.CrossObject__c.getRecordTypeInfosByName().get('SMS Template').getRecordTypeId();
+        String logRecordType = Schema.SObjectType.CrossObject__c.getRecordTypeInfosByName().get('Log Identity Validation').getRecordTypeId();
+        String trkRecordType = Schema.SObjectType.CrossObject__c.getRecordTypeInfosByName().get('SMS Tracking').getRecordTypeId();
+        
+        DateTime fechaLimiteVencimiento = Datetime.Now().addMinutes(300);
         
         insert new CrossObject__c(PickList1__c = 'Verificación de identidad en una orden de venta', RecordTypeId = smsRecordType, Integer1__c=300, Integer2__c=3); 
         
@@ -106,6 +106,7 @@ public class IFS_S158_pinValidationSMSTest {
     }
 
     public static List<Account> createAccounts(Integer numAccts, String recordTypeName) {
+        System.debug('----- Entre en createAccounts');
         List<Account> accts = new List<Account>();
 
         for(Integer i=0;i<numAccts;i++) {
@@ -133,6 +134,7 @@ public class IFS_S158_pinValidationSMSTest {
 
 
     public static vlocity_cmt__BusinessSite__c createStoreLocation(String name){
+        System.debug('----- Entre en createStoreLocation');
         vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(
             Name = name,
             BillingMode__c = 'Fiscal',
@@ -148,6 +150,7 @@ public class IFS_S158_pinValidationSMSTest {
     }
 
     static Team_Member__c setTeamMember(String name, String usrId, WorkTeam__c workTeam){
+        System.debug('----- Entre en setTeamMember');
         Team_Member__c tm = new Team_Member__c(User_Member__c = usrId );
 
         if(workTeam != null)
@@ -161,6 +164,7 @@ public class IFS_S158_pinValidationSMSTest {
     }
 
     public static WorkTeam__c createWorkTeam(String name, Vlocity_cmt__BusinessSite__c storeLocation){
+        System.debug('----- Entre en createWorkTeam');
         WorkTeam__c wt = new WorkTeam__c( Name = 'Test', Team_Name__c = 'Test' );
 
         if(storeLocation != null)
@@ -172,11 +176,14 @@ public class IFS_S158_pinValidationSMSTest {
     }
 
     static void createExpectedMessage(){
+        System.debug('----- Entre en createExpectedMessage');
         SMS_Expected_Response_Type__c exp = new SMS_Expected_Response_Type__c(Name='SMS_Expected_Response_Type', Ok__c='OK', Ko__c='NOK');
         insert exp;
     }
 
     public static List<Order> createOrders(Integer numOrders, Account acc) {
+        System.debug('----- Entre en createOrders');
+
         vlocity_cmt__PriceList__c taPriceList = createPriceList('Telecom Price List');
 
         List<Order> orders = new List<Order>();
@@ -199,6 +206,7 @@ public class IFS_S158_pinValidationSMSTest {
     }
 
     public static vlocity_cmt__PriceList__c createPriceList(String name){
+        System.debug('----- Entre en createPriceList');
         String priceBookId = createPriceBook('TA Price Book').Id;
 
         vlocity_cmt__PriceList__c taPriceList =
@@ -212,6 +220,7 @@ public class IFS_S158_pinValidationSMSTest {
     }
 
     public static Pricebook2 createPriceBook(String name){
+        System.debug('----- Entre en createPriceBook');
         Pricebook2 priceBook = new Pricebook2(Name=name);
 
         insert priceBook;

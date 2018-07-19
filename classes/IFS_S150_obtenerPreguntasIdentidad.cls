@@ -14,11 +14,8 @@ public class IFS_S150_obtenerPreguntasIdentidad  {
         
         system.debug(body);
         HttpResponse respuesta = makePostCallout(body);
-        System.debug('>>>>>> respuesta ' + respuesta );
         Map<String, Object> responseNode = (Map<String, Object>) JSON.deserializeUntyped(respuesta.getBody());
-        System.debug('>>>>>> responseNode ' + responseNode );
         responseNode.put('httpStatusCode',(String.valueOf(respuesta.getStatusCode())));
-          System.debug('>>>>>> responseNode ' + responseNode );
         return responseNode; 
 
         

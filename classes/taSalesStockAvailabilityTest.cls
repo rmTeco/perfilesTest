@@ -29,11 +29,11 @@ public with sharing class taSalesStockAvailabilityTest {
         options.put('ProdutCode', '123');
         options.put('stockProdCode', '123');
 		inputMap.put('TypeAheadProducto-Block',typeAheadBlock);
-		string args = '[{"codDeposito":"123456","listaNMU":[{"listaPorCodigoStock":[{"stockProducto":"123","cantidadDiponible":123}],"codNMU":"123"}]}]';
+		string args = '[{"codDeposito":"123456","listaCodNMU":[{"listaPorCodigoStock":[{"stockProducto":"123","cantidadDiponible":123}],"codNMU":"123"}]}]';
 		List<Object> lstDeposito = (List<Object>)JSON.deserializeUntyped(args);
-		inputMap.put('listaDeposito',lstDeposito);
+		options.put('listaDepositosConDisponibilidad',lstDeposito);
 		
-		TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
+		//TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
         List<Account> account = TestDataFactory.createAccounts(1, 'Consumer');
 		
 		

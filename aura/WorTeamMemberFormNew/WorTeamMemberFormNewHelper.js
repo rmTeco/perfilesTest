@@ -38,14 +38,13 @@
         // Send action off to be executed
         $A.enqueueAction(action);
 	},
-    
     showUsersModal : function() {
         document.getElementById("usersModal__c").style.display = "block";
     },
     showUsersModalWorkTeam : function() {
         document.getElementById("usersModalWorkTeam__c").style.display = "block";
     },
-     hiddenUsersModal : function() {
+    hiddenUsersModal : function() {
         document.getElementById("usersModal__c").style.display = "none";
     },
     hiddenUsersModalWorkTeam : function() {

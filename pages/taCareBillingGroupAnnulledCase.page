@@ -1,39 +1,33 @@
-<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="BillingGroupAnnulledCaseController">
-<apex:slds />
-<link rel="stylesheet" href="/resource/ta_slds_os/slds_os.min.css"/>
-
-<div class="slds-scope" style="text-align:center;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-   
-    <span class="slds-icon_container slds-icon_container--circle slds-icon-action-description"
-        title="description of icon when needed"
-        style="background-color:  #FFF; border: solid 1px #D9186D; padding: 3px;">
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="BillingGroupAnnulledCaseController" >
   
-        <svg class="slds-icon slds-icon--medium" aria-hidden="true" style="fill: #D9186D;">
-            <use xlink:href="/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#reject"></use>
-        </svg>
-        
-        <span class="slds-assistive-text">El proceso fue cancelado</span>
-    </span>
+  <html xmlns:ng="http://angularjs.org" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <apex:includeScript value="/support/console/34.0/integration.js"/>
+             <!-- <script src="{!URLFOR($Resource.vlocity_cmt__vlocity_assets, '/javascripts/vlocity.js')}"></script> --> 
+            <script src="{!URLFOR($Resource.vlocity_cmt__vlocity_core_assets, '/latest/vlocity_core_assets.js')}"></script>
+            <script src="{!$Resource.vlocity_cmt__SldsAngular}"></script>
 
-    <header>
-        <h1 class="ng-binding" style="font-family: 'Platform Light' !important; font-size: 32pt; color: #000;">El proceso fue cancelado.</h1>
-    </header>
+            <apex:slds />
+        </head>
+  
+      <div style="text-align: center">
+          <div class="slds-text-heading--large" style="margin: auto">
+              El proceso fue anulado.
+          </div>
+      </div>
 
-</div>
-
-<script type="text/javascript">
+          <script type="text/javascript">
               
-    Visualforce.remoting.Manager.invokeAction(
-        "BillingGroupAnnulledCaseController.closeCase",
-        "{!$CurrentPage.parameters.Id}",
-        function(result, event) {
-            $scope.$apply(function(){
-                console.info('resultado: ',result);
-            });
-        },
-        {escape: false} // No escaping, please
-    );
-
-</script>
-
+              Visualforce.remoting.Manager.invokeAction(
+                 "BillingGroupAnnulledCaseController.closeCase",
+                 "{!$CurrentPage.parameters.Id}",
+                      function(result, event) {
+                          $scope.$apply(function(){
+                              console.info('resultado: ',result);
+                          });
+                      },
+                 {escape: false} // No escaping, please
+              );
+          </script>
+    </html>
 </apex:page>

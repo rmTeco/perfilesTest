@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <div class="slds-box" style="{!IF(AND(AND(NOT(rejected),NOT(accepted)),inpCase.Order__c != null), 'display:block', 'display:none')}">
+                <div class="slds-box" style="{!IF(AND(AND(AND(NOT(rejected),NOT(accepted)),inpCase.Order__c != null),inpCase.status="En espera del cliente"), 'display:block', 'display:none')}">
                     
                     <!-- <div style="{!IF(result == '', 'display:block', 'display:none')}"> -->
                     <apex:outputPanel id="rerend">

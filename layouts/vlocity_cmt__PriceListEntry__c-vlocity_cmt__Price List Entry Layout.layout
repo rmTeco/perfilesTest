@@ -17,53 +17,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__IsActive__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__IsBasePrice__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__BasePriceListId__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__RulesDescription__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>vlocity_cmt__DisplayText__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__EffectiveFromDate__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__EffectiveUntilDate__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__TimePlanId__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Pricing_Variable_Code__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Price_Amount__c</field>
-            </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__ProductId__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__OfferId__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -71,35 +25,41 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__IsOverride__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>vlocity_cmt__PricingElementId__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__PricingElementGlobalKey__c</field>
+                <field>vlocity_cmt__ProductId__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__PricingMatrixBindingData__c</field>
+                <field>vlocity_cmt__IsActive__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>vlocity_cmt__BasePriceListId__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__PromotionId__c</field>
+                <field>vlocity_cmt__IsBasePrice__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__PromotionItemId__c</field>
+                <field>vlocity_cmt__OfferId__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__TimePolicyId__c</field>
+                <field>vlocity_cmt__EffectiveFromDate__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>vlocity_cmt__IsVirtualPrice__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>vlocity_cmt__PricingElementGlobalKey__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -139,7 +99,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h6C000000EfjB</masterLabel>
+        <masterLabel>00hc0000000LmjU</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

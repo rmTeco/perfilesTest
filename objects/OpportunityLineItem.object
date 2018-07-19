@@ -78,6 +78,28 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>SCP_Certa_GC__Cargo_por_nica_vez_total_sumable__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Cargo por única vez total sumable</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>SCP_Certa_GC__Cargo_por_unica_vez_total__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Quantity *  SCP_Certa_GC__Cargo_unica_vez__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cargo por única vez total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>SCP_Certa_GC__Cargo_totales_por_mes_Total_sumable__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
@@ -122,7 +144,7 @@
         <fullName>SCP_Certa_GC__FCV__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <formula>UnitPrice  * Quantity * SCP_Certa_GC__Plazo__c + SCP_Certa_GC__Cargo_unica_vez__c</formula>
+        <formula>UnitPrice  * Quantity * SCP_Certa_GC__Plazo__c +  SCP_Certa_GC__Cargo_por_unica_vez_total__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Precio Total Contrato</label>
         <precision>18</precision>

@@ -70,10 +70,25 @@ global with sharing class taSalesCreateOrderController implements vlocity_cmt.Vl
             
             if(anulacion){
                 //DA - 8/1/18: Para ordenes de anulación se setean valores extras sobre los items
+                //FP - Para anular ordenes con gestion Cambio en Garantia, si el orderItem tiene action disconnect pasa a add y viceversa
+                
+               if(oldOrder.Gestion__c != 'Cambio en Garantia'){
                 newItem.vlocity_cmt__Action__c = 'Disconnect';
-                newItem.vlocity_cmt__ProvisioningStatus__c = 'Inactive';
-                // newItem.OriginalOrderItemId = oldItem.Id;
-                // newItem.Quantity = oldItem.Quantity * -1;
+                newItem.vlocity_cmt__ProvisioningStatus__c = 'Inactive';}
+                 newItem.OriginalOrderItemId = oldItem.Id;
+                 //newItem.Quantity = oldItem.Quantity * -1;
+                
+                
+                if(oldOrder.Gestion__c == 'Cambio en Garantia'){
+                    
+                    if(oldItem.vlocity_cmt__Action__c == 'Add'){
+                        newItem.vlocity_cmt__Action__c = 'Disconnect';
+                    }
+                    if(oldItem.vlocity_cmt__Action__c == 'Disconnect'){
+                        newItem.vlocity_cmt__Action__c = 'Add';
+                        //newItem.vlocity_cmt__ProvisioningStatus__c = '????';
+                    }
+                }
             }
             else{
                 //DA - 8/1/18: Para ordenes que no son anulación, se limpia el MSISDN

@@ -19,14 +19,6 @@
         </successActions>
         <timeTriggers>
             <actions>
-                <name>UpdateNotify</name>
-                <type>FieldUpdate</type>
-            </actions>
-            <timeLength>0</timeLength>
-            <workflowTimeTriggerUnit>Minutes</workflowTimeTriggerUnit>
-        </timeTriggers>
-        <timeTriggers>
-            <actions>
                 <name>CloseCase</name>
                 <type>FieldUpdate</type>
             </actions>
@@ -35,7 +27,7 @@
         </timeTriggers>
         <useCriteriaStartTime>false</useCriteriaStartTime>
     </milestones>
-    <name>TechCare_RepairPr_10Days</name>
-    <versionMaster>5526C0000004CGx</versionMaster>
+    <name>techcare_repairpr_10days_v1</name>
+    <versionMaster>552c000000001VA</versionMaster>
     <versionNumber>1</versionNumber>
 </EntitlementProcess>

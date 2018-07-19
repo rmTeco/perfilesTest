@@ -1,6 +1,9 @@
 @RestResource(urlMapping='/v1/integrationprocedure/CollectionAndBilling_Collection_reconnectService/*')
 global with sharing class IFS_S185_reconnectService {
 
+    private static boolean K_DEBUG_ON = true;    //-- Enable / Disable Class Debug Mode.
+    private static String guId = null;
+
     @HttpPost
     global static void getData() {
         FromJSON jsonBody;
@@ -12,79 +15,69 @@ global with sharing class IFS_S185_reconnectService {
 
         res.addHeader('Content-Type', 'application/json');
 
+        writeLog ('REQ', req.requestBody.toString());
+
         try {
             res.statuscode = 200;
             jsonBody = (FromJSON)JSON.deserialize(req.requestBody.toString(),FromJSON.class);
 
-
             // Validaciones del mensaje
-            System.debug('Paso 1: Validaciones del mensaje');
+            printDebug('Paso 1: Validaciones del mensaje');
             if (jsonBody.reconnectService.WorkOrderType != '4') {
                 throw new CalloutException('Error: El campo WorkOrderType debe tener el valor 4 para rehabilitacion');
             }
-            System.debug('Paso 2: Validaciones del mensaje');
+            printDebug('Paso 2: Validaciones del mensaje');
             if (jsonBody.reconnectService.OrderObjType != 'S') {
                 throw new CalloutException('Error: El campo OrderObjType debe tener el valor S para rehabilitacion');
             }
-            System.debug('Paso 3: Validaciones del mensaje');
+            printDebug('Paso 3: Validaciones del mensaje');
             if (string.isBlank(jsonBody.reconnectService.OrderObjKey)) {
                 throw new CalloutException('Error: El campo OrderObjKey es requerido');
             }
-            System.debug('Paso 4: Validaciones del mensaje');
+            printDebug('Paso 4: Validaciones del mensaje');
             if (string.isBlank(jsonBody.reconnectService.OrderObjCode)) {
                 throw new CalloutException('Error: El campo OrderObjCode es requerido');
             }
-            System.debug('Paso 5: Validaciones del mensaje');
+            printDebug('Paso 5: Validaciones del mensaje');
             if (!orderParamOk(jsonBody.reconnectService.OrderParam)) {
                 throw new CalloutException('Error en la lista de parámetros');
             }
-            System.debug('Paso 6: Pasé todas las validaciones');
-
-
-
-            /* Armado de la respuesta
-
-            result1.put('SalesOrderId',jsonBody.invoiceAndPaymentNotification.SalesOrderId);
-            result1.put('Status',jsonBody.invoiceAndPaymentNotification.Status);
-
-            if (!string.isBlank(jsonBody.invoiceAndPaymentNotification.StatusInvoice)) {
-                result1.put('StatusInvoice',jsonBody.invoiceAndPaymentNotification.StatusInvoice);
-            }
-            if (!string.isBlank(jsonBody.invoiceAndPaymentNotification.ReasonCode)) {
-                result1.put('ReasonCode',jsonBody.invoiceAndPaymentNotification.ReasonCode);
-            }
-            if (!string.isBlank(jsonBody.invoiceAndPaymentNotification.ReasonCodeName)) {
-                result1.put('ReasonCodeName',jsonBody.invoiceAndPaymentNotification.ReasonCodeName);
-            }
-            if (!string.isBlank(jsonBody.invoiceAndPaymentNotification.Comments)) {
-                result1.put('Comments',jsonBody.invoiceAndPaymentNotification.Comments);
-            }
-            if (jsonBody.invoiceAndPaymentNotification.TotalInvoiceAmount != null) {
-                result1.put('TotalInvoiceAmount',jsonBody.invoiceAndPaymentNotification.TotalInvoiceAmount);
-            }
-            if (!string.isBlank(jsonBody.invoiceAndPaymentNotification.LegalInvoiceNumber)) {
-                result1.put('LegalInvoiceNumber',jsonBody.invoiceAndPaymentNotification.LegalInvoiceNumber);
-            }
-                
-            Boolean stat = BillingResponseHandler.callBackService224(null, null, result1);
-            if (!stat){
-                throw new CalloutException('Error en la llamada a la clase BillingResponseHandler');
-            }
-
-            */
+            printDebug('Paso 6: Pasé todas las validaciones');
 
             insertInBatchQueue(mapeoOM(jsonBody));
 
             result.put('ResultHeader', mapaRespuesta());
             res.responseBody = Blob.valueOf(JSON.serializePretty(result));
-            System.debug('Paso ultimo: paso');
+
+            writeLog ('RES', 200 + ';' + JSON.serializePretty(result));
+
+            printDebug('Paso ultimo: paso');
 
         }
         catch(Exception e){
             res.statuscode = 417 ;
             res.responseBody = Blob.valueOf(JSON.serialize(getRespuestaNoOk('417',e.getMessage())));
+
+            writeLog ('RES', res.statuscode + ';' + JSON.serialize(getRespuestaNoOk('417',e.getMessage())));
         }
     }
+
+    /**
+     * Wrapper del IFS_LogRecord.record
+     */
+    private static void writeLog (String pTipo, String pDatos) {
+        printDebug('Entre en writeLog - pTipo --> ' + pTipo + ' - pDatos --> ' + pDatos);
+        String dts = DateTime.now().format('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'', 'America/Argentina/Buenos_Aires');
+
+        if (pTipo == 'REQ') {
+            guId = GuidUtil.NewGuid(); //-- Calculo el Guid.
+            IFS_LogRecord.record(dts, 'SERVICIO', 'S185', pTipo, guId, '', pDatos);  
+        }
+        else {
+            IFS_LogRecord.record(dts, 'SERVICIO', 'S185', pTipo, guId, '', pDatos);  
+        }
+    }
+
 
     private static Map<String, Object> mapeoOM (FromJSON pJson) {
 
@@ -104,7 +97,7 @@ global with sharing class IFS_S185_reconnectService {
     private static void insertInBatchQueue(Map<String, Object> pMapa){
 
         try {
-            System.debug('..... instancio la clase xOMBatchLines ()');
+            printDebug('..... instancio la clase xOMBatchLines ()');
             xOMBatchLines.ResultObj result = xOMBatchLines.generateBatchJobsFromJSONUntyped(pMapa);
             if (result.resultCode != 200) {
                 throw new CalloutException(result.resultMessage);
@@ -128,7 +121,7 @@ global with sharing class IFS_S185_reconnectService {
         statusTimeOk = false;
 
         if (pOrderParam != null){
-            System.debug('OrderParam es nulo');
+            printDebug('OrderParam es nulo');
         }
 
         Integer i=0;
@@ -144,17 +137,55 @@ global with sharing class IFS_S185_reconnectService {
             if (c=='NewStatus' && (d=='2')){
                 newStatusOk = true;
             }
-            if (!string.isBlank(c)){
-                statusTimeOk = true;
+            if (c=='StatusTime' && !string.isBlank(d)){
+                statusTimeOk = isDateTime (d);
             }
-
         }
 
         return opTypeOk && oldStatusOk && newStatusOk && statusTimeOk;
     }
 
+
+    /**
+     * Valida el formato de la fecha/hora.
+     */
+    private static Boolean isDateTime (String pDateTime) {
+        try {
+            if (String.isBlank(pDateTime) || pDateTime.length() != 14) {
+                throw new CalloutException('El tamaño del atributo debe ser 14 - Actual: ' + pDateTime.length());
+            }
+            Integer year  = Integer.valueOf(pDateTime.substring(0,4));
+            Integer month = Integer.valueOf(pDateTime.substring(4,6));
+            Integer day   = Integer.valueOf(pDateTime.substring(6,8));
+            Integer hour  = Integer.valueOf(pDateTime.substring(8,10));
+            Integer min   = Integer.valueOf(pDateTime.substring(10,12));
+            Integer sec   = Integer.valueOf(pDateTime.substring(12,14));
+
+            Boolean isYearOK = year > 2000 && year < 2050;
+            Boolean isBisiesto = isBisiesto(year);
+            Boolean isMonthOK = month > 0 && month < 13;
+            Boolean isDayOK = (month != 2 && day > 0 && day < 32) || (month == 2 && day > 0 && day < 29) || (month == 2 && isBisiesto && day > 0 && day < 30);
+            Boolean isHourOK = hour > 0 && hour < 24;
+            Boolean isMinOK = min >= 0 && min < 60;
+            Boolean isSecOK = sec >= 0 && sec < 60;
+                        
+            return isYearOK && isMonthOK && isDayOK && isHourOK && isMinOK && isSecOK;
+        }
+        catch (Exception e) {
+            System.debug('metodo: isDateTime - Error: ' + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Devuelve si el año es bisiesto o no.
+     */
+    private static Boolean isBisiesto (Integer pAnio) {
+        return (Math.mod(pAnio, 4) == 0 && Math.mod(pAnio, 100) != 0) || Math.mod(pAnio, 400) == 0;
+    }
+
     private static List<Map<String, String>> getRespuestaNoOk(String pCodigo, String pDescripcion) {
-        System.debug('Entre a getRespuestaNoOk()');
+        printDebug('Entre a getRespuestaNoOk()');
         Map<String, String> mapa = new Map<String, String>();
         List<Map<String, String>> lstErrors = new List<Map<String, String>>();
         mapa.put('errorCode', pcodigo);
@@ -172,6 +203,18 @@ global with sharing class IFS_S185_reconnectService {
 
         return mapa;   
     }
+
+
+    /**
+     * @Objetivo: Wrapper del System.debug que permite 
+     *            setearle si imprime o no.
+     */
+    private static void printDebug(String pMensaje) {
+        if (K_DEBUG_ON) {
+            System.debug(pMensaje);
+        }
+    }
+
 
      public class FromJSON {
         public FromJSON_1 reconnectService; 

@@ -1,7 +1,7 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false"  controller="OrderController">
   <!-- Begin Default Content REMOVE THIS -->
   
-     <apex:outputpanel rendered="{!error==''}">
+     <apex:outputpanel rendered="{!error<>''}">
          {!error}
      </apex:outputpanel>
 

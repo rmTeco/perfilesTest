@@ -8,19 +8,11 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>et4ae5__ExactTargetForAppExchangeUser__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>et4ae5__ExactTargetForAppExchangeAdmin__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Receive_Notifications__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Receive_Offer_Notifications__c</field>
+                <field>et4ae5__ExactTargetForAppExchangeUser__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -28,10 +20,27 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>approver__c</field>
+                <field>vlocity_cmt__GlobalKey__c</field>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns/>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>et4ae5__Default_ET_Page__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>et4ae5__ValidExactTargetAdmin__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>et4ae5__ValidExactTargetUser__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>et4ae5__ExactTargetUsername__c</field>
+            </layoutItems>
+        </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>

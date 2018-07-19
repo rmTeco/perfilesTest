@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>mtraversa@proveedor.personal.com.ar</contactEmail>
+    <label>PortalesInternos</label>
+    <oauthConfig>
+        <callbackUrl>https://crm--sit.cs14.my.salesforce.com/callback.jsp</callbackUrl>
+        <consumerKey>3MVG9sLbBxQYwWqsYmKNsoFy2KN7hJDvmnBVKa_6mfV.8iI5FGGPWJ.FaoXpkz1OyeQxVTVMEmYLmq7J5bsy9</consumerKey>
+        <scopes>Full</scopes>
+    </oauthConfig>
+</ConnectedApp>

@@ -253,6 +253,12 @@
                     <default>false</default>
                     <label>IRSF</label>
                 </value>
+                <value>
+                    <fullName>Fraude por suscripción</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Fraude por suscripción</label>
+                </value>
             </valueSetDefinition>
             <valueSettings>
                 <controllingFieldValue>Técnico</controllingFieldValue>
@@ -430,6 +436,11 @@
         <filterScope>Everything</filterScope>
         <label>Todos</label>
         <language>es</language>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <filterScope>Everything</filterScope>
+        <label>Todos</label>
     </listViews>
     <listViews>
         <fullName>Baja_de_Suscripciones</fullName>

@@ -69,7 +69,7 @@
 
         List<Asset> lstAssets = getAssetsByRootItemId (rootItemId); //--Obtengo todos los registros para ese rootItemId
 
-        toJson.subscriberId = asset.Subscription_Id__c; //-- guardo el subscriptionId.
+        toJson.subscriberId = asset.Subscription_Id__c != null ? asset.Subscription_Id__c : ''; //-- guardo el subscriptionId.
 
         /*
          * -- Hago un corte/control por producto (productLN==productLNAnt) seleccionando dos tipos de registros
@@ -79,27 +79,40 @@
          */
         Integer i=0;
         Boolean eod = (i==lstAssets.size()); //-- Indica la finalización de datos.
+        System.debug('El tamaño de la lista Asset es:' + lstAssets.size());
         while (!eod) {
+            if (lstAssets.get(i).SubTipo_de_Producto__c == null || lstAssets.get(i).Id == null || lstAssets.get(i).vlocity_cmt__JSONAttribute__c == null || lstAssets.get(i).vlocity_cmt__LineNumber__c == null
+                || lstAssets.get(i).vlocity_cmt__AssetReferenceId__c == null ) {
+                    printDebug('--- Error en la configuracion del plan, estan viniendo valores nulos. ---- ');
+                    i+=1;
+                    eod = (i>=lstAssets.size());
+                    continue;
+            }
             String lsubTipo = lstAssets.get(i).SubTipo_de_Producto__c;
             String productLN = getProductLineNumber (lstAssets.get(i).vlocity_cmt__LineNumber__c);
             String productLNAnt = productLN;
             ToJsonOferta oferta = new ToJsonOferta();
             List<ToJsonLinea> lstLineas = new List<ToJsonLinea>();
             while (!eod && productLNAnt == productLN) {
-                if (verificarAtributos(lstAssets.get(i).vlocity_cmt__JSONAttribute__c)==1) {
-                    oferta = getValoresMaximos (lstAssets.get(i).vlocity_cmt__JSONAttribute__c, lsubTipo, lstAssets.get(i).Id);
+                Integer tipoRegistro = verificarAtributos(lstAssets.get(i).vlocity_cmt__JSONAttribute__c, lstAssets.get(i).Product2.vlocity_cmt__JSONAttribute__c);
+                if (tipoRegistro==1) {
+                    oferta = getValoresMaximos (lstAssets.get(i).Product2.vlocity_cmt__JSONAttribute__c, lsubTipo, lstAssets.get(i).vlocity_cmt__AssetReferenceId__c);
                 }
-                else if (verificarAtributos(lstAssets.get(i).vlocity_cmt__JSONAttribute__c)==2){
+                else if (tipoRegistro==2){
                     ToJsonLinea linea = getNumeroAmigo (lstAssets.get(i).vlocity_cmt__JSONAttribute__c, lstAssets.get(i).vlocity_cmt__AssetReferenceId__c);
                     lstLineas.add(linea);
                 }
-                eod = (++i==lstAssets.size());
+                i+=1;
+                eod = (i>=lstAssets.size());
                 if (!eod) {
                     productLN = getProductLineNumber (lstAssets.get(i).vlocity_cmt__LineNumber__c);
                 }
             }
+            eod = (i>=lstAssets.size());
             oferta.lstLineas = lstLineas;
-            toJson.lstOfertas.add(oferta);
+            if (!String.isBlank(oferta.tipoServicio) && !String.isBlank(oferta.ofertaId)) {
+                toJson.lstOfertas.add(oferta);
+            }
         }
 
         return toJson;
@@ -129,21 +142,28 @@
      *           FAN_ATTCAT_000047 --> devuelve 2 -> Aqui encuentro el numero de telefono y tipo.
      *           Otro              --> devuelve 0 -> Este valor indica que el registro no debe ser tratado.
      */
-    private static Integer verificarAtributos(String pJsonAttribute) {
+    private static Integer verificarAtributos(String pAssetJsonAttribute, String pProductJsonAttribute) {
         printDebug('Entre en verificarAtributos');
-        if (String.isBlank(pJsonAttribute)) {
+        if (String.isBlank(pAssetJsonAttribute)) {
             printDebug('Error al buscar verificar los atributos. Vinieron vacio');
             return 0;
-            //throw new FunctionalException('Error al buscar verificar los atributos. Vinieron vacio');
         }
 
-        if (pJsonAttribute.indexOf('FAN_ATTCAT_000046')>-1) {
+        if (String.isBlank(pProductJsonAttribute)) {
+            printDebug('Error al buscar verificar los atributos. Vinieron vacio');
+            return 0;
+        }
+
+        if (pProductJsonAttribute.indexOf('FAN_ATTCAT_000046')>-1) {
+            printDebug('----- Encontre FAN_ATTCAT_000046');
             return 1;
         }
-        else if (pJsonAttribute.indexOf('FAN_ATTCAT_000047')>-1) {
+        else if (pAssetJsonAttribute.indexOf('FAN_ATTCAT_000047')>-1) {
+            printDebug('----- Encontre FAN_ATTCAT_000047');
             return 2;
         }
         else {
+            printDebug('----- No encontre nada.');
             return 0;
         }
     }
@@ -162,7 +182,7 @@
         List<Asset> lstAssets = null;
 
         try {
-            lstAssets = [SELECT id, vlocity_cmt__AssetReferenceId__c, Name, SubTipo_de_Producto__c, vlocity_cmt__JSONAttribute__c, vlocity_cmt__LineNumber__c FROM Asset WHERE vlocity_cmt__RootItemId__c = :pRootItemId AND Tipo_de_Producto__c = 'Numeros Amigos'  ORDER BY vlocity_cmt__LineNumber__c];
+            lstAssets = [SELECT id, vlocity_cmt__AssetReferenceId__c, Name, SubTipo_de_Producto__c, vlocity_cmt__JSONAttribute__c, Product2.vlocity_cmt__JSONAttribute__c, vlocity_cmt__LineNumber__c FROM Asset WHERE vlocity_cmt__RootItemId__c = :pRootItemId AND Tipo_de_Producto__c = 'Numeros Amigos'  ORDER BY vlocity_cmt__LineNumber__c];
             if (lstAssets == null || lstAssets.size()==0) {
                 throw new FunctionalException('Error al obtener los Assets por rootItemId. El resultado del query fue nulo o vacio');    
             }
@@ -179,7 +199,7 @@
      * atributos el número amigo y el tipo, devolviendo un objeto ToJsonLinea.
      */
     private static ToJsonLinea getNumeroAmigo (String pJsonAttribute, String pAssetId) {
-        printDebug('Entre en getNumeroAmigo');
+        printDebug('Entre en getNumeroAmigo - pAssetId --> ' + pAssetId);
         ToJsonLinea lnumeroAmigo = new ToJsonLinea();
 
         JSONParser parser = JSON.createParser(pJsonAttribute);
@@ -242,6 +262,7 @@
                 }    
             }
         }
+        printDebug('---------- valores devueltos --> ' + lnumeroAmigo);
         return lnumeroAmigo;
     }
 
@@ -251,7 +272,7 @@
      * cual es el total que corresponde. Devuelve un objeto de tipo ToJsonOferta.
      */
     private static ToJsonOferta getValoresMaximos (String pJsonAttribute, String pTipoServicio, String pOfertaId) {
-        printDebug('Entre en getValoresMaximos');
+        printDebug('Entre en getValoresMaximos - pTipoServicio --> ' + pTipoServicio + ' - pOfertaId --> ' + pOfertaId);
         ToJsonOferta loferta = new ToJsonOferta();
 
         JSONParser parser = JSON.createParser(pJsonAttribute);
@@ -320,30 +341,6 @@
         return loferta;
     }
 
-
-    /*
-     * Esta funcion obtiene el plan Numeros Amigos para el rootItemId.
-     */
-    private static List<Asset> getNivel1ByRootItemId (String pRootItemId) {
-        printDebug('Entre a getNivel1ByRootItemId()');
-
-        if (String.isBlank(pRootItemId)) {
-            printDebug(' ---- El pRootItemId vino vacio');
-            throw new CalloutException('El pRootItemId vino vacio');
-        }
-
-        List<Asset> asset = null;
-
-        try {
-            asset = [SELECT AssetId__c, Subscription_Id__c, vlocity_cmt__ParentItemId__c, vlocity_cmt__RootItemId__c, vlocity_cmt__JSONAttribute__c FROM Asset WHERE vlocity_cmt__RootItemId__c = :pRootItemId  ];
-        }
-        catch (Exception e) {
-            printDebug(' ---- Fallo al obtener el nivel 1 - El agrupador rootItemId. Error: ' + e.getMessage());
-            throw new FunctionalException('Error al obtener el plan numeros amigos del rootItemId: ' + pRootItemId + '. Error: ' + e.getMessage());
-        }    
-
-        return asset;
-    }
 
     /**
      * Esta funcion obtiene el rootItemId del Asset buscandolo por subscritorId.

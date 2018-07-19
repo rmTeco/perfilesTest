@@ -112,16 +112,10 @@
     <listViews>
         <fullName>vlocity_cmt__All</fullName>
         <columns>NAME</columns>
-        <columns>vlocity_cmt__OrderId__c</columns>
-        <columns>vlocity_cmt__LastOrchestrationItemUpdate__c</columns>
-        <columns>vlocity_cmt__IsBeingWatched__c</columns>
-        <columns>vlocity_cmt__State__c</columns>
-        <columns>OBJECT_ID</columns>
-        <columns>LAST_UPDATE</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
-        <language>en_US</language>
+        <language>es_MX</language>
     </listViews>
     <nameField>
         <displayFormat>Plan{0000000}</displayFormat>

@@ -14,16 +14,35 @@
         <sundayStartTime>00:00:00.000Z</sundayStartTime>
         <thursdayEndTime>00:00:00.000Z</thursdayEndTime>
         <thursdayStartTime>00:00:00.000Z</thursdayStartTime>
-        <timeZoneId>America/Argentina/Buenos_Aires</timeZoneId>
+        <timeZoneId>America/Los_Angeles</timeZoneId>
         <tuesdayEndTime>00:00:00.000Z</tuesdayEndTime>
         <tuesdayStartTime>00:00:00.000Z</tuesdayStartTime>
         <wednesdayEndTime>00:00:00.000Z</wednesdayEndTime>
         <wednesdayStartTime>00:00:00.000Z</wednesdayStartTime>
     </businessHours>
     <holidays>
-        <activityDate>2018-02-14</activityDate>
-        <description>Dias feriados por carnaval</description>
+        <activityDate>2019-01-01</activityDate>
         <isRecurring>false</isRecurring>
-        <name>Feriado Carnaval</name>
+        <name>Año Nuevo</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-11-19</activityDate>
+        <isRecurring>false</isRecurring>
+        <name>Día de la Soberanía Nacional</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-10-15</activityDate>
+        <isRecurring>false</isRecurring>
+        <name>Día del Respeto a la Diversidad Cultural</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-12-25</activityDate>
+        <isRecurring>false</isRecurring>
+        <name>Navidad</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-08-20</activityDate>
+        <isRecurring>false</isRecurring>
+        <name>Paso a la Inmortalidad del Gral. José de San Martín (17/8).</name>
     </holidays>
 </BusinessHoursSettings>

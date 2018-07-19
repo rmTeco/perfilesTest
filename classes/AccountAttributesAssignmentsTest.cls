@@ -25,7 +25,8 @@ public class AccountAttributesAssignmentsTest {
 
         Contact contact1 = new Contact(LastName='Contact1', Attributes__c=vip);
         Database.Insert(contact1);
-        Account account1 = new Account(Name = 'current1', Attributes__c = socioClub, RecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId(), vlocity_cmt__PrimaryContactId__c = contact1.Id);
+        Id devRecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Billing').getRecordTypeId();
+        Account account1 = new Account(Name = 'current1', Attributes__c = socioClub, RecordTypeId = devRecordTypeId, vlocity_cmt__PrimaryContactId__c = contact1.Id);
         Database.Insert(account1);
 
         Test.StartTest();

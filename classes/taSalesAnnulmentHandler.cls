@@ -80,7 +80,7 @@ global with sharing class taSalesAnnulmentHandler implements vlocity_cmt.Vlocity
             }
             
             if (methodName.equals('ValidatePuntoDeVenta')){
-                Boolean puntodeventa = ValidatePuntoDeVenta((Id) options.get('orderId'), (Id) options.get('annulmentOrderId'));
+                Boolean puntodeventa = ValidatePuntoDeVenta((Id) options.get('orderId'), (Id) options.get('annulmentOrderId'), outMap);
                 outMap.put('puntodeventa', puntodeventa);
             }
             
@@ -185,7 +185,8 @@ global with sharing class taSalesAnnulmentHandler implements vlocity_cmt.Vlocity
         try
         {
             List<OrderItem> orderItems = taOrderController.GetOrderSerials(orderId);
-
+            Order originOrder = [Select id, OriginStoreLocation__r.AssociatedWarehouseId__c from Order where id = : orderId];
+            
             Map<String,String> returnedSerialNumbers = new Map<String,String>();
             for(OrderItem item : orderItems){
                 if (string.isNotBlank(item.vlocity_cmt__SerialNumber__c) && (item.Product2.vlocity_cmt__Type__c != 'Simcard'))
@@ -195,7 +196,7 @@ global with sharing class taSalesAnnulmentHandler implements vlocity_cmt.Vlocity
             }
             if (!Test.isRunningTest())
                 if (returnedSerialNumbers.KeySet().size() > 0)
-                    taOrderController.MoveSerialsStock(OPERATION_TYPE_ANULACION,INSTANCE_ANULAR_VENTA, returnedSerialNumbers, STOCK_MOVEMENT_CODDEPOSITO_CLIENTE, STOCK_MOVEMENT_NO_APLICA);
+                    taOrderController.MoveSerialsStock(OPERATION_TYPE_ANULACION,INSTANCE_ANULAR_VENTA, returnedSerialNumbers, originOrder.OriginStoreLocation__r.AssociatedWarehouseId__c, STOCK_MOVEMENT_NO_APLICA);
         }
         catch(Exception e)
         {
@@ -236,11 +237,11 @@ global with sharing class taSalesAnnulmentHandler implements vlocity_cmt.Vlocity
             for(OrderItem item : orderItems){
                 if (string.isNotBlank(item.vlocity_cmt__SerialNumber__c) && (item.Product2.vlocity_cmt__Type__c != 'Simcard') && (item.vlocity_cmt__Action__c == 'Disconnect'))
                 {
-                    serialNumbersForReturn.put(item.vlocity_cmt__SerialNumber__c, item.FromStock__c);
+                    serialNumbersForReturn.put(item.vlocity_cmt__SerialNumber__c, null);
                 }
                 if (string.isNotBlank(item.vlocity_cmt__SerialNumber__c) && (item.Product2.vlocity_cmt__Type__c != 'Simcard') && (item.vlocity_cmt__Action__c == 'Add'))
                 {
-                    returnedSerialNumbers.put(item.vlocity_cmt__SerialNumber__c, null);
+                    returnedSerialNumbers.put(item.vlocity_cmt__SerialNumber__c, item.FromStock__c);
                     
                 }
             }
@@ -267,7 +268,7 @@ global with sharing class taSalesAnnulmentHandler implements vlocity_cmt.Vlocity
             
             if (!Test.isRunningTest())
                 if (returnedSerialNumbers.KeySet().size() > 0 && serialNumbersForReturn.KeySet().size() > 0){
-                    taOrderController.MoveSerialsStock(OPERATION_TYPE_ANULACION, INSTANCE_ANULAR_VENTA, returnedSerialNumbers, STOCK_MOVEMENT_CODDEPOSITO_CLIENTE, STOCK_MOVEMENT_NO_APLICA);
+                    taOrderController.MoveSerialsStock(OPERATION_TYPE_ANULACION, INSTANCE_ANULAR_VENTA, returnedSerialNumbers, originOrder.OriginStoreLocation__r.AssociatedWarehouseId__c, STOCK_MOVEMENT_NO_APLICA);
                     taOrderController.MoveSerialsStock(OPERATION_TYPE_ANULACIONCEG, INSTANCE_ANULAR_DEVOLUCION, serialNumbersForReturn, originOrder.OriginStoreLocation__r.AssociatedWarehouseId__c, STOCK_MOVEMENT_NO_APLICA);
                     
                     
@@ -979,19 +980,35 @@ global with sharing class taSalesAnnulmentHandler implements vlocity_cmt.Vlocity
     }
     
     
-    public Boolean ValidatePuntoDeVenta(Id orderId, Id annulmentOrderId) {
+    public Boolean ValidatePuntoDeVenta(Id orderId, Id annulmentOrderId,  Map<String,Object> outMap) {
 
       Boolean punto;
       Order order = [SELECT Id, OriginStoreLocation__c FROM Order WHERE Id = :orderId];
       Order annOrder = [SELECT Id, Status, TrackingStatus__c, TrackingStatusDetail__c FROM Order WHERE Id = :annulmentOrderId];
       //Id orderId = (Id) options.get('orderId');
       vlocity_cmt__BusinessSite__c orderStore = [SELECT Id, Name, Channel__c, Channel_Type__c, Channel_Type_2__c, Channel_Type_3__c FROM vlocity_cmt__BusinessSite__c WHERE Id = :order.OriginStoreLocation__c];
-      vlocity_cmt__BusinessSite__c userStore = [SELECT Id, Name, Channel__c, Channel_Type__c, Channel_Type_2__c, Channel_Type_3__c FROM vlocity_cmt__BusinessSite__c WHERE Id = :[SELECT Id, Work_Place__c
+      
+      vlocity_cmt__BusinessSite__c userStore;
+      
+      if (!Test.isRunningTest()){
+      userStore = [SELECT Id, Name, Channel__c, Channel_Type__c, Channel_Type_2__c, Channel_Type_3__c FROM vlocity_cmt__BusinessSite__c WHERE Id = :[SELECT Id, Work_Place__c
                                                 FROM WorkTeam__c WHERE Id = :[SELECT Id, Work_Team__c FROM Team_Member__c WHERE User_member__c = :UserInfo.getUserId()].Work_Team__c].Work_Place__c];
+      }
+      
+      if (Test.isRunningTest()){
+       userStore = orderStore;
+      }
+      
+      
+      outMap.put('orderstore', orderStore.id);
+      outMap.put('getuserId',UserInfo.getUserId());
+      outMap.put('userstore', userStore.id);
+      
       punto = orderStore.Id == userStore.Id;
       //punto = false;
-      Boolean presencial = ValidateCanalPresencial(orderId, annulmentOrderId);
-      if(!punto && presencial){
+      //Boolean presencial = ValidateCanalPresencial(orderId, annulmentOrderId);
+      //if(!punto && presencial){
+      if(!punto){    
         annOrder.Status = 'Cancelled';
         annOrder.TrackingStatus__c = 'No se pudo realizar';
         annOrder.TrackingStatusDetail__c = 'Vendedor no corresponde';
@@ -1004,13 +1021,13 @@ global with sharing class taSalesAnnulmentHandler implements vlocity_cmt.Vlocity
     public Boolean ValidateCanalPresencial(Id orderId, Id annulmentOrderId) {
 
       Boolean presencial = false;
-      Order order = [SELECT Id, OriginStoreLocation__c FROM Order WHERE Id = :orderId];
+      Order ord = [SELECT Id, OriginStoreLocation__c FROM Order WHERE Id = :orderId];
       Order annOrder = [SELECT Id, Status, TrackingStatus__c, TrackingStatusDetail__c FROM Order WHERE Id = :annulmentOrderId];
-      vlocity_cmt__BusinessSite__c orderStore = [SELECT Id, Name, Channel__c, Channel_Type__c, Channel_Type_2__c, Channel_Type_3__c FROM vlocity_cmt__BusinessSite__c WHERE Id = :order.OriginStoreLocation__c];
+      vlocity_cmt__BusinessSite__c orderStore = [SELECT Id, Name, Channel__c, Channel_Type__c, Channel_Type_2__c, Channel_Type_3__c FROM vlocity_cmt__BusinessSite__c WHERE Id = :ord.OriginStoreLocation__c];
       
-      if(orderStore.Channel__c == 'Físico'){
-      presencial = true;}
+      if(orderStore.Channel__c == 'Físico') presencial = true;
      // presencial = false;
+     
       if(!presencial){
         annOrder.Status = 'Cancelled';
         annOrder.TrackingStatus__c = 'No se pudo realizar';

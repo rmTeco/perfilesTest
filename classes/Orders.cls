@@ -55,22 +55,27 @@ public class Orders extends ApplicationDomain {
 
     private void RegisterTransactionEntry(fflib_ISObjectUnitOfWork unitOfWork,
         Set<Id> suspensionAndReconnectionsOrdersActivated, Map<Id, SObject> existingOrders) {
-        List<Case> suspensionAndReconnectionCases = new CasesSelector().SelectByOrderIdWithAsset(suspensionAndReconnectionsOrdersActivated);
+        CasesSelector casesSelector = (CasesSelector) Application.Selector.NewInstance(Case.SObjectType);
+        Set<Id> suspensionAndReconnectionsParentCaseIds = new Set<Id>();
+        List<Case> suspensionAndReconnectionCases = casesSelector.SelectByOrderIdWithAsset(suspensionAndReconnectionsOrdersActivated);
 
+        for (Case caseObj : suspensionAndReconnectionCases)
+            suspensionAndReconnectionsParentCaseIds.Add(caseObj.ParentId);
+        
+        Map<Id, Case> suspensionAndReconnectionsParentCases = new Map<Id, Case>(casesSelector.SelectById(suspensionAndReconnectionsParentCaseIds));
+       
         Id assetTransactionRecordTypeId = Schema.SObjectType.Transaction_History__c
             .GetRecordTypeInfosByName().Get('Asset Transaction History').GetRecordTypeId();
-
-        Map<Id, Case> casesById = new Map<Id, Case>(suspensionAndReconnectionCases);
 
         for (Case caseObj : suspensionAndReconnectionCases) {
             caseObj.Status = 'Realizada exitosa';
 
             if (caseObj.ParentId != null) {
-                Case parentCase = casesById.Get(caseObj.ParentId);
+                Case parentCase = suspensionAndReconnectionsParentCases.Get(caseObj.ParentId);
                 Order order = (Order) existingOrders.Get(caseObj.Order__c);
 
                 Transaction_History__c suspensionToRegister = new Transaction_History__c();
-                suspensionToRegister.Account__c = order.AccountId;
+                suspensionToRegister.Account__c = parentCase.AccountId;
                 suspensionToRegister.Asset__c = caseObj.AssetId;
                 suspensionToRegister.RecordTypeId = assetTransactionRecordTypeId;
 

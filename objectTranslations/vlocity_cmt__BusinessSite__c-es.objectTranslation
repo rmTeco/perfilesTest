@@ -2,11 +2,11 @@
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseValues>
         <plural>false</plural>
-        <value><!-- Site --></value>
+        <value><!-- Store Location --></value>
     </caseValues>
     <caseValues>
         <plural>true</plural>
-        <value><!-- Site --></value>
+        <value><!-- Store Location --></value>
     </caseValues>
     <fields>
         <label>Codigo de Deposito SAP</label>
@@ -86,10 +86,18 @@
         <name>Is_subagent__c</name>
     </fields>
     <fields>
+        <label><!-- Level of the Stand --></label>
+        <name>Level_of_the_Stand__c</name>
+        <picklistValues>
+            <masterLabel>Dentro</masterLabel>
+            <translation><!-- Dentro --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
         <help><!-- Location --></help>
         <label>Partido | Localidad | Barrio</label>
         <name>Location__c</name>
-        <relationshipLabel><!-- Sites --></relationshipLabel>
+        <relationshipLabel><!-- Store Locations --></relationshipLabel>
     </fields>
     <fields>
         <label>Momento PDV</label>
@@ -109,6 +117,26 @@
         <picklistValues>
             <masterLabel>Telecom</masterLabel>
             <translation><!-- Telecom --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Order --></label>
+        <name>Order__c</name>
+        <picklistValues>
+            <masterLabel>0</masterLabel>
+            <translation><!-- 0 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>1</masterLabel>
+            <translation><!-- 1 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>2</masterLabel>
+            <translation><!-- 2 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>3</masterLabel>
+            <translation><!-- 3 --></translation>
         </picklistValues>
     </fields>
     <fields>
@@ -223,7 +251,7 @@
         <help><!-- Usuario que inhabilito la Oficina Postal --></help>
         <label><!-- Post Office Deactivator --></label>
         <name>PostOfficeDeactivator__c</name>
-        <relationshipLabel><!-- Sites --></relationshipLabel>
+        <relationshipLabel><!-- Store Locations --></relationshipLabel>
     </fields>
     <fields>
         <help><!-- Fin de actividad de Oficina Postal --></help>
@@ -378,6 +406,10 @@
         </picklistValues>
     </fields>
     <fields>
+        <label><!-- sfxId --></label>
+        <name>sfxId__c</name>
+    </fields>
+    <fields>
         <label>Localidad</label>
         <name>vlocity_cmt__City__c</name>
     </fields>
@@ -392,12 +424,12 @@
     <fields>
         <label>Horario de atención</label>
         <name>vlocity_cmt__OperatingHoursId__c</name>
-        <relationshipLabel><!-- Sites --></relationshipLabel>
+        <relationshipLabel><!-- Store Locations --></relationshipLabel>
     </fields>
     <fields>
         <label>Razón social</label>
         <name>vlocity_cmt__OrganizationId__c</name>
-        <relationshipLabel><!-- Sites --></relationshipLabel>
+        <relationshipLabel><!-- Store Locations --></relationshipLabel>
     </fields>
     <fields>
         <label>Código postal</label>

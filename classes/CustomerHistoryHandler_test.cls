@@ -6,10 +6,10 @@ public class CustomerHistoryHandler_test {
         Map<String, Object> input = new Map<String, Object>();
         Map<String, Object> outMap = new Map<String, Object>();
         Map<String, Object> options = new Map<String, Object>();
-		
+    
         CustomerHistoryHandler historyHandler = new CustomerHistoryHandler();
         
-		Test.startTest();
+    Test.startTest();
         historyHandler.invokeMethod(methodName, input, outMap, options);
         Test.stopTest();
         
@@ -21,5 +21,5 @@ public class CustomerHistoryHandler_test {
         system.assertNotEquals(null,result.get('AdjustmentList'));
         
      }
-	
+  
 }

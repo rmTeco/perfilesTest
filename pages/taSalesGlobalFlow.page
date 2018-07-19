@@ -85,10 +85,8 @@
             myModule
                 .controller('GeneralController', GeneralController);
                 
-                GeneralController.$inject = ['$scope', '$rootScope', '$timeout', '$window']
-                function GeneralController($scope, $rootScope, $timeout, $window) {
-                    $rootScope.ipOrigin = "{!ipOrigin}";
-                    
+                GeneralController.$inject = ['$scope', '$timeout', '$window']
+                function GeneralController($scope, $timeout, $window) {
                     var gc = this;
                     gc.cancelButton = cancelButton;
                     
@@ -99,7 +97,6 @@
                     gc.showErrorTimeout = false;
                     //console.info($location.host());
                     
-
                     function init() {
                         if(gc.orderId){
                             //getTimeOut();

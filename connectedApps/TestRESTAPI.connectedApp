@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>sebastian.arganaras@accenture.com</contactEmail>
+    <label>TestRESTAPI</label>
+    <oauthConfig>
+        <callbackUrl>https://test.salesforce.com/services/oauth2/callback</callbackUrl>
+        <consumerKey>3MVG9sLbBxQYwWqsYmKNsoFy2KO.1hgBwGSMn3T6hISxsZfXHzzR.qCh8.unOY_FA5rl5yU2i6N3risuqHgwc</consumerKey>
+        <scopes>Api</scopes>
+    </oauthConfig>
+</ConnectedApp>

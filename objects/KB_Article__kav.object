@@ -67,26 +67,17 @@
         <description>Checkbox que indica si el artículo fue actualizado en los últimos 7 días.</description>
         <externalId>false</externalId>
         <formula>AND( (LastPublishedDate &lt;&gt; FirstPublishedDate), 
-			((NOW() - LastPublishedDate) &lt;= 7) )</formula>
+((NOW() - LastPublishedDate) &lt;= 7) )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Artículo Actualizado</label>
         <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>KB_ArticuloDestacadoHasta__c</fullName>
-        <description>Se indica la fecha en la cual el artículo deja de ser destacado.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>En caso de no querer destacar el artículo, se debe dejar la fecha en blanco.</inlineHelpText>
-        <label>Artículo destacado hasta</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Date</type>
-    </fields>
-    <fields>
         <fullName>KB_ArticuloDestacado__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Si el campo se encuentra tildado, el artículo será destacado y aparecerá primero en las búsquedas.</description>
         <externalId>false</externalId>
-        <formula>(TODAY() &lt; KB_ArticuloDestacadoHasta__c)</formula>
         <label>Artículo Destacado</label>
         <trackHistory>false</trackHistory>
         <type>Checkbox</type>
@@ -96,7 +87,7 @@
         <description>Checkbox que indica si el artículo fue creado en los últimos 7 días.</description>
         <externalId>false</externalId>
         <formula>AND( (FirstPublishedDate = LastPublishedDate), 
-			((NOW() - FirstPublishedDate) &lt;= 7) )</formula>
+((NOW() - FirstPublishedDate) &lt;= 7) )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Artículo Nuevo</label>
         <trackHistory>false</trackHistory>
@@ -163,6 +154,7 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <gender>Masculine</gender>
     <label>Contenido</label>
     <pluralLabel>Contenidos</pluralLabel>
     <validationRules>

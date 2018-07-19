@@ -14,11 +14,11 @@ public class TaNewContactTest {
         newContact.invokeMethod('getDocumentTypes', null, outMap, null);
         Test.stopTest();
         
-        List<Map<String,Object>> myOutMap = (List<Map<String,Object>>) outMap.get('options');
+        List<Map<String,Object>> myOutMap = (List<Map<String,Object>>) outMap.get('options');   
        	
        	for(Integer i=0;i<myOutMap.Size()-1;i++) {
             Map<String, String> contactDataElement = (Map<String, String>) taNewContactTestDataFactory.createNewContactSelectableData()[i];
-            System.assertEquals(myOutMap[i].get('name'), contactDataElement.get('name'));
+            System.assertEquals(myOutMap[i].get('name'), contactDataElement.get('name'));           
             System.assertEquals(myOutMap[i].get('value'), contactDataElement.get('value'));
         }
     }

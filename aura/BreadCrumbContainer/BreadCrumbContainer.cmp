@@ -2,8 +2,8 @@
     
     <aura:attribute name="myBreadcrumbsC" type="Object"/>
     <aura:attribute name="activeElementC" type="string"/>
-    <aura:handler event="c:BreadCrumbEvent"  action="{!c.handleevent}"/>
-        
+    <aura:handler event="c:BreadCrumbEvent"  action="{!c.handleevent}" access="global"/>
+
     <lightning:breadcrumbs>
         <aura:iteration items="{!v.myBreadcrumbsC}" var="crumbs" indexVar="i">
             <lightning:breadcrumb label="{!crumbs.label}" href="{!crumbs.url}" 

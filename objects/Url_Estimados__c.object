@@ -4,6 +4,30 @@
     <description>Utiizado para almacenar el URL y demas parametros necesarios para invocar el OS Presupuesto de Reparacion que se visualizara en la comunidad</description>
     <enableFeeds>false</enableFeeds>
     <fields>
+        <fullName>URL_Facebook__c</fullName>
+        <externalId>false</externalId>
+        <label>URL_Facebook</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>URL_Instagram__c</fullName>
+        <externalId>false</externalId>
+        <label>URL_Instagram</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>URL_Twitter_del__c</fullName>
+        <externalId>false</externalId>
+        <label>URL_Twitter</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
         <fullName>URL__c</fullName>
         <externalId>false</externalId>
         <label>URL</label>

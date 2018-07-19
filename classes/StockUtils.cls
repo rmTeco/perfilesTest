@@ -139,7 +139,12 @@ public with sharing class StockUtils{
                 }
             }
         }
-        catch(DmlException e)
+        catch(CallOutException e)
+        {
+            System.debug('An unexpected error has occurred: ' + e.getMessage());
+            throw e;
+        }
+        catch(Exception e)
         {
             System.debug('An unexpected error has occurred: ' + e.getMessage());
             throw e;

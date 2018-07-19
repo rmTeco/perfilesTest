@@ -8,5 +8,5 @@
     <tabs>ManageMyWorkTeams</tabs>
     <tabs>ManageCrossTeamMembers</tabs>
     <tabs>Permissions_by_workteam</tabs>
-    <tabs>vlocity_cmt__OrchestrationItemDefinition__c</tabs>
+    <tabs>Permissions_by_Work_Team</tabs>
 </CustomApplication>

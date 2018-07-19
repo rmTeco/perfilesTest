@@ -394,9 +394,7 @@ Global with sharing class GP_API {
          
         //Creo los items.
         List<GP_itemMotorDeReglas> itemsMotorRegla = new List<GP_itemMotorDeReglas>();
-        List<GP_sumarRestarPuntosItem> itemsFiltradosPorControlDeEvento = GP_ControlDeEventos.controlarSocios(items);
-        //Saque Items.
-        For(GP_sumarRestarPuntosItem item: itemsFiltradosPorControlDeEvento){
+        For(GP_sumarRestarPuntosItem item: items){
             GP_itemMotorDeReglas itemMR = new GP_itemMotorDeReglas(item.titularID, item.suscriptorID, item.puntos, item.tipoDeEvento, item.variablesDelEvento, item.numeroDeOrden);
             itemsMotorRegla.add(itemMR);
         }
@@ -404,7 +402,7 @@ Global with sharing class GP_API {
         //Los paso por las reglas.
         //System.debug(itemsMotorRegla);
         GP_MotorDeReglas.pasarPorLasReglas(itemsMotorRegla);
-        system.debug(itemsMotorRegla);
+        //system.debug(itemsMotorRegla);
 
         //creo los items para el generador de transacciones.
         List<GP_datosTransaccion> itemsTransaccion = new List<GP_datosTransaccion>();

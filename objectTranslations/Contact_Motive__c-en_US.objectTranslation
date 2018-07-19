@@ -85,6 +85,7 @@
         <label><!-- Servicio --></label>
         <name>Service__c</name>
     </fields>
+    <nameFieldLabel><!-- Name --></nameFieldLabel>
     <recordTypes>
         <label><!-- Contact Motive --></label>
         <name>Contact_Motive</name>

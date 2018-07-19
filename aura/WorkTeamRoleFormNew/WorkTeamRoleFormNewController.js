@@ -37,8 +37,8 @@
         var workTeamName = component.get("v.WorkTeamName");
         var workTeamRoleName = component.get("v.WorkTeamRoleName");
 
-        if(roleAPIname == '') {
-            component.set("v.messageHelp", "Se requiere el nombre del API rol Name");
+        if(roleAPIname == '' || roleAPIname == 'NoSelected') {
+            component.set("v.messageHelp", "Debe seleccionar un rol");
             document.getElementById("message__helper").style.display = "block";
         }else{
             var action = component.get("c.saveWorkTeamRole");

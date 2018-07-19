@@ -49,7 +49,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>true</enableHistory>
+    <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
@@ -65,7 +65,6 @@
         <relationshipName>AssetPricingAdjustments</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
@@ -78,7 +77,6 @@
         <label>AssetPricingAdjustmentReferenceId</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -90,7 +88,6 @@
         <externalId>false</externalId>
         <label>Effective End Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
@@ -101,7 +98,6 @@
         <externalId>false</externalId>
         <label>Effective Start Date</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
@@ -116,7 +112,6 @@
         <relationshipLabel>Asset Pricing Adjustments</relationshipLabel>
         <relationshipName>AssetPricingAdjustments</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -128,7 +123,6 @@
         <label>ProvisioningStatus</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -142,7 +136,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -150,7 +143,6 @@
     <label>Asset Pricing Adjustment</label>
     <nameField>
         <label>Pricing Adjustment Name</label>
-        <trackHistory>false</trackHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>Asset Pricing Adjustments</pluralLabel>

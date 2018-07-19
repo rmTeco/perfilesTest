@@ -249,37 +249,37 @@
 											</td>
 											<td>
 												<apex:outputField value="{!item.SCP_Certa_GC__Focus__c}">
-								                    <apex:inlineEditSupport event="ondblclick" rendered="{!canEdit}"/>
+								                    <apex:inlineEditSupport event="ondblclick"/>
 								                </apex:outputField>
 											</td>
 											<td>
 												<apex:outputField value="{!item.SCP_Certa_GC__Attitudes__c}">
-								                    <apex:inlineEditSupport event="ondblclick" rendered="{!canEdit}"/>
+								                    <apex:inlineEditSupport event="ondblclick"/>
 								                </apex:outputField>
 											</td>
 											<td>
 												<apex:outputField value="{!item.SCP_Certa_GC__Authority__c}">
-								                    <apex:inlineEditSupport event="ondblclick" rendered="{!canEdit}"/>
+								                    <apex:inlineEditSupport event="ondblclick"/>
 								                </apex:outputField>
 											</td>
 											<td>
 												<apex:outputField value="{!item.SCP_Certa_GC__Influence__c}">
-								                    <apex:inlineEditSupport event="ondblclick" rendered="{!canEdit}"/>
+								                    <apex:inlineEditSupport event="ondblclick"/>
 								                </apex:outputField>
 											</td>
 											<td>
 												<apex:outputField value="{!item.SCP_Certa_GC__Our_Relationship__c}">
-								                    <apex:inlineEditSupport event="ondblclick" rendered="{!canEdit}"/>
+								                    <apex:inlineEditSupport event="ondblclick"/>
 								                </apex:outputField>
 											</td>
 											<td>
 												<apex:outputField value="{!item.SCP_Certa_GC__Competing_Company_Relationship__c}">
-								                    <apex:inlineEditSupport event="ondblclick" rendered="{!canEdit}"/>
+								                    <apex:inlineEditSupport event="ondblclick"/>
 								                </apex:outputField>
 											</td>
 											<td>
 												<apex:outputField value="{!item.SCP_Certa_GC__Generation__c}">
-								                    <apex:inlineEditSupport event="ondblclick" rendered="{!canEdit}"/>
+								                    <apex:inlineEditSupport event="ondblclick"/>
 								                </apex:outputField>
 											</td>
 											<!--td>

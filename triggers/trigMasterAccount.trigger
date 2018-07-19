@@ -21,7 +21,6 @@ trigger trigMasterAccount on Account (before insert, before update, before delet
     }
     else if (Trigger.isAfter) {
         if (Trigger.isInsert) {
-            System.debug('After insert');
             AccountTriggers.callIntegrationServices();
         }
         if(Trigger.isUpdate){

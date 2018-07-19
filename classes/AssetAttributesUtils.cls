@@ -22,8 +22,8 @@ global with sharing class AssetAttributesUtils {
         try{
             List<Asset> objAssets = [Select vlocity_cmt__JSONAttribute__c From Asset Where id = :idAsset];
             
-            if(objAssets.size() == 0 )
-                throw new FuncException('No se a encontrado el servicio seleccionado');
+//            if(objAssets.size() == 0 )
+//                throw new FuncException('No se a encontrado el servicio seleccionado');
             if(objAssets[0].vlocity_cmt__JSONAttribute__c == null){
                 return response;
                 //throw new FuncException('No existen atributos cargados para el servicio seleccionado');*/
@@ -85,8 +85,8 @@ global with sharing class AssetAttributesUtils {
             
             return response;
             
-        }catch(FuncException ex){
-            throw ex;
+//        }catch(FuncException ex){
+//            throw ex;
         } catch(Exception ex){
             //outMap.put('debug', debug+' options: ' + options);
             response.put('error', 'Error inesperado al obtener datos del servicio: ' + ex.getMessage());

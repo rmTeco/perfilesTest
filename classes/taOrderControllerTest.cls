@@ -26,7 +26,8 @@
         static testmethod void testOrden1()
         {
             List<Account> AccList = TestDataFactory.createAccounts(1, 'Consumer');
-            vlocity_cmt__BusinessSite__c StoreLocations = new vlocity_cmt__BusinessSite__c(vlocity_cmt__OrganizationId__c=AccList[0].id ,PointOfSaleId__c=1.0, AssociatedWarehouseDefault__c='Default');
+            Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
+            vlocity_cmt__BusinessSite__c StoreLocations = new vlocity_cmt__BusinessSite__c(RecordTypeId=idRecordType, vlocity_cmt__OrganizationId__c=AccList[0].id ,PointOfSaleId__c=1.0, AssociatedWarehouseDefault__c='Default');
             insert StoreLocations;
             FinancialPromotions__c Promo1 = new FinancialPromotions__c(Name='Promo1',Creditcard_Type__c='403', Bank_Code__c='1', Instalments__c='1', CFT__c='test');
             insert Promo1;
@@ -158,8 +159,10 @@
         }
         static testmethod void testOrder2()
         {
+            String vlocitycmtJSONAttribute = '{"FAN_ATTCAT_000048":[{"$$AttributeDefinitionStart$$":null,"attributeRunTimeInfo":"10",objectid__c":"01t6C000000ZuacQAC","attributeid__c":"a0G6C000000pwIbUAI","attributecategoryid__c":"a0F6C000000BovEUAS","categorycode__c":"FAN_ATTCAT_000048","categoryname__c":"Caracteristicas Simcard","attributeuniquecode__c":"FAN_ATT_000070","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"NMU Simcard","displaysequence__c":"95","categorydisplaysequence__c":95,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":true,"ishidden__c":false,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":false,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqQ3UAK","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":"Dropdown","value__c":null,"valuedatatype__c":"Picklist","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Picklist","uiDisplayType":"Dropdown","values":[{"displayText":"Simcard Magenta: (3FF Micro SIM)","id":10,"value":"PTP3FFMMI"},{"displayText":"Simcard Cyan: (2FF Bolsita)","id":20,"value":"PTP2FFCCI"},{"displayText":"Simcard Violeta: (4FF Nano SIM)","id":30,"value":"PTP4FFVNI"},{"displayText":"Simcard Cyan 2FF/3FF Bolsita comunes","id":40,"value":"PTP23FFCI"},{"displayText":"Usimcard Triple Corte Bolsita","id":50,"value":"PTPBOLTCI"}],"default":[]},"$$AttributeDefinitionEnd$$":null},{"$$AttributeDefinitionStart$$":null,"objectid__c":"01t6C000000ZuacQAC","attributeid__c":"a0G6C000000pwHOUAY","attributecategoryid__c":"a0F6C000000Bor5UAC","categorycode__c":"FAN_ATTCAT_000045","categoryname__c":"Caracteristicas Principales","attributeuniquecode__c":"FAN_ATT_000068","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"Facturable en Venta","displaysequence__c":"71","categorydisplaysequence__c":71,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":false,"ishidden__c":false,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":true,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqPxUAK","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":null,"value__c":"true","valuedatatype__c":"Text","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Text","default":"true"},"$$AttributeDefinitionEnd$$":null},{"$$AttributeDefinitionStart$$":null,"objectid__c":"01t6C000000ZuacQAC","attributeid__c":"a0G6C000000pwkBUAQ","attributecategoryid__c":"a0F6C000000BoqlUAC","categorycode__c":"FAN_ATTCAT_000042","categoryname__c":"Integracion","attributeuniquecode__c":"FAN_ATT_000084","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"Charge Code","displaysequence__c":"31","categorydisplaysequence__c":31,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":false,"ishidden__c":true,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":false,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqPvUAK","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":"Dropdown","value__c":"C_OT_MB_EQUIPMENT_SIM","valuedatatype__c":"Picklist","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Picklist","uiDisplayType":"Dropdown","default":[{"displayText":"SIM","id":30,"value":"C_OT_MB_EQUIPMENT_SIM"}],"values":[{"displayText":"Telefono","id":10,"value":"C_OT_MB_EQUIPMENT_PHONES"},{"displayText":"Modem","id":20,"value":"C_OT_MB_EQUIPMENT_MODEMS"},{"displayText":"SIM","id":30,"value":"C_OT_MB_EQUIPMENT_SIM"},{"displayText":"Accesorio","id":40,"value":"C_OT_MB_EQUIPMENT_ACCESORIOS"},{"displayText":"Netbook","id":50,"value":"C_OT_MB_EQUIPMENT_NETBOOK"}]},"$$AttributeDefinitionEnd$$":null}]}';
             List<Account> AccList = TestDataFactory.createAccounts(1, 'Consumer');
-            vlocity_cmt__BusinessSite__c StoreLocations = new vlocity_cmt__BusinessSite__c(vlocity_cmt__OrganizationId__c=AccList[0].id ,PointOfSaleId__c=1.0, AssociatedWarehouseDefault__c='Default', Channel_Type__c='Agentes' ,Channel_Type_3__c='Agentes' ,Channel_Type_2__c='Agentes' ,Channel__c='Físico');
+            Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
+            vlocity_cmt__BusinessSite__c StoreLocations = new vlocity_cmt__BusinessSite__c(RecordTypeId=idRecordType, vlocity_cmt__OrganizationId__c=AccList[0].id ,PointOfSaleId__c=1.0, AssociatedWarehouseDefault__c='Default', Channel_Type__c='Agentes' ,Channel_Type_3__c='Agentes' ,Channel_Type_2__c='Agentes' ,Channel__c='Físico');
             insert StoreLocations;
             TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
             List<Order>OrdList = TestDataFactory.createOrders(2,AccList[0]);
@@ -186,6 +189,26 @@
             inputCart.put('cartId', orderId);
             inputCart.put('productId', '');
             list<String> lstAsset = new list<String>();
+            String attributeC = '{"FAN_ATTCAT_000044":[{"$$AttributeDefinitionStart$$":null,"objectid__c":"01t6C000000ZudOQAS","attributeid__c":"a0G6C000000pofyUAA","attributecategoryid__c":"a0F6C000000BaAWUA0","categorycode__c":"FAN_ATTCAT_000044","categoryname__c":"TA Linea Basica","attributeuniquecode__c":"FAN_ATT_000038","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"Numero de Linea","displaysequence__c":"null","categorydisplaysequence__c":18,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":true,"ishidden__c":false,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":false,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqfyUAC","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":null,"value__c":null,"valuedatatype__c":"Text","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Text", "value":"3456787654"},"$$AttributeDefinitionEnd$$":null}]}';
+            List<Product2> productsList = new List<Product2>();
+            productsList.add(new Product2(Name = 'Plan con tarjeta', Family = 'Movil', vlocity_cmt__Type__c = 'Plan Prepago', vlocity_cmt__JSONAttribute__c=attributeC));
+            insert productsList;
+
+            Id pricebookId = Test.getStandardPricebookId();
+            PricebookEntry standardPrice1 = new PricebookEntry(Pricebook2Id = pricebookId, Product2Id = productsList.get(0).Id, UnitPrice = 100, IsActive = true);
+            insert standardPrice1;
+
+            Order order = new Order(AccountId = AccList[0].Id, Status = 'Draft', Gestion__c = 'Venta', Operation_Code__c = 'VTNLCE', EffectiveDate = Date.today(), Pricebook2Id = pricebookId,vlocity_cmt__OriginatingChannel__c ='Agentes',Delivery_Method__c ='Presencial', Received224_Date__c = Date.Today());
+            insert order;
+            
+            List<OrderItem> ordItemList = new List<OrderItem>();
+            ordItemList.add(new OrderItem(OrderId = order.Id, Product2Id = productsList.get(0).Id, Quantity = 10, PricebookEntryId = standardPrice1.Id, UnitPrice = 100));
+            insert ordItemList;
+
+            Location__c loc = new Location__c(Name = 'test1', DepartmentCode__c = 'Cod', LocationCode__c = 'Test1', StateCode__c ='B', Status__c = true);
+            insert loc;
+
+
             test.startTest();
                 nmusMap2.put('test',nmusMap);
                 TaOrderController OrderCtrl = new TaOrderController();
@@ -196,11 +219,12 @@
                 //options.put('Channel',OrdList[0].vlocity_cmt__OriginatingChannel__c);
                 OrderCtrl.invokeMethod('OrderPreparationUpdate',inputMap ,outMap,options);
                 OrderCtrl.invokeMethod('OrderPreparationUpdate',inputMap ,outMap,options);
+                OrderCtrl.invokeMethod('ValidateTangibleExistence',inputMap ,outMap,options);
                 TaOrderController.GetMACDRequestDate('',lstAsset);
                 TaOrderController.OrderTimeOut(OrdList[0].Id);
                 taOrderController.ValidateTangibleExistence(orderId);
                 taOrderController.GetStockCodeByOperation('','','');
-                taOrderController.GetNMU('');
+                taOrderController.GetNMU(vlocitycmtJSONAttribute);
                 taOrderController.consultingMatrixValidationRequired('','');
                 taOrderController.GetDocumentTypes(inputMap);
                 taOrderController.PopulateEntidades(inputMap);
@@ -214,54 +238,54 @@
                 taOrderController.GetInstallmentsByPromotion('','','',inputMap);
                 taOrderController.PopulateDPFInstallmentsFromObject(inputMap);
                 taOrderController.CancelOrderAndRelease(orderId);
-                taOrderController.ReleaseLinesFromOrder(orderId);
+                taOrderController.ReleaseLinesFromOrder(order.Id);
                 taOrderController.RollbackForRetryPaymentMethods(options);
                 taOrderController.GetPaymentsAdjustments(orderId);
                 taOrderController.GetCashPayments(orderId);
                 taOrderController.GetCardsPayments(orderId);
                 taOrderController.GetOrderSerials(orderId);
                 taOrderController.GetPaymentAdjustmentsWithCFT(orderId);
+                //taOrderController.ManageReservedNmus('MTPL', nmusMap2, '141', 'CP0134001',orderId);
                 //TaOrderController.Manag,eReservedNmus(stroperador,nmusMap,codPuntoDeVenta,codDeposito,orderId);
                 Test.setMock(HttpCalloutMock.class, new IFS_S101_reserveOrReleaseMock());
                 taOrderController.getExpandedPacksItems(orderId,'','');
                 taOrderController.getCartsProductsById(inputCart);
                 Map<String, Object> inputMapAdd = new Map<String, Object>();
-                inputMapAdd.put('cartId', '');
-                inputMapAdd.put('itemId', '');
-                inputMapAdd.put('parentId', '');
-                inputMapAdd.put('parentHierarchyPath', '');
-                inputMapAdd.put('product2Id', '');
-                inputMapAdd.put('name', '');
-                inputMapAdd.put('id', '');
+                inputMapAdd.put('cartId', 'randomTestData');
+                inputMapAdd.put('itemId', 'randomTestData');
+                inputMapAdd.put('parentId', 'randomTestData');
+                inputMapAdd.put('parentHierarchyPath', 'randomTestData');
+                inputMapAdd.put('product2Id', 'randomTestData');
+                inputMapAdd.put('name', 'randomTestData');
+                inputMapAdd.put('id', 'randomTestData');
                 taOrderController.addToCartItems(inputMapAdd);
                 taOrderController.getCarts(orderId);
 
                 Map<String, Object> inputMapDelete = new Map<String, Object>();
-                inputMapDelete.put('methodName', '');
-                inputMapDelete.put('cartId', '');
-                inputMapDelete.put('Id', '');
-                inputMapDelete.put('parentHierarchyPath', '');
-                inputMapDelete.put('product2Id', '');
-                inputMapDelete.put('name', '');
-                inputMapDelete.put('groupId', '');
-                inputMapDelete.put('inCartQuantityId', '');
+                inputMapDelete.put('cartId', 'randomTestData');
+                inputMapDelete.put('Id', 'randomTestData');
+                inputMapDelete.put('parentHierarchyPath', 'randomTestData');
+                inputMapDelete.put('product2Id', 'randomTestData');
+                inputMapDelete.put('name', 'randomTestData');
+                inputMapDelete.put('groupId', 'randomTestData');
+                inputMapDelete.put('inCartQuantityId', 'randomTestData');
                 taOrderController.deleteCartItem(inputMapDelete);
+                options.put('deleteCartItemRequest', inputMapDelete);
+                OrderCtrl.invokeMethod('DeleteCartItem',inputMapDelete ,outMap,options);
+
                 taOrderController.GetPriceAdjustmentsGroupByOrderItem(orderId);
                 Map<String,String> serialNumbers = new Map<String,String>();
                 serialNumbers.put('99999777799999', 'MTPL');
                 serialNumbers.put('77776676767666', 'MCVM');
-
                 taOrderController.MoveSerialsStock('VTAN','ANULARESERVA',serialNumbers, '134', OrdList[0].Delivery_Method__c);
-                /*taOrderController.aprobarOrderADV(orderId);
-                taOrderController.devolverOrderADV(orderId);
-                taOrderController.rechazarOrderADV(orderId);*/
 
             test.stoptest();
         }
         static testmethod void testOrderTimeOut()
         {
             List<Account> AccList = TestDataFactory.createAccounts(1, 'Consumer');
-            vlocity_cmt__BusinessSite__c StoreLocations = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte',
+            Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
+            vlocity_cmt__BusinessSite__c StoreLocations = new vlocity_cmt__BusinessSite__c(RecordTypeId=idRecordType, Name='Barrio Norte',
                vlocity_cmt__OrganizationId__c=AccList[0].Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
                 Channel_Type__c='Oficinas Comerciales', Channel_Type_2__c='Oficinas Comerciales', Channel_Type_3__c='Oficinas Comerciales',
                 Region__c='AMBA');
@@ -300,6 +324,7 @@
             String parent = workTeamParent.Id;
             WorkTeam__c workTeam = new WorkTeam__c(Team_Name__c = 'Test', Name = 'Test');
             Team_Member__c tm = TestDataFactory.setTeamMember('Call Center', userinfo.getUserId(), null);
+            options.put('orderId', orderListId);
             taOrderController testedClass = new taOrderController();
                 test.startTest();
                     inputMap.put('CreditDiscountPaymentMethod', null);
@@ -325,6 +350,7 @@
         Test.setMock(HttpCalloutMock.class, mock);
             TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
             Map<String,Object> inputMap = new Map<String,Object>();
+            Map<String,Object> optionsCG = new Map<String,Object>();
             Map<String,Object> outMap = new Map<String,Object>();
             Map<String,Object> options = new Map<String,Object>();
             List<Account> lstAccount = TestDataFactory.createAccounts(1, 'Consumer');
@@ -339,13 +365,17 @@
             List<Order>OrdList = TestDataFactory.createOrders(2,lstAccount[0]);
             OrdList[0].Delivery_Method__c ='Store Pick Up';
             OrdList[1].Delivery_Method__c ='Store Pick Up';
+            OrdList[1].Gestion__c ='Cambio en Garantia';
             update OrdList;
             Map<String,Object> response = TaMatrixUtils.getStockMovementOperation('VTAN','ENTREGA', OrdList[0].Delivery_Method__c, 'NOAPLICA');
             Test.startTest();
             options.put('idOrder',OrdList[0].Id);
             options.put('ProductCode',lstProduct2[0].productCode);
+            optionsCG.put('idOrder', OrdList[1].Id);
+            optionsCG.put('ProductCode',lstProduct2[0].productCode);
                 TaOrderController OrderCtrl = new TaOrderController();
                 OrderCtrl.invokeMethod('OrderHandOverUpdate',inputMap,outMap,options);
+                OrderCtrl.invokeMethod('OrderHandOverUpdate',inputMap,outMap,optionsCG);
                 OrderCtrl.invokeMethod('GetProductNMU',inputMap,outMap,options);
             Test.stopTest();
         }
@@ -424,6 +454,65 @@
           Test.stopTest();
 
         }
+        
+        static testmethod void devolverRechazarOrderADV(){
+          MockupFactory.generate();
+          vlocity_cmt__PriceList__c objPrice = [select Name, vlocity_cmt__Code__c, Id from vlocity_cmt__PriceList__c limit 1];
+          Order objOrder = new Order();
+          List<Account> AccList = TestDataFactory.createAccounts(1);
+          objOrder.AccountId = AccList[0].Id;
+          objOrder.Status = 'Draft';
+          objOrder.EffectiveDate = Date.today();
+          objOrder.vlocity_cmt__OriginatingChannel__c = 'WEB';
+          objOrder.Delivery_Method__c = 'Delivery';
+          insert objOrder;
+          PageReference pageRef = Page.pagAprobalADV;
+          Test.setCurrentPage(pageRef);
+          ApexPages.currentPage().getParameters().put('id',objOrder.id);
+          ApexPages.currentPage().getParameters().put('j_id0:j_id1:motivo', 'randomData');
+          ApexPages.currentPage().getParameters().put('j_id0:j_id1:desc', 'randomData');
+          Test.startTest();
+            TaOrderController OrderCtrl = new TaOrderController();
+            //OrderCtrl.devolverOrderADV();
+            //OrderCtrl.rechazarOrderADV();
+          Test.stopTest();
+
+        }
+
+        static testmethod void testDeliveryMethods(){
+            Map<String,Object> inputMap = new Map<String,Object>();
+            Map<String,Object> outMap = new Map<String,Object>();
+            Map<String,Object> options = new Map<String,Object>();
+            List<Account> lstAccount = TestDataFactory.createAccounts(1, 'Consumer');
+            List<Order> ordList = TestDataFactory.createOrders(1,lstAccount[0]);
+            options.put('orderId', ordList[0].Id);
+            options.put('deliveryMethodService','Standard');
+            List<Product2> prods = new List<Product2>();
+            Product2 a = new Product2(Name='Envio', ProductCode='FAN_ENV_000', Tangible__c = true, vlocity_cmt__Type__c='TestType', IsActive = true);
+            prods.add(a);
+            Product2 b = new Product2(Name='Envio Standard', ProductCode='FAN_ENV_001', Tangible__c = true, vlocity_cmt__Type__c='TestType', IsActive = true);
+            prods.add(b);
+            insert prods;
+
+            Pricebook2 standardPB = new Pricebook2(Id = Test.getStandardPricebookId(), Name = 'Standard Price Book', Description = 'Price Book Products', IsActive = true); 
+            update standardPB;
+            List<PricebookEntry> pricebookList = new List<PricebookEntry>();
+            PricebookEntry standardPrice = new PricebookEntry(Pricebook2Id = standardPB.Id, Product2Id = prods[0].Id, UnitPrice = 10000, IsActive = true, UseStandardPrice = false);
+            pricebookList.add(standardPrice);
+            PricebookEntry standardPrice2 = new PricebookEntry(Pricebook2Id = standardPB.Id, Product2Id = prods[1].Id, UnitPrice = 10000, IsActive = true, UseStandardPrice = false);
+            pricebookList.add(standardPrice2);
+            insert pricebookList;
+
+            Test.startTest();
+                TaOrderController OrderCtrl = new TaOrderController();
+                OrderCtrl.invokeMethod('AddToCartItemsDelivery',inputMap ,outMap,options);
+                OrderCtrl.invokeMethod('AddToCartItemsDeliveryChild',inputMap ,outMap,options);
+                OrderCtrl.invokeMethod('DeleteCartItemsDelivery',inputMap ,outMap,options);
+                OrderCtrl.invokeMethod('DeleteCartItemsDeliveryChild',inputMap ,outMap,options);
+                
+            Test.stopTest();
+        }
+
       
 
     }

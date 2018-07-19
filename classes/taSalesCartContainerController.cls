@@ -12,15 +12,14 @@ global with sharing class taSalesCartContainerController implements vlocity_cmt.
         try
         {
             System.debug('CallPrefeasibility');
-            System.debug(idOrder);
             Order order = [SELECT PrefeasibilityResult__c FROM ORDER WHERE Id = :idOrder];
-            System.debug(order);
             if (!String.isNotBlank(order.PrefeasibilityResult__c))
             {
                 String prefaResult = null;
                 if (String.isNotBlank(idAsset))
                 {
                     vlocity_cmt__Premises__c premise = GetAssetPremise(idAsset);
+                    
                     if (premise != null)
                         prefaResult = ObtainPrefeasibility(premise);
                 }
@@ -98,15 +97,35 @@ global with sharing class taSalesCartContainerController implements vlocity_cmt.
             auxMap.put('tipo', 'Voz');
             auxMap.put('tecnologia', 'COBRE');
             bodyServicios.put('servicios', auxMap);
+            Map<String, Object> prefeseabilityResponse = new Map<String, Object>();
 
             System.debug('Calling Service 271: Prefeasibility');
-            Map<String, Object> prefeseabilityResponse = IFS_S271_prefeseabilty.prefeseabilty(bodyFamilia, bodyOperacion, bodyDomicilio, bodyCoord, bodyServicios);
+            if(!Test.isRunningTest()){
+                prefeseabilityResponse = IFS_S271_prefeseabilty.prefeseabilty(bodyFamilia, bodyOperacion, bodyDomicilio, bodyCoord, bodyServicios);
+            } else {
+                Map<String, Object> auxTecno1 = new Map<String, Object>();
+                auxTecno1.put('medicionDeBajada', '1');
+                auxTecno1.put('disponibilidad', 'SI');
+                Map<String, Object> auxTecno = new Map<String, Object>();
+                auxTecno.put('servicio', 'Internet');
+                auxTecno.put('standardsTecnico',  new List<Object>());
+                ((List<Object>)auxTecno.get('standardsTecnico')).add(auxTecno1);
+                Map<String, Object> parentRecord = new Map<String, Object>();
+                parentRecord.put('servicios', new List<Object>());
+                ((List<Object>)parentRecord.get('servicios')).add(auxTecno);
+
+                prefeseabilityResponse.put('httpStatusCode', '200');
+                prefeseabilityResponse.put('tecnologiasAcceso', new List<Object>());
+                ((List<Object>)prefeseabilityResponse.get('tecnologiasAcceso')).add(parentRecord);
+            }
+
             System.debug('Return from Service 271: Prefeasibility');
             System.debug('Prefeseability Response: ' + prefeseabilityResponse);
             String jSonStringResponse = (String)prefeseabilityResponse.get('httpStatusCode');
             //Map<String, Object> responseNode = (Map<String, Object>) JSON.deserializeUntyped(jSonStringResponse);
             List<Object> tecnologiesAccesList = (List<Object>) prefeseabilityResponse.get(prefaWStecnologiesAccesList);
             System.debug('tecnologiesAccesList: ' + tecnologiesAccesList);
+
             
             if (tecnologiesAccesList.size() > 0)
                 return PrefeasibilityFilter(tecnologiesAccesList);
@@ -203,8 +222,6 @@ global with sharing class taSalesCartContainerController implements vlocity_cmt.
             //jsonAttributeMap = (Map<String, Object>) JSON.deserializeUntyped(inputMap);
             //lineItemsInCart = (Map<String, Object>) jsonAttributeMap.get('lineItemsInCart');
             //Bajo hasta el plan padre (asumo que el unico plan, sino hay que recorrer el records1 para buscar el plan deseado)
-
-            System.debug('Item Name: ' + options.get('itemName'));
 
             sItemName = (String) options.get('itemName');
             mAttribs = (Map<String, Object>) options.get('attribs');

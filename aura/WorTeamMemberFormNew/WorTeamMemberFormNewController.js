@@ -40,8 +40,7 @@
         // Send action off to be executed
         $A.enqueueAction(action);
     },
-    
-   onChangeUserType : function(component, event, helper) {
+    onChangeUserType : function(component, event, helper) {
         var userType = component.find('userType').get('v.value');
         var licence = '';
         if (userType == 'user') licence = 'Salesforce';
@@ -58,10 +57,10 @@
         //alert("Alert save data_"+ roleAPIname + "_"+ "" + "_"+ userManagerName + "_"+ workTeamName);
         
         if(userManagerName == ''){
-            component.set("v.messageHelp", "Se requiere el nombre del rol");
+            component.set("v.messageHelp", "Debe seleccionar un usuario");
             document.getElementById("message__helper").style.display = "block";
-        }else if(roleAPIname == '') {
-            component.set("v.messageHelp", "Se requiere el nombre del API rol Name");
+        }else if(roleAPIname == '' || roleAPIname == 'NoSelected') {
+            component.set("v.messageHelp", "Debe seleccionar un rol");
             document.getElementById("message__helper").style.display = "block";
         }else{
             //Here logic save WorkTeam Members

@@ -1,7 +1,7 @@
 @IsTest
 global with sharing class ta_sales_UserUtilsTest {
-	@isTest static void getUserChannelTest(){
-		String methodName = 'getUserChannel';
+  @isTest static void getUserChannelTest(){
+    String methodName = 'getUserChannel';
 
                 Map<String, Object> input = new Map<String, Object>();
                 Map<String, Object> outMap = new Map<String, Object>();
@@ -18,10 +18,10 @@ global with sharing class ta_sales_UserUtilsTest {
                 Vlocity_cmt__BusinessSite__c stooreLoc = [SELECT Channel_Type__c, Channel__c FROM Vlocity_cmt__BusinessSite__c][0];
                 //System.assertEquals(stooreLoc.Channel_Type__c, (String) outMap.get('UserChannel'));
                 //System.assertEquals(stooreLoc.Channel__c, (String) outMap.get('UserChannelMode'));
-	}
+  }
 
-	@isTest static void getStoreLocationTest(){
-		String methodName = 'getStoreLocation';
+  @isTest static void getStoreLocationTest(){
+    String methodName = 'getStoreLocation';
 
                 Map<String, Object> input = new Map<String, Object>();
                 Map<String, Object> outMap = new Map<String, Object>();
@@ -36,7 +36,7 @@ global with sharing class ta_sales_UserUtilsTest {
 
                 options.put('userId', userinfo.getUserId());
                 System.assertEquals(tm.Work_Team__r.Work_Place__r.Id, (String) outMap.get('UserStoreLocation'));
-	}
+  }
 
         @isTest static void checkUserHasCustomPermissionAccessTest(){
                 String methodName = 'checkUserHasCustomPermissionAccess';
@@ -53,9 +53,9 @@ global with sharing class ta_sales_UserUtilsTest {
                     options.put('customPermission', permissionNames[0].DeveloperName);
                     testedClass.invokeMethod(methodName, input, outMap, options);
                 }
-                
+
                 Test.stopTest();
 
-                
+
         }
 }

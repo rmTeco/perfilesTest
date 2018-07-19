@@ -54,7 +54,7 @@
         <lightning:layoutItem padding="horizontal-small">
             <div class="slds-p-bottom_large">
                 <div class="page-section page-header">
-                    <h2 class="slds-text-heading--large">Work Team Queue</h2>
+                    <h2 class="slds-text-heading--large">Colas de Equipos de Trabajo</h2>
                 </div>
             </div>
             
@@ -65,14 +65,15 @@
                         <div class="slds-form-element__group">
                             <div class="slds-form-element__row">
                                 <div class="slds-form-element slds-size_1-of-1">
-                                    <lightning:input aura:id="searchWorkTeam" name="searchWorkTeam" label="Work Team" value="{! v.WorkTeamName }"  placeholder="Search..." required="true"/>
-                                    <lightning:buttonIcon iconName="utility:search" variant="bare" onclick="{! c.searchWorkTeam }" alternativeText="Search" class="buttonInputSearch" />
+                                    <lightning:input aura:id="searchWorkTeam" name="searchWorkTeam" label="Equipo de Trabajo" value="{! v.WorkTeamName }"  placeholder="Buscar..." required="true"/>
+                                    <lightning:buttonIcon iconName="utility:search" variant="bare" onclick="{! c.searchWorkTeam }" alternativeText="Buscar" class="buttonInputSearch" />
                                 </div>
                             </div>        
                             <div class="slds-form-element__row">
                                 <div class="slds-form-element slds-size_1-of-2">
                                     <div class="slds-form-element__control">                 
-                                        <lightning:select aura:id="queueName" name="queueName" label="Queue API Name">
+                                        <lightning:select aura:id="queueName" name="queueName" label="Nombre de Cola">
+                                            <option value="NoSelected">--Seleccione Uno--</option>
                                             <aura:iteration items="{!v.WorkTeamQueueName}" var="apiName">
                                                 <option value="{! apiName }"> {! apiName } </option>
                                             </aura:iteration>
@@ -87,7 +88,7 @@
             </div>      
             <div class="slds-p-top_large">
                 
-                <lightning:button class="btn-neutral" variant="Neutral" label="Cancel" onclick="{! c.cancelChanged }" />
+                <lightning:button class="btn-neutral" variant="Neutral" label="Cancelar" onclick="{! c.cancelChanged }" />
                 <lightning:button class="btn-brand" variant="Brand" label="Guardar" name="{! v.WorkTeamID }" onclick="{! c.saveChangedAll }" />
                 
             </div> 
@@ -101,21 +102,21 @@
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
                 <header class="slds-modal__header">
-                    <h2 id="headerUsersModal__c" class="slds-text-heading_medium slds-hyphenate">Work Team Name </h2>
+                    <h2 id="headerUsersModal__c" class="slds-text-heading_medium slds-hyphenate">Equipos de Trabajo</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                     <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                         <thead>
                             <tr class="slds-text-title_caps">
                                 <th scope="col">
-                                    <div class="slds-truncate" title="Name">Name</div>
+                                    <div class="slds-truncate" title="Nombre">Nombre</div>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <aura:iteration items="{!v.WorkTeamNameAll}" var="work">
                                 <tr>
-                                    <th scope="row" data-label="Name">
+                                    <th scope="row" data-label="Nombre">
                                         <div class="slds-truncate" title="{! work.Name }">
                                             <lightning:button variant="base" label="{! work.Name }" title="{! work }" onclick="{! c.selectThisWorkTeam }"/>
                                         </div>
@@ -126,7 +127,7 @@
                     </table>
                 </div>
                 <footer class="slds-modal__footer">
-                    <button class="slds-button slds-button_neutral" onclick="{! c.hiddenUsersModalWorkTeam }">Cancel</button>
+                    <button class="slds-button slds-button_neutral" onclick="{! c.hiddenUsersModalWorkTeam }">Cancelar</button>
                 </footer>
             </div>
         </section>

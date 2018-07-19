@@ -16,7 +16,7 @@
     </span>
 
     <header>
-        <h1 class="ng-binding" style="font-family: 'Platform Light' !important; font-size: 32pt; color: #000;">El proceso fue cancelado.</h1>
+        <h1 class="ng-binding" style="font-family: 'Platform Light' !important; font-size: 32pt; color: #000;">La gestión fue cancelada.</h1>
     </header>
 
 </div>

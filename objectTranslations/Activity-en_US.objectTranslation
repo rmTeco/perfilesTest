@@ -25,6 +25,11 @@
         <name>SCP_Certa_GC__End_Date__c</name>
     </fields>
     <fields>
+        <label><!-- Hito Relevante 2 --></label>
+        <name>SCP_Certa_GC__Hito_Relevante_2__c</name>
+        <relationshipLabel><!-- Actividades --></relationshipLabel>
+    </fields>
+    <fields>
         <label><!-- URL --></label>
         <name>SCP_Certa_GC__URL__c</name>
     </fields>

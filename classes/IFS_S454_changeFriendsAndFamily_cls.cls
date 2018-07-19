@@ -16,6 +16,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
     private static final String  K_TIPO_JOB = 'Job Request';      //-- Type of job in the CrossObject__c Table.
     private static final String  K_ORDER_TEMPLATE_NAME = 'Friends&Family Order Template'; //-- Template Name.
     private static DateTime fo = DateTime.now(); //-- Fecha de la orden.
+    private static final Integer K_DECIMAL_PLACES = 4; //-- Cantidad de lugares decimales para el precio.
 
     public ResultObj changeFriendsAndFamily(String jsonInput) {
         printDebug('Entre a changeFriendsAndFamily()');
@@ -115,7 +116,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
                     if (String.isBlank(linea.nroLinea)) {
                         throw new CalloutException('Vino un valor de numero de linea nulo o vacio.');                            
                     }
-                    if (o.codOperacion.equals('A') && String.isBlank(linea.tipo)) {
+                    if (o.codOperacion.equals('A') && String.isBlank(linea.tipoLinea)) {
                         throw new CalloutException('Vino un valor de tipo de linea nulo o vacio y es necesario porque la operacion es Alta.');                            
                     }
                 }
@@ -177,7 +178,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
         if (pAction == 2 || pAction == 3) {
             //-- Si hay baja deberia genero el cargo a cobrar y si no puedo, aborto en este punto.
             try {
-                invokeIFS_S298 (pJsonBody, accountId);
+                invokeIFS_S298 (pJsonBody);
             }
             catch (Exception e) {
                 throw new FunctionalException('Fallo en la gestion de cargo por baja. - ' + e.getMessage());
@@ -217,7 +218,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
 
         printLimitAndUsedSize();
 
-        if (isSubmit && !Test.isRunningTest()) {
+        if (isSubmit) { 
             insertJob (orderId, Id.valueOf(accountId));
         }
         toJson.codResultado = '0';
@@ -231,17 +232,17 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
      */
     private void procesarAltas (Id pOrderId, Id pAccountId, FromJson pJsonBody, List<OrderItem> pLstOrderItems, List<OrderItem> pLstOrderItemsTemplate, Boolean pHayBajas) {
         printDebug('----- procesarAltas() - pOrderId --> ' + pOrderId + ' - pJsonBody --> ' + pJsonBody + ' - pLstOrderItems --> ' + pLstOrderItems + ' - pHayBajas --> ' + pHayBajas);
-        Id rootNumerosAmigosId = null;
+        String rootNumerosAmigosId = null;
         List<OrderItem> lstOrderItemsToBeInserted = new List<OrderItem>();
         for (Integer i=0; pJsonBody != null && i<pJsonBody.lstOfertas.size(); i++) {   //-- Recorro las ofertas.
             printDebug('-------- Obtengo lista de ofertas del request.');
             OfertaClass oferta = pJsonBody.lstOfertas.get(i);
-            rootNumerosAmigosId = Id.valueOf(oferta.ofertaId);
+            rootNumerosAmigosId = oferta.ofertaId;
             if (oferta.codOperacion != 'A') {
                 continue; //-- Solo proceso Altas.
             }
     
-            Asset asset = getAssetById (rootNumerosAmigosId);
+            Asset asset = getAssetByAssetReferenceId (rootNumerosAmigosId);
             OrderItem oiNew = null;
             if (asset != null && asset.SubTipo_de_Producto__c != null) {
                 oiNew = getOrderItemBySubType(asset.SubTipo_de_Producto__c, pLstOrderItemsTemplate);
@@ -256,7 +257,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
                 oiNew = getOrderItemRecord (oiNew.Id);
                 OrderItem oiClone = oiNew.clone(false, false, false, false);
                 String jsonAtt = oiClone.vlocity_cmt__JSONAttribute__c;
-                oiClone.vlocity_cmt__JSONAttribute__c = updateItemsAttributes (jsonAtt, linea.nroLinea, linea.tipo);
+                oiClone.vlocity_cmt__JSONAttribute__c = updateItemsAttributes (jsonAtt, linea.nroLinea, linea.tipoLinea);
                 oiClone.OrderId = pOrderId;
                 oiClone.vlocity_cmt__Action__c = 'Add';
                 oiClone.vlocity_cmt__ProvisioningStatus__c = 'New';
@@ -287,7 +288,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
             for (Integer a=0; lstLineas != null && a < lstLineas.size(); a++) {
                 Map<String, Object> item = new Map<String, Object>();
                 String assetId = String.valueOf(lstLineas[a].assetId);
-                OrderItem oi = getOrderItemByAssetId(pLstOrderItems, assetId);
+                OrderItem oi = getOrderItemByAssetReferenceId(pLstOrderItems, assetId);
                 if (oi == null) {
                     throw new FunctionalException('No posee Numeros Amigos para dar de Baja.');
                 }
@@ -335,6 +336,9 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
             if (pSubType.equalsIgnoreCase('SMS')) {
                 productCode = 'FAN_PV_GFNF_SMS';
             }
+
+            printDebug('- ProductCode --> ' + productCode);
+
             return [SELECT id, vlocity_cmt__LineNumber__c, vlocity_cmt__ParentItemId__c, vlocity_cmt__RootItemId__c 
                     FROM OrderItem WHERE orderId = :pOrderId AND ProductCode__c = :productCode ORDER BY vlocity_cmt__LineNumber__c LIMIT 1];
         }
@@ -520,21 +524,22 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
     /**
      * @Objetivo: Esta funcion obtiene un Asset by AssetId.
      */
-    private Asset getAssetById (String pAssetId) {
-        printDebug('Entre a getAssetSonById() - pAssetId --> ' + pAssetId);
+    private Asset getAssetByAssetReferenceId (String pAssetReferenceId) {
+        printDebug('Entre a getAssetByAssetReferenceId() - pAssetReferenceId --> ' + pAssetReferenceId);
         String accountId = null;
 
-        if (String.isBlank(pAssetId)) {
+        if (String.isBlank(pAssetReferenceId)) {
             return null;
         }
         
         try {
-            Asset asset = [SELECT vlocity_cmt__ParentItemId__c, vlocity_cmt__RootItemId__c, SubTipo_de_Producto__c FROM Asset where id = :pAssetId];
+            Asset asset = [SELECT vlocity_cmt__ParentItemId__c, vlocity_cmt__RootItemId__c, SubTipo_de_Producto__c FROM Asset where vlocity_cmt__AssetReferenceId__c = :pAssetReferenceId];
+            System.debug(asset);
             return asset;
         }
         catch (Exception e) {
-            printDebug(' --- Error al obtener el Asset Hijo del AssetId: ' + pAssetId + '. Error: ' + e.getMessage());
-            throw new FunctionalException('Error al obtener el Asset Hijo del AssetId: ' + pAssetId + '. Error: ' + e.getMessage());
+            printDebug(' --- Error al obtener el Asset Hijo del AssetReferenceId: ' + pAssetReferenceId + '. Error: ' + e.getMessage());
+            throw new FunctionalException('Error al obtener el Asset Hijo del AssetReferenceId: ' + pAssetReferenceId + '. Error: ' + e.getMessage());
         }    
     }
 
@@ -608,7 +613,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
     private List<OrderItem> getOrdenItems (Id pOrderId) {
         printDebug('---- getOrdenItems() - pOrderId --> ' + pOrderId);
         try {
-            List<OrderItem> lstOrderItem = [SELECT Id, vlocity_cmt__ParentItemId__c, PricebookEntryId, vlocity_cmt__AssetReferenceId__c, vlocity_cmt__Action__c, vlocity_cmt__SubAction__c, vlocity_cmt__JSONAttribute__c,  vlocity_cmt__ProvisioningStatus__c FROM OrderItem WHERE orderId = :pOrderId ];
+            List<OrderItem> lstOrderItem = [SELECT Id, vlocity_cmt__ParentItemId__c, PricebookEntryId, vlocity_cmt__AssetReferenceId__c, vlocity_cmt__Action__c, ProductCode__c, vlocity_cmt__SubAction__c, vlocity_cmt__JSONAttribute__c,  vlocity_cmt__ProvisioningStatus__c FROM OrderItem WHERE orderId = :pOrderId ];
             return lstOrderItem;
         }
         catch (Exception e) {
@@ -619,8 +624,8 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
     /**
      * @Objetivo: Recibe una lista de OrderItems y devuelve el que contiene el pAssetId
      */
-    private OrderItem getOrderItemByAssetId (List<OrderItem> pLstOrderItems, String pAssetId) {
-        printDebug('---- getOrderItemByAssetId() - pLstOrderItems --> ' + pLstOrderItems + ' - pAssetId --> ' + pAssetId);
+    private OrderItem getOrderItemByAssetReferenceId (List<OrderItem> pLstOrderItems, String pAssetId) {
+        printDebug('---- getOrderItemByAssetReferenceId() - pLstOrderItems --> ' + pLstOrderItems + ' - pAssetId --> ' + pAssetId);
         if (pAssetId == null) {
             return null; //-- Puede venir en nulo.
         }
@@ -643,7 +648,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
             if (lstOrderItems.isEmpty()) {
                 throw new FunctionalException('No se recuperaron items de la orden template.');
             }
-            if (lstOrderItems.size()<2) {
+            if (lstOrderItems.size()<1) {
                 throw new FunctionalException('No se recuperaron los items de la orden template para numeros amigos voz y sms.');
             }
             return lstOrderItems;
@@ -659,8 +664,10 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
      *            de la lista de OrderITems Template.
      */
     private OrderItem getOrderItemBySubType(String pSubType, List<OrderItem> pLstItems) {
+        printDebug('Entre en getOrderItemBySubType() - pSubType --> ' + pSubType + ' - pLstItems --> ' + pLstItems);
         for (Integer i=0; pLstItems != null && i < pLstItems.size(); i++) {
             OrderItem oi = pLstItems.get(i);
+            printDebug(String.valueOf(oi));
             if (oi != null && oi.Product2.vlocity_cmt__SubType__c != null && oi.Product2.vlocity_cmt__SubType__c.equalsIgnoreCase(pSubType)) {
                 return oi;
             }
@@ -776,21 +783,24 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
     /**
      * @Objetivo: Invocar la integracion S298 a Huawei para generar un cargo por baja de numero amigo.
      */
-    private void invokeIFS_S298 (FromJSON pJsonBody, Id pAccountId) {
+    private void invokeIFS_S298 (FromJSON pJsonBody) {
         printDebug('Entre en invokeIFS_S298');
         try {
             Map<String, Object> body = new Map<String, Object>();
             Map<String, Object> codAccesoCuenta = new Map<String, Object>();
-            Map<String, Object> idCuenta = new Map<String, Object>();
-            Map<String, Object> infoServicio = new Map<String, Object>();
+            Map<String, Object> identificador = new Map<String, Object>();
             Map<String, Object> codCargo = new Map<String, Object>();
             Map<String, Object> objDeduccion = new Map<String, Object>(); 
             List<Map<String, Object>> lstInfoDeducTarifas = new List<Map<String, Object>>(); 
 
-            idCuenta.put('idCuenta', pAccountId);
-            objDeduccion.put('codAccesoCuenta', idCuenta);
+            if (!String.isBlank(pJsonBody.choiceId.nroLinea)) {
+                identificador.put('identificadorRecurso', pJsonBody.choiceId.nroLinea);
+            }
+            else {
+                identificador.put('codSuscripcion', pJsonBody.choiceId.subscriberId);
+            }
+            objDeduccion.put('codAccesoSuscriptor', identificador);
             body.put('objDeduccion', objDeduccion);
-            body.put('infoServicio', codCargo);
             body.put('infoDeducTarifas', lstInfoDeducTarifas);
 
             Product2 prod = [SELECT Id, Name, vlocity_cmt__JSONAttribute__c FROM Product2 WHERE ProductCode = 'FAN_PSERV_00007' LIMIT 1];
@@ -808,12 +818,15 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
                 infoDeducTarifasMap.put('codCargo', codCargoValue);
                 DateTime fo = DateTime.now();
                 infoDeducTarifasMap.put('fechaVenta', fo.format('yyyy-MM-dd hh:mm:ss'));
-                infoDeducTarifasMap.put('precioCargo', priceBook.UnitPrice);
+                infoDeducTarifasMap.put('precioCargo', formatPlaces(priceBook.UnitPrice, K_DECIMAL_PLACES));
                 infoDeducTarifasMap.put('codMoneda', K_COD_MONEDA);
                 lstInfoDeducTarifas.add(infoDeducTarifasMap);
             }
 
-            callIntegrationProcedure ('IFS_S298', body);
+            if (!Test.isRunningTest()) {
+                printDebug(JSON.serialize(body));
+                callIntegrationProcedure ('IFS_S298', body);
+            }
         }
         catch (Exception e) {
             throw e;
@@ -839,7 +852,6 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
             }
 
             integProcService.invokeMethod(pServiceName, inMap, outMap, optMap);
-       
             try {
                 Map<String, Object> response = (Map<String, Object>)outMap.get('IPResult');
                 printDebug('IPResult (Map<String, Object>) --> ' + response);
@@ -905,7 +917,7 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
         public String assetId;
         public String priceBookEntryId;
         public String nroLinea;
-        public String tipo;
+        public String tipoLinea;
     }
 
     //-- Clase para soportar el response --//
@@ -933,5 +945,12 @@ public with sharing class IFS_S454_changeFriendsAndFamily_cls {
     private class FunctionalException extends Exception {
 
     }
+
+    ///-- Funciones de Libreria --//
+    public static String formatPlaces(decimal dec, integer places) {
+        String formatedString = dec.setScale(places).ToPlainString(); 
+        return formatedString;
+    }
+   
 
 }

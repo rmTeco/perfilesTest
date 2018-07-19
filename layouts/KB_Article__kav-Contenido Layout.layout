@@ -10,22 +10,13 @@
                 <field>KB_ArticleType__c</field>
             </layoutItems>
             <layoutItems>
-                <field>KB_ExternalID__c</field>
-            </layoutItems>
-            <layoutItems>
                 <field>KB_ArticuloDestacado__c</field>
             </layoutItems>
             <layoutItems>
-                <field>KB_ArticuloDestacadoHasta__c</field>
+                <field>KB_ExternalID__c</field>
             </layoutItems>
             <layoutItems>
                 <field>KB_ValidationsMessage__c</field>
-            </layoutItems>
-            <layoutItems>
-                <field>KB_AssignedCategory__c</field>
-            </layoutItems>
-            <layoutItems>
-                <field>KB_AssignedTopic__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

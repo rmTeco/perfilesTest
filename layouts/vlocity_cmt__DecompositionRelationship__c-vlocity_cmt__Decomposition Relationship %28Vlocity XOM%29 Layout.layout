@@ -97,10 +97,10 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Mappings</label>
+        <label>Mapping Rules</label>
         <layoutColumns>
             <layoutItems>
-                <height>400</height>
+                <height>500</height>
                 <page>vlocity_cmt__XOMJSONMapperDecompRel</page>
                 <showLabel>false</showLabel>
                 <showScrollbars>true</showScrollbars>
@@ -113,7 +113,7 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Condition</label>
+        <label>Conditions</label>
         <layoutColumns>
             <layoutItems>
                 <height>500</height>
@@ -131,7 +131,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h6C000000RNuF</masterLabel>
+        <masterLabel>00hc0000000LmiL</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

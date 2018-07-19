@@ -2,81 +2,88 @@
 public with sharing class ICCIDManagerTest {
     
     @testSetup static void createDataTest(){
-    	//MockupFactory.generate();
-    	Account account = TestDataFactory.createAccounts(1,'Consumer').get(0);
-    	Asset asset = TestDataFactory.createAssets(1,account).get(0);
-    	Contact contact = TestDataFactory.createContacts(1,account).get(0);
-    	
-    	account.vlocity_cmt__PrimaryContactId__c = contact.Id;
+        generateMocks();
+        //MockupFactory.generate();
+        /*Account account = TestDataFactory.createAccounts(1,'Consumer').get(0);
+        Asset asset = TestDataFactory.createAssets(1,account).get(0);
+        Contact contact = TestDataFactory.createContacts(1,account).get(0);
+        
+        account.vlocity_cmt__PrimaryContactId__c = contact.Id;
         update account;
         
         List<Product2> products = TestDataFactory.createProduct(1);
         
-        //TestDataFactory.setTeamMember('Test', userinfo.getUserId(), null);
-		vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte',
-           vlocity_cmt__OrganizationId__c=Account.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
-            Channel_Type__c='Oficinas Comerciales', Channel_Type_2__c='Oficinas Comerciales', Channel_Type_3__c='Oficinas Comerciales',
-            Region__c='AMBA');
-    insert storeLocation;
+    //  vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte',
+    //        vlocity_cmt__OrganizationId__c=Account.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
+    //         Channel_Type__c='Oficinas Comerciales', Channel_Type_2__c='Oficinas Comerciales', Channel_Type_3__c='Oficinas Comerciales',
+    //         Region__c='AMBA');
+    // insert storeLocation;
 
-    user usernew = new user(ID = UserInfo.getUserID());
-		string strIdUser = UserInfo.getUserID();
-		WorkTeam__c workTeamParent = new WorkTeam__c(Team_Name__c = 'Test Parent', Name = 'Test Parent');
-		insert workTeamParent;
-		String manager = UserInfo.getUserId();
-		String parent = workTeamParent.Id;
-		WorkTeam__c workTeam = new WorkTeam__c(Team_Name__c = 'Test', Name = 'Test');
-    Team_Member__c tm = TestDataFactory.setTeamMember('Call Center', userinfo.getUserId(), null);
-	
+    //  user usernew = new user(ID = UserInfo.getUserID());
+    //  string strIdUser = UserInfo.getUserID();
+
+        */
+		TestDataFactory.createWorkTeam('Test');
+		/*
+        // WorkTeam__c workTeamParent = new WorkTeam__c(Team_Name__c = 'Test Parent', Name = 'Test Parent');
+        // insert workTeamParent;
+        // String manager = UserInfo.getUserId();
+        // String parent = workTeamParent.Id;
+        // WorkTeam__c workTeam = new WorkTeam__c(Team_Name__c = 'Test', Name = 'Test');
+        // Team_Member__c tm = TestDataFactory.setTeamMember('Call Center', userinfo.getUserId(), null);
+    
         Order order = TestDataFactory.createOrders(1,account).get(0);
-        
-        List<OrderItem> orderItems = TestDataFactory.createOrderItemsWithAsset(1, order, asset);
+        */
+		MockupFactory.generate();
     }
-	
-	public static testmethod void serialValidationTest(){
+    
+    public static testmethod void serialValidationTest(){
         //MockupFactory.generate(); //testSetup
 
-		Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> inputMap = new Map<String, Object>();
         Map<String,Object> outputMap = new Map<String, Object>();
-		Map<String, Object> orderMap = new Map<String, Object>();        
-		List<Object> planesList = new List<Object>();
-		Map<String, Object> planMap = new Map<String, Object>();
-		List<Object> linesList = new List<Object>();
-		Map<String, Object> lineMap = new Map<String, Object>();
+        Map<String, Object> orderMap = new Map<String, Object>();        
+        List<Object> planesList = new List<Object>();
+        Map<String, Object> planMap = new Map<String, Object>();
+        List<Object> linesList = new List<Object>();
+        Map<String, Object> lineMap = new Map<String, Object>();
         
-		lineMap.put('serial', '1234567890');
-		lineMap.put('validacionSerial', 'test');
-		linesList.add(lineMap);
-		planMap.put('lineas', linesList);
-		planesList.add(planMap);
-		orderMap.put('planes', planesList);
-		inputMap.put('Order', orderMap);
+        lineMap.put('serial', '1234567890');
+        lineMap.put('validacionSerial', 'test');
+        linesList.add(lineMap);
+        planMap.put('lineas', linesList);
+        planesList.add(planMap);
+        orderMap.put('planes', planesList);
+        inputMap.put('Order', orderMap);
         
-		Test.startTest();
-		ICCIDManager im = new ICCIDManager();
-		im.invokeMethod('SerialValidation', inputMap, outputMap, null);
+        Test.startTest();
+        ICCIDManager im = new ICCIDManager();
+        im.invokeMethod('SerialValidation', inputMap, outputMap, null);
 
         lineMap.put('serial','1324875490');
-		im.invokeMethod('SerialValidation', inputMap, outputMap, null);
-		
+        im.invokeMethod('SerialValidation', inputMap, outputMap, null);
+        
         lineMap.put('serial','123');
-		im.invokeMethod('SerialValidation', inputMap, outputMap, null);
-		
-		lineMap.put('serial','');
-		im.invokeMethod('SerialValidation', inputMap, outputMap, null);
-		Test.stopTest();
-	}
+        im.invokeMethod('SerialValidation', inputMap, outputMap, null);
+        
+        lineMap.put('serial','');
+        im.invokeMethod('SerialValidation', inputMap, outputMap, null);
+        Test.stopTest();
+    }
 
-	public static testmethod void serialAssignmentTest(){
+    @isTest
+    public static void serialAssignmentTest(){
         //MockupFactory.generate(); //testSetup
- 		Map<String,Object> inputMap = new Map<String, Object>();
-		Map<String,Object> options = new Map<String, Object>();
-  		Map<String,Object> outputMap = new Map<String, Object>();
+        Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> options = new Map<String, Object>();
+        Map<String,Object> outputMap = new Map<String, Object>();
         Account acc = [SELECT Id FROM Account LIMIT 1];
-		vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
-		insert site;
+        vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, AssociatedWarehouseId__c = '1',  vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
+        insert site;
         Order ord = [SELECT Id FROM Order LIMIT 1];
-		options.put('IdOrder', ord.Id);
+		ord.OriginStoreLocation__c = site.id;
+		update ord;
+        options.put('IdOrder', ord.Id);
         Map<String,Object> BillingOrderMap = new Map<String, Object>();
         BillingOrderMap.put('Channel', 'Agentes'  );
         inputMap.put('BillingOrder', BillingOrderMap);
@@ -85,24 +92,26 @@ public with sharing class ICCIDManagerTest {
         orderMap.put('IdOrder',ord.Id);
         options.put('Order',orderMap);
       
-		Test.startTest();
-		ICCIDManager im = new ICCIDManager();
-		im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
-		Test.stopTest();
-	}
-	
-	public static testmethod void serialAssignmentWithStorePickUp(){
+        Test.startTest();
+        ICCIDManager im = new ICCIDManager();
+        im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
+        Test.stopTest();
+    }
+    
+    @isTest
+    public static void serialAssignmentWithStorePickUp(){
         //MockupFactory.generate(); //testSetup
- 		Map<String,Object> inputMap = new Map<String, Object>();
-		Map<String,Object> options = new Map<String, Object>();
-  		Map<String,Object> outputMap = new Map<String, Object>();
+        Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> options = new Map<String, Object>();
+        Map<String,Object> outputMap = new Map<String, Object>();
         Account acc = [SELECT Id FROM Account LIMIT 1];
-		vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
-		insert site;
+        vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, AssociatedWarehouseId__c = '1',  vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
+        insert site;
         Order ord = [SELECT Id, Delivery_Method__c FROM Order LIMIT 1];
         ord.Delivery_Method__c = 'Store Pick Up';
+		ord.OriginStoreLocation__c = site.Id;
         update ord;
-		options.put('IdOrder', ord.Id);
+        options.put('IdOrder', ord.Id);
         Map<String,Object> BillingOrderMap = new Map<String, Object>();
         BillingOrderMap.put('Channel', 'Agentes'  );
         inputMap.put('BillingOrder', BillingOrderMap);
@@ -116,24 +125,26 @@ public with sharing class ICCIDManagerTest {
         orderMap.put('IdOrder',ord.Id);
         options.put('Order',orderMap);
       
-		Test.startTest();
-		ICCIDManager im = new ICCIDManager();
-		im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
-		Test.stopTest();
-	}
-	
-	public static testmethod void serialAssignmentWithStorePickUpAndStockAvailableCodeNULL(){
+        Test.startTest();
+        ICCIDManager im = new ICCIDManager();
+        im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
+        Test.stopTest();
+    }
+    
+    @isTest
+    public static void serialAssignmentWithStorePickUpAndStockAvailableCodeNULL(){
         //MockupFactory.generate(); //testSetup
- 		Map<String,Object> inputMap = new Map<String, Object>();
-		Map<String,Object> options = new Map<String, Object>();
-  		Map<String,Object> outputMap = new Map<String, Object>();
+        Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> options = new Map<String, Object>();
+        Map<String,Object> outputMap = new Map<String, Object>();
         Account acc = [SELECT Id FROM Account LIMIT 1];
-		vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
-		insert site;
+        vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, AssociatedWarehouseId__c = '1',  vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
+        insert site;
         Order ord = [SELECT Id, Delivery_Method__c FROM Order LIMIT 1];
         ord.Delivery_Method__c = 'Store Pick Up';
+		ord.OriginStoreLocation__c = site.id;
         update ord;
-		options.put('IdOrder', ord.Id);
+        options.put('IdOrder', ord.Id);
         Map<String,Object> BillingOrderMap = new Map<String, Object>();
         BillingOrderMap.put('Channel', 'Agentes'  );
         inputMap.put('BillingOrder', BillingOrderMap);
@@ -143,24 +154,26 @@ public with sharing class ICCIDManagerTest {
         orderMap.put('IdOrder',ord.Id);
         options.put('Order',orderMap);
       
-		Test.startTest();
-		ICCIDManager im = new ICCIDManager();
-		im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
-		Test.stopTest();
-	}
-	
-	public static testmethod void serialAssignmentWithIsTestListaDeSeriadosTestEmpty(){
+        Test.startTest();
+        ICCIDManager im = new ICCIDManager();
+        im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
+        Test.stopTest();
+    }
+    
+    @isTest
+    public static void serialAssignmentWithIsTestListaDeSeriadosTestEmpty(){
         //MockupFactory.generate(); //testSetup
- 		Map<String,Object> inputMap = new Map<String, Object>();
-		Map<String,Object> options = new Map<String, Object>();
-  		Map<String,Object> outputMap = new Map<String, Object>();
+        Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> options = new Map<String, Object>();
+        Map<String,Object> outputMap = new Map<String, Object>();
         Account acc = [SELECT Id FROM Account LIMIT 1];
-		vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
-		insert site;
+        vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, AssociatedWarehouseId__c = '1',  vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
+        insert site;
         Order ord = [SELECT Id, Delivery_Method__c FROM Order LIMIT 1];
         ord.Delivery_Method__c = 'Store Pick Up';
+		ord.OriginStoreLocation__c = site.id;
         update ord;
-		options.put('IdOrder', ord.Id);
+        options.put('IdOrder', ord.Id);
         Map<String,Object> BillingOrderMap = new Map<String, Object>();
         BillingOrderMap.put('Channel', 'Agentes'  );
         inputMap.put('BillingOrder', BillingOrderMap);
@@ -172,27 +185,27 @@ public with sharing class ICCIDManagerTest {
         
         options.put('isTestListaDeSeriadosTestEmpty',true);
       
-		Test.startTest();
-		ICCIDManager im = new ICCIDManager();
-		im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
-		Test.stopTest();
-	}
-	
-	
-	
-    public static testmethod void serialAssignmentWithSimCard()
+        Test.startTest();
+        ICCIDManager im = new ICCIDManager();
+        im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
+        Test.stopTest();
+    }
+    
+    @isTest
+    public static void serialAssignmentWithSimCard()
     {
-		//MockupFactory.generate(); //testSetup
- 		Map<String,Object> inputMap = new Map<String, Object>();
-		Map<String,Object> options = new Map<String, Object>();
-  		Map<String,Object> outputMap = new Map<String, Object>();
+        //MockupFactory.generate(); //testSetup
+        Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> options = new Map<String, Object>();
+        Map<String,Object> outputMap = new Map<String, Object>();
         Account acc = [SELECT Id FROM Account LIMIT 1];
-		vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
-		insert site;
+        vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, AssociatedWarehouseId__c = '1',  vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
+        insert site;
         
         
         Order ord = [SELECT Id, Delivery_Method__c FROM Order LIMIT 1];
         ord.Delivery_Method__c = 'Store Pick Up';
+		ord.OriginStoreLocation__c = site.id;
         update ord;
         
         OrderItem orderItem = [SELECT PricebookEntryId, vlocity_cmt__JSONAttribute__c FROM OrderItem LIMIT 1];
@@ -205,7 +218,7 @@ public with sharing class ICCIDManagerTest {
         update product;
         
         
-		options.put('IdOrder', ord.Id);
+        options.put('IdOrder', ord.Id);
         Map<String,Object> BillingOrderMap = new Map<String, Object>();
         BillingOrderMap.put('Channel', 'Agentes'  );
         inputMap.put('BillingOrder', BillingOrderMap);
@@ -219,25 +232,27 @@ public with sharing class ICCIDManagerTest {
         
         options.put('isTestListaDeSeriadosTestEmpty',true);
       
-		Test.startTest();
-		ICCIDManager im = new ICCIDManager();
-		im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
-		Test.stopTest();        
+        Test.startTest();
+        ICCIDManager im = new ICCIDManager();
+        im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
+        Test.stopTest();        
     }
     
-    public static testmethod void serialAssignmentWithSimCardAndSerial()
+    @isTest
+    public static void serialAssignmentWithSimCardAndSerial()
     {
-		//MockupFactory.generate(); //testSetup
- 		Map<String,Object> inputMap = new Map<String, Object>();
-		Map<String,Object> options = new Map<String, Object>();
-  		Map<String,Object> outputMap = new Map<String, Object>();
+        //MockupFactory.generate(); //testSetup
+        Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> options = new Map<String, Object>();
+        Map<String,Object> outputMap = new Map<String, Object>();
         Account acc = [SELECT Id FROM Account LIMIT 1];
-		vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
-		insert site;
+        vlocity_cmt__BusinessSite__c site = new vlocity_cmt__BusinessSite__c (vlocity_cmt__City__c = 'Tigre', PointOfSaleId__c = 1, AssociatedWarehouseId__c = '1',  vlocity_cmt__StreetAddress__c = 'Test', PointOfSaleAddressNumber__c = '1', vlocity_cmt__OrganizationId__c = acc.Id, PointOfSaleType__c  = 'LE');
+        insert site;
         
         
         Order ord = [SELECT Id, Delivery_Method__c FROM Order LIMIT 1];
         ord.Delivery_Method__c = 'Store Pick Up';
+		ord.OriginStoreLocation__c = site.id;
         update ord;
         
         OrderItem orderItem = [SELECT PricebookEntryId, vlocity_cmt__JSONAttribute__c FROM OrderItem LIMIT 1];
@@ -251,7 +266,7 @@ public with sharing class ICCIDManagerTest {
         update product;
         
         
-		options.put('IdOrder', ord.Id);
+        options.put('IdOrder', ord.Id);
         Map<String,Object> BillingOrderMap = new Map<String, Object>();
         BillingOrderMap.put('Channel', 'Agentes'  );
         inputMap.put('BillingOrder', BillingOrderMap);
@@ -265,49 +280,43 @@ public with sharing class ICCIDManagerTest {
         
         options.put('isTestListaDeSeriadosTestEmpty',true);
       
-		Test.startTest();
-		ICCIDManager im = new ICCIDManager();
-		im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
-		Test.stopTest();        
+        Test.startTest();
+        ICCIDManager im = new ICCIDManager();
+        im.invokeMethod('SerialAssingment', inputMap, outputMap, options);
+        Test.stopTest();        
     }
     
-    public static testmethod void SerialReAssingmentTest()
+    @isTest
+    public static void SerialReAssingmentTest()
     {
-		//GIVEN
-		String nameMethod = 'SerialReAssingment';
-		
- 		Map<String,Object> inputMap = new Map<String, Object>();
-		Map<String,Object> options = new Map<String, Object>();
-  		Map<String,Object> outputMap = new Map<String, Object>();
-  		
-  		List<Object> serialList = new List<Object>();
-  		Map<String,Object> orderMap = new Map<String,Object>();
-  		
-  		Map<String,Object> item1 = new Map<String,Object>();
-  		item1.put('validacionSerial','El ICCID fue asignado');
-  		item1.put('itemId','001xa000004DIlo');
-  		item1.put('serial','serial');
-  		item1.put('serialValidado','serialValidado');
-  		item1.put('productName','productName');
-  		item1.put('productCode','productCode');
-  		item1.put('stockProducto','stockProducto');
-  		
-  		Map<String,Object> item2 = new Map<String,Object>();
-  		item2.put('validacionSerial','');
-  		item2.put('itemId','001xa000003DIlo');
-  		item2.put('serial','serial');
-  		item2.put('serialValidado','serialValidado');
-  		item2.put('productName','productName');
-  		item2.put('productCode','productCode');
-  		item2.put('stockProducto','stockProducto');
-  		
-  		serialList.add(item1);
-  		serialList.add(item2);
-  		orderMap.put('serialList',serialList);
-  		
-  		Order order = [SELECT Id FROM Order LIMIT 1];
-  		
-  		options.put('Order',orderMap);
+        String mockResponse = '{"listaNumeroSeries":[{"codNMU":"codNMU","imsi":"imsi","aduanaIngreso":"aduanaIngreso","paisOrigen":"paisOrigen","codOrdenDespacho":"codOrdenDespacho","codDeposito":"codDeposito","stockProducto":"stockProducto","numeroSerie":"serial"},{"codNMU":"codNMU","imsi":"imsi","aduanaIngreso":"aduanaIngreso","paisOrigen":"paisOrigen","codOrdenDespacho":"codOrdenDespacho","codDeposito":"codDeposito","stockProducto":"stockProducto","numeroSerie":"serial2"}]}';
+        VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S095', mockResponse);
+        
+        //GIVEN
+        String nameMethod = 'SerialReAssingment';
+        
+        Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> options = new Map<String, Object>();
+        Map<String,Object> outputMap = new Map<String, Object>();
+        
+        List<Object> serialList = new List<Object>();
+        Map<String,Object> orderMap = new Map<String,Object>();
+        
+        Map<String,Object> item1 = new Map<String,Object>();
+        item1.put('validacionSerial','');
+        item1.put('itemId','001xa000004DIlo');
+        item1.put('serial','serial');
+        item1.put('serialValidado','serialValidado');
+        item1.put('productName','productName');
+        item1.put('productCode','productCode');
+        item1.put('stockProducto','stockProducto');
+        
+        serialList.add(item1);
+        orderMap.put('serialList',serialList);
+        
+        Order order = [SELECT Id FROM Order LIMIT 1];
+        
+        options.put('Order',orderMap);
         options.put('IdOrder',order.Id);
         
         Map<String,Object> billingOrder = new Map<String,Object>();
@@ -319,92 +328,112 @@ public with sharing class ICCIDManagerTest {
         ICCIDManager im = new ICCIDManager();
         
         //WHEN
-		Test.startTest();
-		im.invokeMethod(nameMethod, inputMap, outputMap, options);
-		Test.stopTest();
-		
-		//THEN
+        Test.startTest();
+        im.invokeMethod(nameMethod, inputMap, outputMap, options);
+        Test.stopTest();
+        
+        //THEN
     }
     
-    public static testmethod void UpdateSalesInvoiceTest()
+    @isTest
+    public static void UpdateSalesInvoiceTest()
     {
-		//GIVEN
-		String nameMethod = 'UpdateSalesInvoice';
-		
- 		Map<String,Object> inputMap = new Map<String, Object>();
-		Map<String,Object> options = new Map<String, Object>();
-  		Map<String,Object> outputMap = new Map<String, Object>();
-  		
-  		Id IdOrder = [SELECT Id FROM Order LIMIT 1].get(0).Id;
-  		
-  		options.put('IdOrder',IdOrder);
-  		        
+        //GIVEN
+        String nameMethod = 'UpdateSalesInvoice';
+        
+        Map<String,Object> inputMap = new Map<String, Object>();
+        Map<String,Object> options = new Map<String, Object>();
+        Map<String,Object> outputMap = new Map<String, Object>();
+        
+        Id IdOrder = [SELECT Id FROM Order LIMIT 1].get(0).Id;
+        
+        options.put('IdOrder',IdOrder);
+                
         ICCIDManager im = new ICCIDManager();
         
         //WHEN
-		Test.startTest();
-		im.invokeMethod(nameMethod, inputMap, outputMap, options);
-		Test.stopTest();
-		
-		//THEN
+        Test.startTest();
+        im.invokeMethod(nameMethod, inputMap, outputMap, options);
+        Test.stopTest();
+        
+        //THEN
     }
     
-    public static testmethod void setValuesOnJSON2Test()
+    @isTest
+    public static void setValuesOnJSON2Test()
     {
-		//GIVEN
-		String jsonString = '{"list":[{"attributedisplayname__c":"ICCID","attributeRunTimeInfo":{"value":"ICCID"}}]}';
-		String iccid = 'iccid';
-  		        
+        //GIVEN
+        String jsonString = '{"list":[{"attributedisplayname__c":"ICCID","attributeRunTimeInfo":{"value":"ICCID"}}]}';
+        String iccid = 'iccid';
+                
         ICCIDManager im = new ICCIDManager();
         
         //WHEN
-		Test.startTest();
-		im.setValuesOnJSON2(jsonString, iccid);
-		Test.stopTest();
-		
-		//THEN
+        Test.startTest();
+        im.setValuesOnJSON2(jsonString, iccid);
+        Test.stopTest();
+        
+        //THEN
     }
     
-    public static testmethod void GetStockDefSizeOneTest()
+    @isTest
+    public static void GetStockDefSizeOneTest()
     {
-		//GIVEN
-		List<String> stocksCode = new String[1];
-		String nmuCart = '';
-		List<Object> existences = new List<Object>();
-  		                
+        //GIVEN
+        List<String> stocksCode = new String[1];
+        String nmuCart = '';
+        List<Object> existences = new List<Object>();
+                        
         //WHEN
-		Test.startTest();
-		ICCIDManager.GetStockDef(stocksCode, nmuCart, existences);
-		Test.stopTest();
-		
-		//THEN
+        Test.startTest();
+        ICCIDManager.GetStockDef(stocksCode, nmuCart, existences);
+        Test.stopTest();
+        
+        //THEN
     }
     
-    public static testmethod void GetStockDefSizeMoreOneTest()
+    @isTest
+    public static void GetStockDefSizeMoreOneTest()
     {
-		//GIVEN
-		List<String> stocksCode = new List<String>();
-		String nmuCart = '1';
-		List<Object> existences = new List<Object>();
-		
-		stocksCode.add('stockProducto');
-		stocksCode.add('stockProducto');
-		
-		Map<String,Object> existence = new Map<String,Object>();
-		List<Object> ListaPorCodigoStock = new List<Object>();
-		Map<String,Object> stock = new Map<String,Object>();
-		stock.put('stockProducto','stockProducto');
-		stock.put('CantidadDisponible',1);
-		ListaPorCodigoStock.add(stock);
-		existence.put('ListaPorCodigoStock',ListaPorCodigoStock);
-		existence.put('codNMU','1');
-		existences.add(existence);
-		
+        //GIVEN
+        List<String> stocksCode = new List<String>();
+        String nmuCart = '1';
+        List<Object> existences = new List<Object>();
+        
+        stocksCode.add('stockProducto');
+        stocksCode.add('stockProducto');
+        
+        Map<String,Object> existence = new Map<String,Object>();
+        List<Object> ListaPorCodigoStock = new List<Object>();
+        Map<String,Object> stock = new Map<String,Object>();
+        stock.put('stockProducto','stockProducto');
+        stock.put('CantidadDisponible',1);
+        ListaPorCodigoStock.add(stock);
+        existence.put('ListaPorCodigoStock',ListaPorCodigoStock);
+        existence.put('codNMU','1');
+        existences.add(existence);
+        
         //WHEN
-		Test.startTest();
-		ICCIDManager.GetStockDef(stocksCode, nmuCart, existences);
-		Test.stopTest();
-		
-		//THEN
+        Test.startTest();
+        ICCIDManager.GetStockDef(stocksCode, nmuCart, existences);
+        Test.stopTest();
+        
+        //THEN
+    }
+
+    @isTest
+    public static void CreateWrapOrderItem(){
+        ICCIDManager.WrapOrderItem orderItem = new ICCIDManager.WrapOrderItem('newICCID', 'newIMSI', 'newKI', 'newAduanaIngreso', 'newPaisOrigen', 'newCodOrdenDespacho', 'newStock', true);
+    }
+
+    public static void generateMocks() {
+        String mockResponse095 = '{"listaNumeroSeries":[{"codNMU":"codNMU","imsi":"imsi","aduanaIngreso":"aduanaIngreso","paisOrigen":"paisOrigen","codOrdenDespacho":"codOrdenDespacho","codDeposito":"codDeposito","stockProducto":"stockProducto","numeroSerie":"serial"},{"codNMU":"codNMU","imsi":"imsi","aduanaIngreso":"aduanaIngreso","paisOrigen":"paisOrigen","codOrdenDespacho":"codOrdenDespacho","codDeposito":"codDeposito","stockProducto":"stockProducto","numeroSerie":"serial2"}]}';
+        VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S095', mockResponse095);
+
+        String mockResponse094 = '{"listaDeSeriados":[{"codOrdenDespacho":"codOrdenDespacho","paisOrigen":"paisOrigen","aduanaIngreso":"aduanaIngreso","stockProducto":"stockProducto","numeroSerie":"numeroSerie"}]}';
+        VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S094', mockResponse094);
+
+        String mockResponse444 = '{"listaNumeroSerie":[{"codOrdenDespacho":"codOrdenDespacho","paisOrigen":"paisOrigen","aduanaIngreso":"aduanaIngreso","ki":"ki","imsi":"imsi","numeroSerie":"numeroSerie","stockProducto":"stockProducto","codNMU":"codNMU"}]}';
+        VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S444', mockResponse444);
     }
 }

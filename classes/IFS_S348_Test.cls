@@ -242,15 +242,21 @@ public class IFS_S348_Test {
         System.debug('------------ Antes de crear el Account (Organization) ----');
         Account orgAcc = getCreatedAccount('TelecomTest');
         System.debug('------------ Despues de crear el Account (Organization) ----');
-
-        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte',
+        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Centro de Servicio Santa Fe', 
             vlocity_cmt__OrganizationId__c=orgAcc.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
              Channel_Type__c='Oficinas Comerciales', Channel_Type_2__c='Oficinas Comerciales', Channel_Type_3__c='Oficinas Comerciales',
-             Region__c='AMBA');/*, Ownership__c='', PointOfSaleType__c='',BillingMode__c='', Momento_PDV__c='', PaymentChannel__c = , Type_of_contact__c,
+             Region__c='AMBA', RecordTypeId=Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId());
+        insert storeLocation;     
+        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Centro de Servicio Santa Fe'];     
+
+/*        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte',
+            vlocity_cmt__OrganizationId__c=orgAcc.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
+             Channel_Type__c='Oficinas Comerciales', Channel_Type_2__c='Oficinas Comerciales', Channel_Type_3__c='Oficinas Comerciales',
+             Region__c='AMBA');, Ownership__c='', PointOfSaleType__c='',BillingMode__c='', Momento_PDV__c='', PaymentChannel__c = , Type_of_contact__c,
              vlocity_cmt__Country__c, vlocity_cmt__City__c, vlocity_cmt__StreetAddress__c, vlocity_cmt__State__c, PointOfSaleAddressNumber__c, Location__c
-             );*/
+             );
         insert storeLocation;
-        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Barrio Norte'];
+        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Barrio Norte'];*/
     }
 
     private static WorkTeam__c createWorkTeam (Id pStoreLocationId) {

@@ -213,5 +213,6 @@
             <translation><!-- IVA --></translation>
         </picklistValues>
     </fields>
+    <nameFieldLabel><!-- TaxConditionDetail --></nameFieldLabel>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

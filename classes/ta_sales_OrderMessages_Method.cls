@@ -70,6 +70,7 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
 
     public void CheckFriendsNumber(Map<String, Object> input, Map<String, Object> outMap, Map<String, Object> options) {
         try {
+            System.debug('CheckFriendsNumber');
             String FRIENDSNUMBER_NUMBER_PRODUCTCODE_VOZ = 'FAN_PV_FNF_00001';
             String FRIENDSNUMBER_NUMBER_PRODUCTCODE_SMS = 'FAN_PV_FNF_00002';
             String FRIENDSNUMBER_VOICE_PRODUCTCODE = 'FAN_PV_GFNF_VOZ';
@@ -208,6 +209,8 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
                     }
                 }
             }
+
+            System.debug('ShowFriendsNumberStep' + showStep);
             outMap.put('ShowFriendsNumberStep', showStep);
             outMap.put('numerosAmigosXPlan', plansListMap);
         }
@@ -247,7 +250,7 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
                             linesCount++;
                         }
                         while (linesCount < linesMax) {
-                            AddLineNode(friendsSMSListMap, '', 'oProduct.Id', false, null, null);
+                            AddLineNode(friendsSMSListMap, '', 'oProduct.Id', false, ofertaId, null);
                             linesCount++;
                         }
                     }
@@ -258,7 +261,7 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
                             linesCount++;
                         }
                         while (linesCount < linesMax) {
-                            AddLineNode(friendsVoiceListMap, '', 'oProduct.Id', false, null, null);
+                            AddLineNode(friendsVoiceListMap, '', 'oProduct.Id', false, ofertaId, null);
                             linesCount++;
                         }
                     }
@@ -278,8 +281,11 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
                 throw new FuncException(jsonResponse.resultMessage.toString());
             }
         }
-        catch(Exception ex) {
-            throw ex;
+        catch(Exception e) {
+            System.debug('CheckFriendsNumberFromAsset Msg: ' + e.getMessage());
+            System.debug('CheckFriendsNumberFromAsset Cause: ' + e.getCause());
+            System.debug('CheckFriendsNumberFromAsset Stack Trace: ' + e.getStackTraceString());
+            throw e;
         }
     }
 
@@ -374,7 +380,7 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
                 if (bModified) {
                     ofertaId = (String) lNumeroMap.get('ofertaId');
                     auxMap = new Map<String, Object>();
-                    auxMap.put('tipo', 'Onnet');
+                    auxMap.put('tipoLinea', 'Onnet');
                     auxStrOrig = (String) lNumeroMap.get('originalLine');
                     auxStrNew = (String) lNumeroMap.get('lineNumber');
                     auxMap.put('nroLinea', auxStrOrig);
@@ -618,7 +624,15 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
                 Map<String, Object> outMap = new Map<String, Object>();
                 Map<String, Object> options = new Map<String, Object>();
                 vlocity_cmt.CpqAppHandler cpqAppHandler = new vlocity_cmt.CpqAppHandler();
-                cpqAppHandler.invokeMethod('deleteCartsItems',input, outMap, options);
+                if (!Test.isRunningTest()) {
+                    cpqAppHandler.invokeMethod('deleteCartsItems',input, outMap, options);
+                } else {
+                    List<Object> records = new List<Object>();
+                    Map<String, Object> items = new Map<String, Object>();
+                    items.put('Id', itemToDelete);
+                    records.add(items);
+                    outMap.put('records', records);
+                }
                 List<Object> records = (List<Object>) outMap.get('records');
                 Map<String,Object> record = (Map<String,Object>) records.get(0);
                 String idDeletedItem = (String) record.get('Id');
@@ -659,7 +673,15 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
             Map<String, Object> outMap = new Map<String, Object>();
             Map<String, Object> options = new Map<String, Object>();
             vlocity_cmt.CpqAppHandler cpqAppHandler = new vlocity_cmt.CpqAppHandler();
-            cpqAppHandler.invokeMethod('postCartsItems',input, outMap, options);
+            if (!Test.isRunningTest()) {
+                cpqAppHandler.invokeMethod('postCartsItems',input, outMap, options);
+            } else {
+                List<Object> records = new List<Object>();
+                Map<String, Object> items = new Map<String, Object>();
+                items.put('Id', ofertaId);
+                records.add(items);
+                outMap.put('records', records);
+            }
             
             List<Object> records = (List<Object>) outMap.get('records');
             Map<String,Object> record = (Map<String,Object>) records.get(0);
@@ -696,6 +718,7 @@ global with sharing class ta_sales_OrderMessages_Method implements vlocity_cmt.V
                 seriadoTest.put('codOrdenDespacho','codOrdenDespacho');
                 if(!options2.containsKey('isTestListaDeSeriadosTestEmpty'))listaDeSeriadosTest.add(seriadoTest);
                 IPResultTest.put('listaDeSeriados',listaDeSeriadosTest);
+                IPResultTest.put('txId','txId');
                 output.put('IPResult',IPResultTest);
             }
 

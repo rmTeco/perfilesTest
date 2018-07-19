@@ -86,10 +86,6 @@
         <label><!-- Rule Type --></label>
         <name>vlocity_cmt__RuleType__c</name>
         <picklistValues>
-            <masterLabel>Evaluation</masterLabel>
-            <translation><!-- Evaluation --></translation>
-        </picklistValues>
-        <picklistValues>
             <masterLabel>Penalty</masterLabel>
             <translation><!-- Penalty --></translation>
         </picklistValues>
@@ -112,10 +108,6 @@
         <picklistValues>
             <masterLabel>Configuration</masterLabel>
             <translation><!-- Configuration --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Context Rule</masterLabel>
-            <translation><!-- Context Rule --></translation>
         </picklistValues>
         <picklistValues>
             <masterLabel>Eligibility</masterLabel>

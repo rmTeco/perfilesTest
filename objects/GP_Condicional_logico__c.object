@@ -54,18 +54,6 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>Atributo_de_evento__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Atributo de evento</label>
-        <referenceTo>GP_Atributo_de_evento__c</referenceTo>
-        <relationshipLabel>Condicionales logicos</relationshipLabel>
-        <relationshipName>Condicionales_logicos</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
         <fullName>Operador__c</fullName>
         <externalId>false</externalId>
         <label>Operador</label>
@@ -108,21 +96,21 @@
                 </value>
             </valueSetDefinition>
             <valueSettings>
-                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
-                <controllingFieldValue>Monto</controllingFieldValue>
                 <controllingFieldValue>Categoria De Socio</controllingFieldValue>
                 <controllingFieldValue>Tipo De Cliente</controllingFieldValue>
                 <controllingFieldValue>Tipo De Servicio</controllingFieldValue>
                 <controllingFieldValue>Tipo De Upselling</controllingFieldValue>
+                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
+                <controllingFieldValue>Monto</controllingFieldValue>
                 <valueName>=</valueName>
             </valueSettings>
             <valueSettings>
-                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
-                <controllingFieldValue>Monto</controllingFieldValue>
                 <controllingFieldValue>Categoria De Socio</controllingFieldValue>
                 <controllingFieldValue>Tipo De Cliente</controllingFieldValue>
                 <controllingFieldValue>Tipo De Servicio</controllingFieldValue>
                 <controllingFieldValue>Tipo De Upselling</controllingFieldValue>
+                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
+                <controllingFieldValue>Monto</controllingFieldValue>
                 <valueName>!=</valueName>
             </valueSettings>
             <valueSettings>
@@ -277,26 +265,6 @@
                 </value>
             </valueSetDefinition>
             <valueSettings>
-                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
-                <valueName>LOW</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
-                <valueName>MID</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
-                <valueName>MID HIGH</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
-                <valueName>PREMIUM</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Monto</controllingFieldValue>
-                <valueName>integer</valueName>
-            </valueSettings>
-            <valueSettings>
                 <controllingFieldValue>Categoria De Socio</controllingFieldValue>
                 <valueName>TRIAL</valueName>
             </valueSettings>
@@ -356,6 +324,26 @@
                 <controllingFieldValue>Tipo De Upselling</controllingFieldValue>
                 <valueName>CABLE-SUMAR FLOW</valueName>
             </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
+                <valueName>LOW</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
+                <valueName>MID</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
+                <valueName>MID HIGH</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Equipo Categoria</controllingFieldValue>
+                <valueName>PREMIUM</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Monto</controllingFieldValue>
+                <valueName>integer</valueName>
+            </valueSettings>
         </valueSet>
     </fields>
     <fields>
@@ -367,16 +355,6 @@
         <scale>0</scale>
         <trackTrending>false</trackTrending>
         <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Valor_string__c</fullName>
-        <externalId>false</externalId>
-        <label>Valor string</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -427,7 +405,7 @@
         <description>Variable contra la que se compara</description>
         <externalId>false</externalId>
         <label>Variable contra la que se compara</label>
-        <length>100</length>
+        <length>50</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>

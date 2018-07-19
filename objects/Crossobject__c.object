@@ -321,6 +321,11 @@ It has generic fields of type text, number and date which are added to several t
                     <default>false</default>
                     <label>Cambio Numeros Amigos Ok</label>
                 </value>
+                <value>
+                    <fullName>Renovacion de datos Exitosa</fullName>
+                    <default>false</default>
+                    <label>Renovacion de datos Exitosa</label>
+                </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
@@ -509,6 +514,52 @@ It has generic fields of type text, number and date which are added to several t
                 <fullName>Vencimiento de plazo de permanencia</fullName>
                 <default>false</default>
             </values>
+            <values>
+                <fullName>Verificación de Línea Decisora</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Verificación de identidad en una orden de venta</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Picklist2__c</picklist>
+            <values>
+                <fullName>Requiere respuesta</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Solo notificacion</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Cancelado</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cerrado</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Confirmado</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pendiente</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>EmailTemplate</fullName>
+        <active>true</active>
+        <label>Email Template</label>
+        <picklistValues>
+            <picklist>Picklist1__c</picklist>
             <values>
                 <fullName>Verificación de Línea Decisora</fullName>
                 <default>false</default>
@@ -896,6 +947,10 @@ It has generic fields of type text, number and date which are added to several t
                 <default>false</default>
             </values>
             <values>
+                <fullName>Renovacion de datos Exitosa</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Vencimiento de Pickup</fullName>
                 <default>false</default>
             </values>
@@ -963,6 +1018,10 @@ It has generic fields of type text, number and date which are added to several t
             </values>
             <values>
                 <fullName>Recarga Exitosa</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Renovacion de datos Exitosa</fullName>
                 <default>false</default>
             </values>
             <values>

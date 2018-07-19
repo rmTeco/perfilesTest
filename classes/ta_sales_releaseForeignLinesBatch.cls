@@ -7,7 +7,7 @@ global with sharing class ta_sales_releaseForeignLinesBatch implements Database.
 
    	global void execute(Database.BatchableContext BC, List<sObject> scope) {
    		List<Asset> assets = (List<Asset>) scope;
-   		Pricebook2 pb2 = [SELECT Id, Name, IsActive FROM PriceBook2  LIMIT 1]; /*WHERE IsStandard=True*/
+   		Pricebook2 pb2 = [SELECT Id, Name, IsActive FROM PriceBook2 WHERE IsStandard=True LIMIT 1];
    		PriceBookEntry pbe = [SELECT Id FROM PriceBookEntry LIMIT 1];
    		Map<Id, Order> orderByAccount = new Map<Id, Order>();
    		Map<Id, List<OrderItem>> itemsByAccount = new Map<Id, List<OrderItem>>();
@@ -29,7 +29,6 @@ global with sharing class ta_sales_releaseForeignLinesBatch implements Database.
    			}
    			oisToInsert.addAll(itemsByAccount.get(accountId));
    		}
-        System.debug('Here OrdItem'+ oisToInsert);
    		insert oisToInsert;
    		for(Order o: orderByAccount.values()){
    			//vlocity_cmt.SimpleDecompositionManager.startOrderProcessing(o.Id)

@@ -11,9 +11,7 @@ private class OVStepperControllerTest {
                             EffectiveDate=Date.today(),
                             Status='Draft',
                             Pricebook2Id =Test.getStandardPricebookId(),
-                            vlocity_cmt__PriceListId__c=taPriceList.Id,
-                            Delivery_Method__c='Presencial',
-                            vlocity_cmt__OriginatingChannel__c='Agentes' );
+                            vlocity_cmt__PriceListId__c=taPriceList.Id);
       insert Ord ;
       ApexPages.StandardController sc = new ApexPages.StandardController(Ord);
       OVStepperController OVS = new OVStepperController(sc);

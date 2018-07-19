@@ -47,23 +47,18 @@
         <label>Suspended</label>
     </standardValue>
     <standardValue>
+        <fullName>Suspendido</fullName>
+        <default>false</default>
+        <label>Suspendido</label>
+    </standardValue>
+    <standardValue>
         <fullName>Preactive</fullName>
         <default>false</default>
         <label>Preactive</label>
     </standardValue>
     <standardValue>
-        <fullName>Robo</fullName>
+        <fullName>Activo</fullName>
         <default>false</default>
-        <label>Robo</label>
-    </standardValue>
-    <standardValue>
-        <fullName>Hurto</fullName>
-        <default>false</default>
-        <label>Hurto</label>
-    </standardValue>
-    <standardValue>
-        <fullName>Extravio</fullName>
-        <default>false</default>
-        <label>Extravio</label>
+        <label>Activo</label>
     </standardValue>
 </StandardValueSet>

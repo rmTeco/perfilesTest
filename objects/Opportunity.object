@@ -426,9 +426,20 @@ Filled in by: The account manager.</inlineHelpText>
         <fullName>SCP_Certa_GC__Fecha_comprometida_instalaci_n__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <label>Fecha comprometida instalación</label>
+        <label>SCP Dep</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>SCP_Certa_GC__Fecha_comprometida_instalaci_n_formula__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>CloseDate +  SCP_Certa_GC__TMI__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fecha comprometida instalación</label>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
     </fields>
@@ -681,8 +692,24 @@ Filled in by: The account manager.</inlineHelpText>
         <fullName>SCP_Certa_GC__Total_CUV_ARG__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <label>Total CUV (ARG)</label>
+        <label>SCP dep</label>
         <summarizedField>OpportunityLineItem.SCP_Certa_GC__Cargo_unica_vez__c</summarizedField>
+        <summaryFilterItems>
+            <field>OpportunityLineItem.SCP_Certa_GC__Moneda__c</field>
+            <operation>equals</operation>
+            <value>ARG</value>
+        </summaryFilterItems>
+        <summaryForeignKey>OpportunityLineItem.OpportunityId</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>SCP_Certa_GC__Total_CUV_ARG_resumen__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Total CUV (ARG)</label>
+        <summarizedField>OpportunityLineItem.SCP_Certa_GC__Cargo_por_nica_vez_total_sumable__c</summarizedField>
         <summaryFilterItems>
             <field>OpportunityLineItem.SCP_Certa_GC__Moneda__c</field>
             <operation>equals</operation>
@@ -697,8 +724,24 @@ Filled in by: The account manager.</inlineHelpText>
         <fullName>SCP_Certa_GC__Total_CUV_USD__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <label>Total CUV (USD)</label>
+        <label>SCP Dep</label>
         <summarizedField>OpportunityLineItem.SCP_Certa_GC__Cargo_unica_vez__c</summarizedField>
+        <summaryFilterItems>
+            <field>OpportunityLineItem.SCP_Certa_GC__Moneda__c</field>
+            <operation>equals</operation>
+            <value>USD</value>
+        </summaryFilterItems>
+        <summaryForeignKey>OpportunityLineItem.OpportunityId</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>SCP_Certa_GC__Total_CUV_USD_resumen__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Total CUV (USD)</label>
+        <summarizedField>OpportunityLineItem.SCP_Certa_GC__Cargo_por_nica_vez_total_sumable__c</summarizedField>
         <summaryFilterItems>
             <field>OpportunityLineItem.SCP_Certa_GC__Moneda__c</field>
             <operation>equals</operation>
@@ -1471,6 +1514,13 @@ Filled in by: Calculated automatically.</inlineHelpText>
         <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
+    <validationRules>
+        <fullName>SCP_Certa_GC__TMI_Positivo</fullName>
+        <active>true</active>
+        <description>El valor del TMI debe ser un número positivo.</description>
+        <errorConditionFormula>SCP_Certa_GC__TMI__c &lt; 0</errorConditionFormula>
+        <errorMessage>El valor del TMI debe ser un número positivo.</errorMessage>
+    </validationRules>
     <webLinks>
         <fullName>SCP_Certa_GC__Asignar_Value_Drivers</fullName>
         <availability>online</availability>

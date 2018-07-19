@@ -3,7 +3,7 @@
     <fields>
         <label><!-- Vlocity Calculation Matrix Version --></label>
         <name>vlocity_cmt__CalculationMatrixVersionId__c</name>
-        <relationshipLabel><!-- Vlocity Calculation Matrix Row --></relationshipLabel>
+        <relationshipLabel><!-- Vlocity Calculation Matrix Rows --></relationshipLabel>
     </fields>
     <fields>
         <label><!-- Global Key --></label>

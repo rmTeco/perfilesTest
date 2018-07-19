@@ -15,14 +15,6 @@
                 <behavior>Required</behavior>
                 <field>vlocity_cmt__Code__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__Description__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__ParentPriceListId__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -31,15 +23,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__IsActive__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>vlocity_cmt__Pricebook2Id__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>vlocity_cmt__Sequence__c</field>
+                <field>vlocity_cmt__IsActive__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -51,22 +39,26 @@
         <label>System Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>vlocity_cmt__EffectiveFromDate__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>CreatedById</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>LastModifiedById</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>vlocity_cmt__EffectiveFromDate__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>vlocity_cmt__EffectiveUntilDate__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>LastModifiedById</field>
+                <behavior>Edit</behavior>
+                <field>vlocity_cmt__Sequence__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -83,32 +75,6 @@
     </layoutSections>
     <relatedLists>
         <fields>NAME</fields>
-        <fields>vlocity_cmt__ProductId__c</fields>
-        <fields>vlocity_cmt__PriceListId__c</fields>
-        <fields>vlocity_cmt__IsActive__c</fields>
-        <fields>vlocity_cmt__IsBasePrice__c</fields>
-        <fields>vlocity_cmt__EffectiveFromDate__c</fields>
-        <fields>vlocity_cmt__EffectiveUntilDate__c</fields>
-        <fields>LAST_UPDATE</fields>
-        <fields>vlocity_cmt__PromotionId__c</fields>
-        <fields>vlocity_cmt__PricingElementId__c</fields>
-        <relatedList>vlocity_cmt__PriceListEntry__c.vlocity_cmt__BasePriceListId__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <fields>vlocity_cmt__IsActive__c</fields>
-        <fields>vlocity_cmt__Amount__c</fields>
-        <fields>vlocity_cmt__Code__c</fields>
-        <fields>vlocity_cmt__DisplayText__c</fields>
-        <fields>vlocity_cmt__EffectiveFromDate__c</fields>
-        <fields>vlocity_cmt__EffectiveUntilDate__c</fields>
-        <fields>vlocity_cmt__ProductId__c</fields>
-        <fields>vlocity_cmt__PricingVariableId__c</fields>
-        <fields>vlocity_cmt__PromotionId__c</fields>
-        <relatedList>vlocity_cmt__PricingElement__c.vlocity_cmt__PriceListId__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
         <fields>vlocity_cmt__IsActive__c</fields>
         <fields>vlocity_cmt__DisplayText__c</fields>
         <fields>vlocity_cmt__EffectiveFromDate__c</fields>
@@ -116,13 +82,19 @@
         <fields>vlocity_cmt__ProductId__c</fields>
         <fields>vlocity_cmt__PromotionId__c</fields>
         <fields>vlocity_cmt__PricingMatrixBindingData__c</fields>
-        <fields>vlocity_cmt__PromotionItemId__c</fields>
         <fields>vlocity_cmt__PricingElementId__c</fields>
-        <relatedList>vlocity_cmt__PriceListEntry__c.vlocity_cmt__PriceListId__c</relatedList>
+        <relatedList>vlocity_cmt__PriceListEntry__c.vlocity_cmt__BasePriceListId__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
-        <relatedList>DRAsset__c.PriceListId__c</relatedList>
+        <fields>vlocity_cmt__Amount__c</fields>
+        <relatedList>vlocity_cmt__PricingElement__c.vlocity_cmt__PriceListId__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>vlocity_cmt__ProductId__c</fields>
+        <fields>vlocity_cmt__PricingElementId__c</fields>
+        <relatedList>vlocity_cmt__PriceListEntry__c.vlocity_cmt__PriceListId__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
@@ -130,7 +102,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h6C000000RNvK</masterLabel>
+        <masterLabel>00hc0000000LmjV</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

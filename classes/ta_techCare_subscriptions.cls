@@ -31,6 +31,8 @@ global with sharing class ta_techCare_subscriptions implements vlocity_cmt.Vloci
         
         try{
             
+            system.debug('GetFilteredSubscriptions........................');
+            
             string subscriptionsList = (String) options.get('subscriptionsList');
             subscriptionsList = subscriptionsList.replace('[', '');
             subscriptionsList = subscriptionsList.replace(']', '');
@@ -135,10 +137,18 @@ global with sharing class ta_techCare_subscriptions implements vlocity_cmt.Vloci
     private void UnsubscribeFromServices(Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, Object> options)
     {
         try{
-            List<Object> subscriptions = (List<Object>) options.get('filteredSubscriptions');
             
+            system.debug('UnsubscribeFromServices');
+            
+            List<Object> subscriptions = (List<Object>) options.get('filteredSubscriptions');
+             
+            
+             
+             
             if (subscriptions.size() > 0)
             {
+            
+               system.debug('UnsubscribeFromServices-IF');
                 Map<String, Object> params = new Map<String, Object>();
                 Map<String, Object> input = new Map<String, Object>();
                 Map<String, Object> output = new Map<String, Object>();
@@ -294,7 +304,7 @@ global with sharing class ta_techCare_subscriptions implements vlocity_cmt.Vloci
     }
 
     private void getHistoryBlacklist ( Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options){
-        
+
         String assetId =  (String) inputMap.get('AssetId');
         Set<String> fieldFilter = new Set<String>();
         fieldFilter.add('Blacklist__c');
@@ -304,7 +314,6 @@ global with sharing class ta_techCare_subscriptions implements vlocity_cmt.Vloci
         DateTime oldDateTime = nowDateTime.addMonths(-12);
 
         List<AssetHistory> listAssetHistory = [SELECT CreatedDate, CreatedById, Field, OldValue, NewValue FROM AssetHistory WHERE AssetId = :assetId And  Field IN :fieldFilter And CreatedDate >= :oldDateTime ORDER BY CreatedDate DESC];
-
         
         Set<Id> idUsuario = new Set<Id>();
         for(AssetHistory userH: listAssetHistory ){
@@ -313,6 +322,7 @@ global with sharing class ta_techCare_subscriptions implements vlocity_cmt.Vloci
 
         Map<Id,String> mapUser = new Map<Id,String>();
         List<User> getUsers = [SELECT Id, name FROM User WHERE Id IN :idUsuario];
+
         for(User getUser: getUsers ){
                 mapUser.put(getUser.Id, getUser.name);
         }
@@ -322,29 +332,25 @@ global with sharing class ta_techCare_subscriptions implements vlocity_cmt.Vloci
             map<String,String> mapAssetHistoryBlack = new map<String,String>();
 
             for(AssetHistory getAsset: listAssetHistory ){
-                if(dateVerify == null || getAsset.CreatedDate != dateVerify){
-                    system.debug('getAsset.CreatedById:'+getAsset.CreatedById);
-                    system.debug('Id:'+getAsset.Id);
+
                     dateVerify =  getAsset.CreatedDate;
-                
+                    String fielAsset = (String) getAsset.Field;
+                 
                     mapAssetHistoryBlack = new map<String,String>();
                     mapAssetHistoryBlack.put('createdDate', dateVerify.format('yyyy-MM-dd HH:mm:ss'));
                     mapAssetHistoryBlack.put('createdById', mapUser.get(getAsset.CreatedById));
 
-                    if(Boolean.valueOf(getAsset.NewValue)){
-                        mapAssetHistoryBlack.put('addBlackList' , 'Ingreso en Blacklist');
-                    }else{
-                        mapAssetHistoryBlack.put('addBlackList' , 'Egreso de Blacklist');
+
+                    if(fielAsset.equals('Blacklist__c')){
+                        if(Boolean.valueOf(getAsset.NewValue)){
+                            mapAssetHistoryBlack.put('addBlackList' , 'Ingreso en Blacklist');
+                        }else{
+                            mapAssetHistoryBlack.put('addBlackList' , 'Egreso de Blacklist');
+                        }
+                        listMapAssetHistoryBlackList.add(mapAssetHistoryBlack);
                     }
                     
-                }else{
-                    String dateStimate = String.valueOf(getAsset.NewValue);
-                    mapAssetHistoryBlack.put('dateEstimateBlacklistRemove' , dateStimate );
-                    listMapAssetHistoryBlackList.add(mapAssetHistoryBlack);
-                }
-
             } 
-
             outMap.put('resultGetAssetHistoryBlacklist', listMapAssetHistoryBlackList );
     }
 }

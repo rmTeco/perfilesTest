@@ -94,10 +94,6 @@
                 <behavior>Edit</behavior>
                 <field>Location__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>PointOfSaleType__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -138,7 +134,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>PaymentChannel__c</field>
+                <field>RecordTypeId</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -165,7 +161,7 @@
     <layoutSections>
         <customLabel>true</customLabel>
         <detailHeading>false</detailHeading>
-        <editHeading>true</editHeading>
+        <editHeading>false</editHeading>
         <label>Custom Links</label>
         <layoutColumns/>
         <layoutColumns/>

@@ -19,7 +19,8 @@ public class IFS_S089_conseguirDisponibilidad {
             message='';
         }
         message = message.removeEnd('&');
-        system.debug('IFS_S089 - request : ' + message);
+        system.debug(message);
+
         HttpResponse response = makePostCallout(message, venta);
         system.debug(response.getBody());
         Map<String, Object> responseNode = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());

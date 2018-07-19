@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>MGomez2@proveedor.personal.com.ar</contactEmail>
+    <label>Monitoreo</label>
+    <oauthConfig>
+        <callbackUrl>https://test.salesforce.com/services/oauth2/success
+https://crm--sit.cs14.my.salesforce.com/callback.jsp</callbackUrl>
+        <consumerKey>3MVG9sLbBxQYwWqsYmKNsoFy2KMznL76ozz3iutDSZW6V4g9uij9WhQTrvba5MGrmxKE6wwdXbVCx1lGR6Ebj</consumerKey>
+        <scopes>Full</scopes>
+    </oauthConfig>
+</ConnectedApp>

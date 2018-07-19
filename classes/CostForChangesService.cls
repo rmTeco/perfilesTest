@@ -27,6 +27,8 @@ global with sharing class CostForChangesService implements vlocity_cmt.VlocityOp
         try {
             List<Object> orders = VlocityOpenInterfaceHelper.getListObjectsFromMap(options, 'Orders');
             Id priceListId = (Id)inputMap.get('PriceListId');
+            
+            List<Order> listOrderToUpdate = new List<Order>();
 
             for (Object orderObj : orders) {
                 Map<String, Object> order = (Map<String, Object>) orderObj;
@@ -42,11 +44,17 @@ global with sharing class CostForChangesService implements vlocity_cmt.VlocityOp
 
                     orderToUpdate.vlocity_cmt__PriceListId__c = priceListId;
 
-                    update orderToUpdate;
+                    listOrderToUpdate.add(orderToUpdate);
+                    //update orderToUpdate;
                 }
 
                 //AddLineItemToOrder(order, options);
             }
+            
+            If (listOrderToUpdate.size()>0){
+              Update listOrderToUpdate;
+            }
+
 
             outMap.put('Orders', orders);
         }
@@ -73,41 +81,8 @@ global with sharing class CostForChangesService implements vlocity_cmt.VlocityOp
         }
     }
 
-    private void AddLineItemToOrder(Map<String, Object> order, Map<String, Object> options) {
-        try {
-            Map<String, Object> input = GetInputJson(order, options);
-            Map<String, Object> output = new Map<String, Object>();
-
-            vlocity_cmt.CpqAppHandler cpqAppHandler = new vlocity_cmt.CpqAppHandler();
-            cpqAppHandler.invokeMethod('postCartsItems', input, output, options);
-
-            vlocity_cmt.JSONResult result = (vlocity_cmt.JSONResult) output.get('result');
-
-            for (vlocity_cmt.JSONRecord record : result.records) {
-                Map<String, Object> orderItem  = new Map<String, Object>();
-                List<Map<String, Object>> orderItems = new List<Map<String, Object>>();
-                Map<String, Object> fields = (Map<String, Object>) record.fields;
-
-                vlocity_cmt.JSONField oneTimeCharge = (vlocity_cmt.JSONField)fields.get('vlocity_cmt__OneTimeCharge__c');
-                vlocity_cmt.JSONField unitPrice = (vlocity_cmt.JSONField)fields.get('UnitPrice');
-                vlocity_cmt.JSONField orderItemId = (vlocity_cmt.JSONField)fields.get('Id');
-                String productName = (String)fields.get('Name');
-                
-                orderItem.put('OneTimeCharge', oneTimeCharge.value);
-                orderItem.put('UnitPrice', unitPrice.value);
-                orderItem.put('OrderItemId', orderItemId.value);
-                orderItem.put('ProductName', productName);
-
-                orderItems.add(orderItem);
-                order.put('OrderItems', orderItems);
-            }
-        }
-        catch(Exception ex) {
-            throw ex;
-        }
-    }
-
-    private Map<String, Object> GetInputJson(Map<String, Object> order, Map<String, Object> options) {
+    
+  @TestVisible private Map<String, Object> GetInputJson(Map<String, Object> order, Map<String, Object> options) {
         try {
             Map<String, Object> input = new Map<String, Object>();
             Map<String, Object> item = new Map<String, Object>();
@@ -196,19 +171,28 @@ global with sharing class CostForChangesService implements vlocity_cmt.VlocityOp
                 Map<String, Object> order = (Map<String, Object>)orderObj;
 
                 List<Object> orderItems = VlocityOpenInterfaceHelper.getListObjectsFromMap(order, 'OrderItems');
+                
+                List<Map<String, Object>> priceBookEntryList = new List<Map<String, Object>>();
+                for(PriceBookEntry pbe: [SELECT Id, ProductCode, Pricebook2Id FROM PriceBookEntry Where Pricebook2Id = :priceBookId]){
+                        Map<String, Object> pbeMapList = new Map<String, Object>();
+                        pbeMapList.put('Id', pbe.Id);
+                        pbeMapList.put('ProductCode', pbe.ProductCode);
+    
+                        priceBookEntryList.add(pbeMapList);
+                }
+
 
                 for (Object orderItemObj : orderItems) {
                     Map<String, Object> orderItem = (Map<String, Object>)orderItemObj;
                     String productCode = (String)orderItem.get('ProductCode');
 
-                    PriceBookEntry priceBookEntry = [SELECT Id,
-                                                            ProductCode,
-                                                            Pricebook2Id
-                                                        FROM PriceBookEntry
-                                                        WHERE ProductCode = :productCode
-                                                                AND Pricebook2Id = :priceBookId];
+                    for(integer i=0;i<priceBookEntryList.size();i++){
+                        if(priceBookEntryList[i].get('ProductCode') == productCode){
+                          orderItem.put('PriceBookEntryId', priceBookEntryList[i].get('Id')); 
+                        }
+                    }
 
-                    orderItem.put('PriceBookEntryId', priceBookEntry.Id);
+                    
                 }
             }
 

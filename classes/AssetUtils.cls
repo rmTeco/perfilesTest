@@ -6,7 +6,7 @@ global with sharing class AssetUtils implements vlocity_cmt.VlocityOpenInterface
         try {
             if (methodName.Equals('getNegotiations')) {
                 getNegotiations(inputMap, outMap, options);
-            }            
+            }
         }
         catch(Exception ex) {
             outMap.put('error', ex.getStackTraceString());
@@ -30,14 +30,6 @@ global with sharing class AssetUtils implements vlocity_cmt.VlocityOpenInterface
                                 WHERE AssetId = :assetId
                                 ORDER BY CreatedDate DESC];
         return casesList;
-    }
-
-    public static List<Order> getOrderByAsset(String assetId){
-        ID orderID = [SELECT vlocity_cmt__OrderProductId__r.OrderId FROM Asset WHERE Id = :assetId].Id;
-  List<Order> order = [SELECT Id, OriginStoreLocation__c, CreatedDate, DeliveryDate__c, Delivery_Method__c
-                         FROM Order
-                        WHERE Id = : orderID];
-        return order;
     }
     
     void getNegotiations(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {

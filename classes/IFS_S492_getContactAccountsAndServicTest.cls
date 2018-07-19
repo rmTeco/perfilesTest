@@ -227,7 +227,7 @@ global with sharing class IFS_S492_getContactAccountsAndServicTest {
         System.debug('---------- Entre en createAccount()');
         List<Account> lstAcc = new List<Account>();
         Account a = new Account(Name=K_ACCOUNT_NAME2, AccountIntegrationId__c=String.valueOf(10000));
-		a.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId();
+        a.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId();
         lstAcc.add(a);
         Account b = new Account(Name='TelecomTest', AccountIntegrationId__c=String.valueOf(10001));
         b.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Billing').getRecordTypeId();
@@ -239,29 +239,29 @@ global with sharing class IFS_S492_getContactAccountsAndServicTest {
     private static Account createAccountForAsset() {
         System.debug('---------- Entre en createAccountForAsset()');
         Account a = new Account(Name=K_ACCOUNT_NAME_ASSET, AccountIntegrationId__c=String.valueOf(10000));
-		a.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId();
+        a.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId();
         insert a;
         return a;
     }
 
-	static Contact createContact(Account pAccount){
+    static Contact createContact(Account pAccount){
         System.debug('---------- Entre en createContact()');
         Account a = new Account(Name=K_ACCOUNT_NAME_ASSET, AccountIntegrationId__c=String.valueOf(10000));
-		a.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId();
+        a.recordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Consumer').getRecordTypeId();
         insert a;
         Account ac = [SELECT Id FROM Account WHERE Name = :K_ACCOUNT_NAME_ASSET LIMIT 1];
-		Contact c = new Contact(FirstName='Juan', LastName='Perez', AccountId=ac.Id);
+        Contact c = new Contact(FirstName='Juan', LastName='Perez', AccountId=ac.Id);
         c.DocumentType__c = 'DNI';
         c.DocumentNumber__c = '12345678';
-		insert c;
+        insert c;
         c = getContact ();
         
         a.vlocity_cmt__PrimaryContactId__c = c.Id;
         update a;
 
        System.debug('---------- Sali de createContact()');
-		return c;
-	}
+        return c;
+    }
 
     static Contact getContact () {
         System.debug('-------------- Entre en getContact()');
@@ -378,13 +378,19 @@ global with sharing class IFS_S492_getContactAccountsAndServicTest {
         System.debug('------------ Antes de crear el Account (Organization) ----');
         Account orgAcc = getCreatedAccount('TelecomTest');
         System.debug('------------ Despues de crear el Account (Organization) ----');
+        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Centro de Servicio Santa Fe', 
+            vlocity_cmt__OrganizationId__c=orgAcc.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
+             Channel_Type__c='Oficinas Comerciales', Channel_Type_2__c='Oficinas Comerciales', Channel_Type_3__c='Oficinas Comerciales',
+             Region__c='AMBA', RecordTypeId=Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId());
+        insert storeLocation;     
+        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Centro de Servicio Santa Fe'];     
 
-        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte', 
+/*        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte', 
             vlocity_cmt__OrganizationId__c=orgAcc.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
              Channel_Type__c='Agentes', Channel_Type_2__c='Agentes', Channel_Type_3__c='Agentes',
              Region__c='AMBA');
         insert storeLocation;     
-        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Barrio Norte'];     
+        return [SELECT Id FROM vlocity_cmt__BusinessSite__c WHERE Name='Barrio Norte'];     */
     }
 
     private static WorkTeam__c createWorkTeam (Id pStoreLocationId) {

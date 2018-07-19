@@ -725,6 +725,4 @@ global with sharing class ta_techCare_technical_service implements vlocity_cmt.V
                 
             }
     }
-    
-     
 }

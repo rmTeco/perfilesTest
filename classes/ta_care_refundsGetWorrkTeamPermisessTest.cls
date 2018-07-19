@@ -21,5 +21,23 @@ public class ta_care_refundsGetWorrkTeamPermisessTest {
         
         system.assertNotEquals(null,outMap);
     }
+    
+    @IsTest static void invoke_CreateEntitlementTest(){
+        String methodName = 'CreateEntitlement';
+        List<Account> accountTest = TestDataFactory.createAccounts(1,'Business');
+        
+        Map<String, Object> input = new Map<String, Object>();
+        Map<String, Object> outMap = new Map<String, Object>();
+        Map<String, Object> options = new Map<String, Object>();
+        
+        options.put('Account',accountTest[0].Id);
+        options.put('Entitlement','Test entitle');
+        
+        ta_care_refundsGetWorrkTeamPermisess refunds = new ta_care_refundsGetWorrkTeamPermisess();
+        
+		Test.startTest();
+        refunds.invokeMethod(methodName, input, outMap, options);
+        Test.stopTest();
+    }
 
 }

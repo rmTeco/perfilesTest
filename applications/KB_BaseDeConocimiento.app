@@ -5,7 +5,6 @@
     <label>Base de Conocimiento</label>
     <tabs>standard-Knowledge</tabs>
     <tabs>standard-KnowledgePublishing</tabs>
-    <tabs>DebugInfo__c</tabs>
-    <tabs>UI_ReproReporter</tabs>
-    <tabs>vlocity_cmt__OrchestrationItemDefinition__c</tabs>
+    <tabs>Repro_Reporter</tabs>
+    <tabs>Permissions_by_Work_Team</tabs>
 </CustomApplication>

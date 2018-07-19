@@ -1,5 +1,8 @@
 global with sharing class taIdentityValidationHandler implements vlocity_cmt.VlocityOpenInterface
 {
+    private static final String orgId = UserInfo.getOrganizationId();
+    private static final List<String> iconsValidationRadios = new List<String>{'attach_png', 'dialogPNG', 'sms_png'};
+    
     global taIdentityValidationHandler(){}
 
     global Boolean invokeMethod(String methodName, Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options)
@@ -116,13 +119,14 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
 
             List<Object> listaPreguntas = (List<Object>) data.get('listaPreguntas');
             List<Object> listaRespuestas = new List<Object>();
+            Map<String, Object> body = new Map<String, Object>();
             for(Object pregunta : listaPreguntas)
             {
                 Map<String, Object> respuesta = new Map<String,Object>();
                 Map<String, Object> respuestaAux = new Map<String, Object>();
                 Map<String, Object> preguntaMap = (Map<String, Object>) pregunta;
                 String codConsulta = (String) preguntaMap.get('codConsulta');
-                String codRespuesta = (String) preguntaMap.get('codRespuestaFinal');
+                String codRespuesta = (String) preguntaMap.get('codRespuesta');
                 respuestaAux.put('codConsulta', codConsulta);
                 respuestaAux.put('codRespuesta', codRespuesta);
                 respuesta.put('respuesta', respuestaAux);
@@ -130,12 +134,13 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
                 listaRespuestas.add((Object) respuesta);
             }
 
-            Map<String, Object> body = new Map<String, Object>();
+            
             body.put('ticket', ticket);
             body.put('codCuestionario', codCuestionario);
             body.put('listaRespuestas', listaRespuestas);
             Map<String, Object> inputMapS499 = new Map<String, Object>();
             inputMapS499.put('body', body);
+            system.debug('request s499: '+ JSON.serialize(body));
             Map<String, Object> outputMapS499 = new Map<String, Object>();
             Map<String, Object> optionsS499 = new Map<String, Object>();
 
@@ -148,6 +153,7 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
                 vlocity_cmt.IntegrationProcedureService integProcService = new vlocity_cmt.IntegrationProcedureService();
                 integProcService.invokeMethod('IFS_S499', inputMapS499, outputMapS499, optionsS499);
                 outMap.put('ValidationResult', (Map<String, Object>) outputMapS499.get('IPResult'));
+                system.debug('response s499: '+ JSON.serialize(outputMapS499));
             }            
         }
         catch(Exception e)
@@ -224,6 +230,9 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
 
     public static void getValidationOptions(Map<String,Object> inputMap, Map<String, Object> outMap)
     {
+        system.debug('EXECUTING getValidationOptions');
+        Map<String,String> imagesMap = getImagesForRadioButtons(iconsValidationRadios);
+
         vlocity_cmt__BusinessSite__c storeLocation = ta_sales_UserUtils.getStoreLocation(userinfo.getUserId());
         String channel = storeLocation.Channel__c;
 
@@ -236,7 +245,7 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
             Map<String, String> tempMap = new Map<String, String>();
             tempMap.put('name', 'DOC');
             tempMap.put('value', 'Validación por Documento de Identidad');
-            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=0156C000000EeF5QAK&&docName=attach_png&&oid=00D6C0000000eSzUAI');
+            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('attach_png') + '&&docName=attach_png&&oid=' + orgId);
             availableMethods.add(tempMap);
         }
        
@@ -245,6 +254,7 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
             Map<String, String> tempMap = new Map<String, String>();
             tempMap.put('name', 'SMS');
             tempMap.put('value', 'Validación por Línea Decisora');
+            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('sms_png') + '&&docName=sms_png&&oid=' + orgId);
             availableMethods.add(tempMap);
         }
 
@@ -253,23 +263,27 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
             Map<String, String> tempMap = new Map<String, String>();
             tempMap.put('name', 'QA');
             tempMap.put('value', 'Validación por Preguntas y Respuestas');
+            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('dialogPNG') + '&&docName=dialogPNG&&oid=' + orgId);
             availableMethods.add(tempMap);
         }
 
         outMap.put('options', availableMethods);
     }
 
-    public static Boolean getValidationOptionsForValidatedContact(Map<String,Object> inputMap, Map<String, Object> outMap){
+    public static Boolean getValidationOptionsForValidatedContact(Map<String,Object> inputMap, Map<String, Object> outMap)
+    {
+        system.debug('EXECUTING getValidationOptionsForValidatedContact');
+        Map<String,String> imagesMap = getImagesForRadioButtons(iconsValidationRadios);
         System.debug('>>>>>> inputMap :' + inputMap);
-          Contact contactInfo = (Contact) inputMap.get('Contact');
+        Contact contactInfo = (Contact) inputMap.get('Contact');
         System.debug('>>>>>> contactInfo :' + contactInfo);
-          ID ContactId = (String)  inputMap.get('ContactId');
-          System.debug('>>>>>> ContactId :' + ContactId);
-          Boolean contactValidatedStatus;
-          if (contactInfo != null) {
-          contactValidatedStatus = (boolean) contactInfo.get('Validated__c');
-          }
-          System.debug('>>>>>> contactValidatedStatus :' + contactValidatedStatus);
+        ID ContactId = (String)  inputMap.get('ContactId');
+        System.debug('>>>>>> ContactId :' + ContactId);
+        Boolean contactValidatedStatus;
+        if (contactInfo != null) {
+            contactValidatedStatus = (boolean) contactInfo.get('Validated__c');
+        }
+        System.debug('>>>>>> contactValidatedStatus :' + contactValidatedStatus);
         vlocity_cmt__BusinessSite__c storeLocation = ta_sales_UserUtils.getStoreLocation(userinfo.getUserId());
         String channel = storeLocation.Channel__c;
         System.debug('channel' + channel);
@@ -280,19 +294,24 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
             Map<String, String> tempMap = new Map<String, String>();
             tempMap.put('name', 'SMS');
             tempMap.put('value', 'Validación por Línea Decisora');
+            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('sms_png') + '&&docName=sms_png&&oid=' + orgId);
             availableMethods.add(tempMap);
         }
         if(methods.QA__c){
             Map<String, String> tempMap = new Map<String, String>();
             tempMap.put('name', 'QA');
             tempMap.put('value', 'Validación por Preguntas y Respuestas');
+            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('dialogPNG') + '&&docName=dialogPNG&&oid=' + orgId);
             availableMethods.add(tempMap);
         }
         outMap.put('options', availableMethods);
         return true;
     }
     
-    public static void getNominationValidationOptions(Map<String,Object> inputMap, Map<String, Object> outMap, Map<String, Object> options){
+    public static void getNominationValidationOptions(Map<String,Object> inputMap, Map<String, Object> outMap, Map<String, Object> options)
+    {
+        Map<String,String> imagesMap = getImagesForRadioButtons(iconsValidationRadios);
+
         vlocity_cmt__BusinessSite__c storeLocation = ta_sales_UserUtils.getStoreLocation(userinfo.getUserId());
         String channel = storeLocation.Channel__c;     
         System.debug('channel' + channel);
@@ -302,10 +321,12 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
             Map<String, String> tempMap = new Map<String, String>();
             tempMap.put('name', 'DOC');
             tempMap.put('value', 'Validación por Documento de Identidad');
+            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('attach_png') + '&&docName=attach_png&&oid=' + orgId);
             availableMethods.add(tempMap);
             Map<String, String> tempMap2 = new Map<String, String>();
             tempMap2.put('name', 'QA');
             tempMap2.put('value', 'Validación por Preguntas y Respuestas');
+            tempMap2.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('dialogPNG') + '&&docName=dialogPNG&&oid=' + orgId);
             availableMethods.add(tempMap2);
             system.debug('Opciones Presencial: '+ availableMethods);
         }
@@ -314,6 +335,7 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
             Map<String, String> tempMap = new Map<String, String>();
             tempMap.put('name', 'QA');
             tempMap.put('value', 'Validación por Preguntas y Respuestas');
+            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('dialogPNG') + '&&docName=dialogPNG&&oid=' + orgId);
             availableMethods.add(tempMap);
             system.debug('Opciones Telefonico: '+ availableMethods);
         }
@@ -321,7 +343,8 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
         system.debug('Opciones Finales: '+ outMap);
     }
 
-    private static String getErrorMessage(Map<String, Object> outMap, Exception ex) {
+    private static String getErrorMessage(Map<String, Object> outMap, Exception ex) 
+    {
         System.debug('Get Error Message');
 
         String httpStatusCode = (String) outMap.get('httpStatusCode');
@@ -364,8 +387,11 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
         }
     }
 
-    private static Boolean getValidationOptionsPas(Map<String,Object> inputMap, Map<String, Object> outMap){
+    private static Boolean getValidationOptionsPas(Map<String,Object> inputMap, Map<String, Object> outMap)
+    {
         System.debug('EXECUTING getValidationOptionsPas');
+
+        Map<String,String> imagesMap = getImagesForRadioButtons(iconsValidationRadios);
 
         vlocity_cmt__BusinessSite__c storeLocation = ta_sales_UserUtils.getStoreLocation(userinfo.getUserId());
         String channel = storeLocation.Channel__c;
@@ -376,17 +402,25 @@ global with sharing class taIdentityValidationHandler implements vlocity_cmt.Vlo
             Map<String, String> tempMap = new Map<String, String>();
             tempMap.put('name', 'DOC');
             tempMap.put('value', 'Validación por Documento de Identidad');
+            tempMap.put('imgId', '../servlet/servlet.ImageServer?id=' + imagesMap.get('attach_png') + '&&docName=attach_png&&oid=' + orgId);
             availableMethods.add(tempMap);
             system.debug('Opciones Presencial: '+ availableMethods);
         }
         if (channel == 'Telefónico'){
             availableMethods.clear();
-            Map<String, String> tempMap = new Map<String, String>();
-            system.debug('Opciones Telefonico: '+ availableMethods);
+            //Map<String, String> tempMap = new Map<String, String>();
         }
         outMap.put('options', availableMethods);
         system.debug('Opciones Finales: '+ outMap);
         return true;
 
+    }
+
+    private static Map<String, String> getImagesForRadioButtons(List<String> images) {
+        Map<String, String> imagesMap = new Map<String, String>();
+        for (Document doc : [SELECT Id, DeveloperName FROM Document WHERE DeveloperName IN :images]){
+            imagesMap.put(doc.DeveloperName, doc.Id);
+        }
+        return imagesMap;
     }
 }

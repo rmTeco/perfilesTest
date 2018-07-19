@@ -12,15 +12,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Descripcion_del_evento__c</field>
+                <field>Descripci_n_del_evento__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Activo__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Frecuencia_del_evento__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -62,10 +58,6 @@
     <relatedLists>
         <fields>NAME</fields>
         <relatedList>GP_Atributo_de_evento__c.GP_Evento_General__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>GP_Regla__c.Evento_general__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

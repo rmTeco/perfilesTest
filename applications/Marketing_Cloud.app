@@ -2,22 +2,17 @@
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <defaultLandingTab>standard-home</defaultLandingTab>
     <label>Marketing Cloud</label>
-    <tabs>ReglasGestorPuntos</tabs>
-    <tabs>FinancialPromotion__c</tabs>
-    <tabs>GP_Atributo_de_una_transaccion__c</tabs>
-    <tabs>GP_Socio__c</tabs>
-    <tabs>Work_Team_Permission__c</tabs>
-    <tabs>vlocity_cmt__InboundRESTInterface__c</tabs>
-    <tabs>DRAsset__c</tabs>
-    <tabs>Work_Team_Management</tabs>
-    <tabs>Address2__c</tabs>
-    <tabs>ManageMyWorkTeams</tabs>
-    <tabs>ManageCrossTeamMembers</tabs>
+    <tabs>standard-Contact</tabs>
+    <tabs>standard-Lead</tabs>
+    <tabs>et4ae5__SendDefinition__c</tabs>
+    <tabs>et4ae5__ExactTargetPhoenix</tabs>
+    <tabs>et4ae5__Send_Analytics</tabs>
+    <tabs>Transaction_History__c</tabs>
+    <tabs>AttributesConfiguration</tabs>
+    <tabs>WorkTeam__c</tabs>
     <tabs>vlocity_cmt__SyncDeltaObject__c</tabs>
-    <tabs>Mantenimiento_de_Eventos</tabs>
-    <tabs>GP_Evento_General__c</tabs>
-    <tabs>Permissions_by_workteam</tabs>
-    <tabs>DebugInfo__c</tabs>
-    <tabs>UI_ReproReporter</tabs>
-    <tabs>vlocity_cmt__OrchestrationItemDefinition__c</tabs>
+    <tabs>Team_Member__c</tabs>
+    <tabs>vlocity_cmt__InboundRESTInterface__c</tabs>
+    <tabs>Repro_Reporter</tabs>
+    <tabs>Permissions_by_Work_Team</tabs>
 </CustomApplication>

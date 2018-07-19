@@ -50,7 +50,7 @@
         <criteriaItems>
             <field>KB_Article__kav.PublishStatus</field>
             <operation>equals</operation>
-            <value>Draft</value>
+            <value>Borrador</value>
         </criteriaItems>
     </entryCriteria>
     <finalApprovalActions>

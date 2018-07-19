@@ -25,6 +25,26 @@
         <name>case_owner_alias</name>
     </fields>
     <fields>
+        <label><!-- AdjustmentRootCause --></label>
+        <name>AdjustmentRootCause__c</name>
+        <picklistValues>
+            <masterLabel>Facturacion</masterLabel>
+            <translation><!-- Facturacion --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Marketing</masterLabel>
+            <translation><!-- Marketing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No aplica</masterLabel>
+            <translation><!-- No aplica --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tasacion</masterLabel>
+            <translation><!-- Tasacion --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
         <label><!-- AffectedCasesAmount --></label>
         <name>AffectedCasesAmount__c</name>
     </fields>
@@ -40,10 +60,6 @@
         <label><!-- Approver Case --></label>
         <name>Approver__c</name>
         <relationshipLabel><!-- Cases --></relationshipLabel>
-    </fields>
-    <fields>
-        <label><!-- Aprobado --></label>
-        <name>Aprobado__c</name>
     </fields>
     <fields>
         <label><!-- Area --></label>
@@ -102,6 +118,10 @@
     <fields>
         <label><!-- Cantidad Ajuste --></label>
         <name>CantidadAjuste__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cantidad tiempo caso --></label>
+        <name>Cantidad_tiempo_caso__c</name>
     </fields>
     <fields>
         <label><!-- CaseNumberStatus --></label>
@@ -197,6 +217,10 @@
         <name>CreatedByMe__c</name>
     </fields>
     <fields>
+        <label>Equipo del Creador</label>
+        <name>Creator_Team__c</name>
+    </fields>
+    <fields>
         <label><!-- Saldo Actual --></label>
         <name>Current_Balance__c</name>
     </fields>
@@ -264,6 +288,10 @@
             <masterLabel>Sin Impacto</masterLabel>
             <translation><!-- Sin Impacto --></translation>
         </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Tipo Dispositivo Afectado --></label>
+        <name>IncidentDevice__c</name>
     </fields>
     <fields>
         <label>Incidente</label>
@@ -1135,6 +1163,14 @@
         <name>LineNumber__c</name>
     </fields>
     <fields>
+        <label><!-- LoteNumber --></label>
+        <name>LoteNumber__c</name>
+    </fields>
+    <fields>
+        <label><!-- MSISDN --></label>
+        <name>MSISDN__c</name>
+    </fields>
+    <fields>
         <label><!-- MarcaExcepcion --></label>
         <name>MarcaExcepcion__c</name>
     </fields>
@@ -1200,7 +1236,7 @@
         <name>OwnedByMe__c</name>
     </fields>
     <fields>
-        <label><!-- Owner Team --></label>
+        <label>Team</label>
         <name>Owner_Team__c</name>
         <relationshipLabel><!-- Cases --></relationshipLabel>
     </fields>
@@ -1213,6 +1249,10 @@
         <help><!-- medio con el cual se realizó el pago --></help>
         <label><!-- Medio Pago --></label>
         <name>Payment_type__c</name>
+    </fields>
+    <fields>
+        <label><!-- PinNumber --></label>
+        <name>PinNumber__c</name>
     </fields>
     <fields>
         <label><!-- Port Doc No --></label>
@@ -1592,6 +1632,18 @@
     <fields>
         <label><!-- Service Owner --></label>
         <name>ServiceOwner__c</name>
+    </fields>
+    <fields>
+        <label><!-- Servicio Tecnico Imei --></label>
+        <name>Servicio_Tecnico_Imei__c</name>
+    </fields>
+    <fields>
+        <label><!-- Servicio Tecnico Marca --></label>
+        <name>Servicio_Tecnico_Marca__c</name>
+    </fields>
+    <fields>
+        <label><!-- Servicio Tecnico Modelo --></label>
+        <name>Servicio_Tecnico_Modelo__c</name>
     </fields>
     <fields>
         <label><!-- Severity --></label>
@@ -2630,6 +2682,11 @@
         </picklistValues>
     </fields>
     <fields>
+        <label>Síntoma de STT</label>
+        <name>TS_Symptom__c</name>
+        <relationshipLabel><!-- Cases --></relationshipLabel>
+    </fields>
+    <fields>
         <label><!-- Tipo Ajuste --></label>
         <name>TipoAjuste__c</name>
     </fields>
@@ -2767,10 +2824,6 @@
         <picklistValues>
             <masterLabel>Stop Personal</masterLabel>
             <translation><!-- Stop Personal --></translation>
-        </picklistValues>
-        <picklistValues>
-            <masterLabel>Suscrip/trivias/contenidos</masterLabel>
-            <translation><!-- Suscrip/trivias/contenidos --></translation>
         </picklistValues>
         <picklistValues>
             <masterLabel>Suscripciones / Contenidos / Trivias</masterLabel>

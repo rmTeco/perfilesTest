@@ -21,7 +21,8 @@ public class Application {
         new Map<SOBjectType, Type> {
             Asset.SOBjectType => AssetsSelector.Class,
             Order.SOBjectType => OrdersSelector.Class,
-            OrderItem.SOBjectType => OrderItemsSelector.Class
+            OrderItem.SOBjectType => OrderItemsSelector.Class,
+            Case.SObjectType => CasesSelector.Class
         }
     );
 

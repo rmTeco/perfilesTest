@@ -44,7 +44,6 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <deprecated>false</deprecated>
-    <description>Defines a flexible table (or &quot;matrix&quot;) that enables fast lookup based on one or more input dimensions and returns one or more corresponding output values. The input and output dimensions are entirely flexible and configured in the definition of the matrix without having to change the underlying object model. Vlocity Calculation Matrices can be changed by authorized administrators who do not have the &quot;Customize Application&quot; permission and without writing Apex code.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
@@ -79,12 +78,8 @@
     <label>Vlocity Calculation Matrix</label>
     <listViews>
         <fullName>vlocity_cmt__All</fullName>
-        <columns>NAME</columns>
-        <columns>CREATEDBY_USER</columns>
-        <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
-        <language>es</language>
     </listViews>
     <nameField>
         <label>Calculation Matrix Name</label>

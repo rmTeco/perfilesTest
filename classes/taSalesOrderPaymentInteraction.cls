@@ -27,25 +27,25 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
 
         String idOrder = (String)options.get('IdOrder');
         System.debug(idOrder);
-        Order order = [SELECT  OrderNumber, 
+        Order order = [SELECT  OrderNumber,
                 AccountId,
                 vlocity_cmt__OrderTotal__c
-            FROM Order 
-            WHERE Id = :idOrder]; 
+            FROM Order
+            WHERE Id = :idOrder];
 
         List<vlocity_cmt__PaymentAdjustment__c> paymentAdjustmentsValidate = [
-            SELECT 
+            SELECT
                 Id,
                 vlocity_cmt__PaymentMethodId__r.vlocity_cmt__MethodType__c,
                 vlocity_cmt__Amount__c
-                
+
             FROM vlocity_cmt__PaymentAdjustment__c
             WHERE Order__r.Id = :idOrder];
 
         System.debug('PRINT ORDER TOTAL: '+order.vlocity_cmt__OrderTotal__c);
         System.debug('PRINT paymentAdjustmentsValidate.size: '+paymentAdjustmentsValidate.size());
 
-        if(order.vlocity_cmt__OrderTotal__c == 0 && paymentAdjustmentsValidate.size() == 0){            
+        if(order.vlocity_cmt__OrderTotal__c == 0 && paymentAdjustmentsValidate.size() == 0){
 
             vlocity_cmt__PaymentMethod__c newPaymentMethod = new vlocity_cmt__PaymentMethod__c();
             newPaymentMethod.Vlocity_cmt__AccountId__c = order.AccountId;
@@ -58,7 +58,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
             paymentAdjC.Order__c = idOrder;
             paymentAdjC.vlocity_cmt__Amount__c = order.vlocity_cmt__OrderTotal__c;
             paymentAdjC.vlocity_cmt__PaymentMethodId__r = newPaymentMethod;
-            insert paymentAdjC;   
+            insert paymentAdjC;
         }
 
     }
@@ -78,11 +78,12 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
         System.debug('response S029: ' + JSON.serialize(output));
 
         outMap.put('IP_Response', output);
+        System.debug('IP_Response ====> ' + output);
         Map<String, Object> ip_result = (Map<String, Object>)output.get('IPResult');
         String numeroComprobante = String.valueOf(ip_result.get('numeroComprobante'));
         Order order = new Order(Id = orderId);
         order.BillingMode__c = GetOrderInvoicingMethod(orderId);
-        
+
         if (numeroComprobante != null) {
             order.PreInvoiceNumber__c = numeroComprobante;
             order.vlocity_cmt__TrackingNumber__c = numeroComprobante; // se graba aca tambien para OM ya que lo van a buscar ahi.
@@ -105,9 +106,9 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
 
     private Map<String, Object> Generate_RequestS029(String idOrder) {
         System.debug('Generate_RequestS029');
-        Order order = [SELECT  OrderNumber, 
+        Order order = [SELECT  OrderNumber,
                 AccountId,
-                Account.AccountIntegrationId__c, 
+                Account.AccountIntegrationId__c,
                 CreatedDate,
                 BillSimulationPayload__c,
                 vlocity_cmt__OrderTotal__c,
@@ -120,8 +121,8 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                 OriginStoreLocation__r.Channel_Type_3__c,
                 OriginStoreLocation__r.PaymentChannel__c,
                 Gestion__c
-            FROM Order 
-            WHERE Id = :idOrder]; 
+            FROM Order
+            WHERE Id = :idOrder];
 
         if(order.BillSimulationPayload__c == null){
             throw new FuncException('No hay simulacion.');
@@ -136,7 +137,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
         Map<String, Object> request = new Map<String, Object>();
 
         request.put('codOrden', order.OrderNumber);
-        
+
         Map<String, Object> codAcceso = new Map<String, Object>();
         Map<String, Object> codAccesoCuenta = new Map<String, Object>();
         Map<String, Object> codAccCuenta = new Map<String, Object>();
@@ -195,52 +196,55 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
 
             // System.debug('indice: ' + indice);
             System.debug('4');
-            if(Integer.valueOf(orderItem.Huawei_Invoice_Item_Sequence__c) - 1 < arrImpuestos.size() && 
+            
+            Map<String, Object> detalleCargoInfo = new Map<String, Object>();
+            // Map<String, Object> detalleCargoInfo = new Map<String, Object>();
+            // System.debug('5');
+            // Decimal price = orderItem.vlocity_cmt__EffectiveOneTimeTotal__c + orderItem.vlocity_cmt__EffectiveRecurringTotal__c;
+            Decimal price = taSalesSimulationInvoiceHandler.GetBasePrice(orderItem);
+
+            totalBasePrice = totalBasePrice + price;
+
+            detalleCargoInfo.put('secuenciaProductoAdquirido', orderItem.Huawei_Invoice_Item_Sequence__c);
+            detalleCargoInfo.put('codCargo', codCargo);
+            //detalleCargoInfo.put('codProducto', orderItem.vlocity_cmt__Product2Id__r.FAN_IntegrationKey__c);
+            //detalleCargoInfo.put('descripcionProducto', orderItem.vlocity_cmt__Product2Id__r.Name);
+            detalleCargoInfo.put('cantUnidadesProdAdquiridas', '1');
+            detalleCargoInfo.put('precioBase', IntegrationUtils.ParseAmount(price));
+            detalleCargoInfo.put('precioProducto', IntegrationUtils.ParseAmount(price));
+
+            // va para el wave 3 el EPC deberia modelar las ofertas y descuentos en el producto
+            // "listaDescuentos": [
+            //     {
+            //     "codDescuentoPrecioProducto": "string",
+            //     "cantidadDescuento": "string",
+            //     "montoDescuentoPrecioProducto": "string",
+            //     "descripcionDescuentoPrecioProducto": "string",
+            //     "listaImpuestos": [
+            //         {
+            //         "codImpuesto": "string",
+            //         "importeImpuestoAplicado": "string",
+            //         "alicuotaImpuesto": "string",
+            //         "tipoCategoriaImpositiva": "string"
+            //         }
+            //     ]
+            //     }
+            // ],
+
+            System.debug('COD CARGO: ' + codCargo);
+            System.debug('ORIGEN PRODUCTO: ' + origenProducto);
+
+
+
+            //detalleCargoInfo.put('origenProducto', origenProducto);
+            //// TO DO categorycode__c es una letra, se debera convertir a NAC, IMP, TDF REVISAR!
+            detalleCargoInfo.put('origenProducto', 'NAC');
+            detalleCargoInfo.put('bienUso', false);
+                
+            if(arrImpuestos != null && 
+                Integer.valueOf(orderItem.Huawei_Invoice_Item_Sequence__c) - 1 < arrImpuestos.size() &&
                 arrImpuestos[Integer.valueOf(orderItem.Huawei_Invoice_Item_Sequence__c) - 1] != null){
-                Map<String, Object> detalleCargoInfo = new Map<String, Object>();
-                // Map<String, Object> detalleCargoInfo = new Map<String, Object>();
-                // System.debug('5');
-                // Decimal price = orderItem.vlocity_cmt__EffectiveOneTimeTotal__c + orderItem.vlocity_cmt__EffectiveRecurringTotal__c;
-                Decimal price = taSalesSimulationInvoiceHandler.GetBasePrice(orderItem);
                 
-                totalBasePrice = totalBasePrice + price;
-
-                detalleCargoInfo.put('secuenciaProductoAdquirido', orderItem.Huawei_Invoice_Item_Sequence__c);
-                detalleCargoInfo.put('codCargo', codCargo);
-                //detalleCargoInfo.put('codProducto', orderItem.vlocity_cmt__Product2Id__r.FAN_IntegrationKey__c);
-                //detalleCargoInfo.put('descripcionProducto', orderItem.vlocity_cmt__Product2Id__r.Name);
-                detalleCargoInfo.put('cantUnidadesProdAdquiridas', '1');
-                detalleCargoInfo.put('precioBase', IntegrationUtils.ParseAmount(price));
-                detalleCargoInfo.put('precioProducto', IntegrationUtils.ParseAmount(price));
-
-                // va para el wave 3 el EPC deberia modelar las ofertas y descuentos en el producto
-                // "listaDescuentos": [ 
-                //     {
-                //     "codDescuentoPrecioProducto": "string",
-                //     "cantidadDescuento": "string",
-                //     "montoDescuentoPrecioProducto": "string",
-                //     "descripcionDescuentoPrecioProducto": "string",
-                //     "listaImpuestos": [
-                //         {
-                //         "codImpuesto": "string",
-                //         "importeImpuestoAplicado": "string",
-                //         "alicuotaImpuesto": "string",
-                //         "tipoCategoriaImpositiva": "string"
-                //         }
-                //     ]
-                //     }
-                // ], 
-
-                System.debug('COD CARGO: ' + codCargo);
-                System.debug('ORIGEN PRODUCTO: ' + origenProducto);
-                
-                
-                
-                //detalleCargoInfo.put('origenProducto', origenProducto);
-                //// TO DO categorycode__c es una letra, se debera convertir a NAC, IMP, TDF REVISAR!
-                detalleCargoInfo.put('origenProducto', 'NAC');
-                detalleCargoInfo.put('bienUso', false);
-
                 List<Map<String, Object>> listaImpuestos = new List<Map<String, Object>>();
 
                 Map<String, Object> auxImpuesto = (Map<String, Object>)arrImpuestos[Integer.valueOf(orderItem.Huawei_Invoice_Item_Sequence__c) - 1];
@@ -250,7 +254,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                 for(Integer k = 0 ; k < listaInfoImpuestos.size(); k++){
                     Map<String, Object> infoImpuesto2 = (Map<String, Object>)listaInfoImpuestos[k];
                     Map<String, Object> infoImpuesto = (Map<String, Object>)infoImpuesto2.get('infoImpuesto');
-                    
+
                     Map<String, Object> impuesto = new Map<String, Object>();
                     impuesto.put('codImpuesto', infoImpuesto.get('codImpuesto'));
                     impuesto.put('importeImpuestoAplicado', infoImpuesto.get('importeImpuestoAplicado'));
@@ -259,12 +263,12 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
 
                     listaImpuestos.add(impuesto);
                 }
-                detalleCargoInfo.put('listaImpuestos', listaImpuestos); 
+                detalleCargoInfo.put('listaImpuestos', listaImpuestos);
                 System.debug('6');
 
                 // aca hago todo lo de descuentos
                 List<Object> listaDescuentosImpuestos = (List<Object>)impuestoxItemInfo.get('listaDescuentosImpuestos');
-                if(hashDescuentos != null && hashDescuentos.size() > 0 && 
+                if(hashDescuentos != null && hashDescuentos.size() > 0 &&
                 listaDescuentosImpuestos != null && listaDescuentosImpuestos.size() > 0){
                     // obtengo los descuentos de las respuesta del S013
 
@@ -276,31 +280,39 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                             Map<String, Object> infoDescuentos = new Map<String, Object>();
 
                             //Decimal discount = getDiscount(descuento.vlocity_cmt__OrderItemId__r.vlocity_cmt__PricingLogData__c, descuento.vlocity_cmt__PriceListEntryId__c);
-                            Decimal baseDiscount = taSalesSimulationInvoiceHandler.GetBaseDiscount(orderItem.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c, descuento.vlocity_cmt__OrderItemId__r.vlocity_cmt__PricingLogData__c, descuento.vlocity_cmt__PriceListEntryId__c);
+                            Decimal baseDiscount = taSalesSimulationInvoiceHandler.GetBaseDiscount(orderItem.vlocity_cmt__Product2Id__r.Alicuota__c, orderItem.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c, descuento.vlocity_cmt__OrderItemId__r.vlocity_cmt__PricingLogData__c, descuento.vlocity_cmt__PriceListEntryId__c);
                             // System.debug('baseDiscount: ' + baseDiscount);
-                            
+
                             totalBasePrice = totalBasePrice - baseDiscount;
 
-                            infoDescuentos.put('codDescuentoPrecioProducto', descuento.vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__Code__c);
+                            //infoDescuentos.put('codDescuentoPrecioProducto', descuento.vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__Code__c);
+                            infoDescuentos.put('codDescuentoPrecioProducto', descuento.vlocity_cmt__Sequence__c);
                             infoDescuentos.put('cantidadDescuento', 1);
                             infoDescuentos.put('montoDescuentoPrecioProducto', IntegrationUtils.ParseAmount(baseDiscount));
                             infoDescuentos.put('descripcionDescuentoPrecioProducto', descuento.vlocity_cmt__PriceListEntryId__r.vlocity_cmt__PricingElementId__r.vlocity_cmt__DisplayText__c);
 
                             List<Map<String, Object>> auxListaImpuestos = new List<Map<String, Object>>();
-                            for(Object descuentoImpuesto : listaDescuentosImpuestos){
-                                Map<String, Object> auxDescuentoImpuesto = (Map<String, Object>)descuentoImpuesto;
-                                Map<String, Object> aux = new Map<String, Object>();
-                                aux.put('codImpuesto', auxDescuentoImpuesto.get('codImpuesto'));
-                                aux.put('importeImpuestoAplicado', auxDescuentoImpuesto.get('importeImpuestoAplicado'));
-                                aux.put('alicuotaImpuesto', auxDescuentoImpuesto.get('alicuotaImpuesto'));
-                                aux.put('tipoCategoriaImpositiva', auxDescuentoImpuesto.get('tipoCategoriaImpositiva'));
+                            for(Object auxDescuentoImpuesto : listaDescuentosImpuestos){
+                                Map<String, Object> infoDescuento = (Map<String, Object>)((Map<String, Object>)auxDescuentoImpuesto).get('infoDescuento');
+                                List<Object> listaInfoImpuestos2 = (List<Object>)infoDescuento.get('listaInfoImpuestos');
+                                for(Object auxInfoImpuesto : listaInfoImpuestos2){
+                                    Map<String, Object> auxDescuentoImpuesto2 = (Map<String, Object>)auxInfoImpuesto;
+                                    Map<String, Object> infoImpuesto = (Map<String, Object>)auxDescuentoImpuesto2.get('infoImpuesto');
 
-                                auxListaImpuestos.add(aux);
+                                    Map<String, Object> aux = new Map<String, Object>();
+                                    aux.put('codImpuesto', infoImpuesto.get('codImpuesto'));
+                                    aux.put('importeImpuestoAplicado', infoImpuesto.get('importeImpuestoAplicado'));
+                                    aux.put('alicuotaImpuesto', infoImpuesto.get('alicuotaImpuesto'));
+                                    aux.put('tipoCategoriaImpositiva', infoImpuesto.get('tipoCategoriaImpositiva'));
+
+                                    auxListaImpuestos.add(aux);
+                                }
+                                
                             }
                             infoDescuentos.put('listaImpuestos', auxListaImpuestos);
-                            
+
                             listaDescuentos.add(infoDescuentos);
-                            
+
                         }
 
                         detalleCargoInfo.put('listaDescuentos', listaDescuentos);
@@ -311,37 +323,37 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
 
                 // Completar con los datos del S095
                 // IMEI, Linea, Serie, N Despacho, Aduana, Origen, Orden
-                // KI, MSSDN del plan, ICCID,Codigo Orden Despacho, Aduana Ingreso, Pais Origen, Codigo Orden Despacho 
+                // KI, MSSDN del plan, ICCID,Codigo Orden Despacho, Aduana Ingreso, Pais Origen, Codigo Orden Despacho
                 // AssetAttributesUtils.GetJSONAttribute('');
 
                 // List<Map<String,Object>> listaDatosAdicionales = new List<Map<String,Object>>();
-                
+
                 // Map<String,Object> mapa1 = new Map<String,Object>();
                 // mapa1.put('nombreParametro', 'IMEI');
                 // mapa1.put('valorParametro', '213123321');
-                
+
                 // Map<String,Object> mapa2 = new Map<String,Object>();
                 // mapa2.put('nombreParametro', 'LINE1');
                 // mapa2.put('valorParametro', 'Linea:5654664564 Serie:8577687686 N. Desp IV53');
-                
+
                 // Map<String,Object> mapa3 = new Map<String,Object>();
                 // mapa3.put('nombreParametro', 'LINE2');
                 // mapa3.put('valorParametro', 'Aduana: Ezeiza Origen: BR Orden: 2254323');
-                
+
                 // listaDatosAdicionales.add(mapa1);
                 // listaDatosAdicionales.add(mapa2);
                 // listaDatosAdicionales.add(mapa3);
-                
-                
+
+
                 // detalleCargoInfo.put('listaDatosAdicionales', listaDatosAdicionales);
                 //////////////////////////////////
-                
+
                 Map<String, Object> datosProductoCRM = new Map<String, Object>();
                 datosProductoCRM.put('descripcionProducto', orderItem.vlocity_cmt__Product2Id__r.Name);
                 if(orderItem.vlocity_cmt__Product2Id__r.Tangible__c == true){
                     if(orderItem.vlocity_cmt__Product2Id__r.vlocity_cmt__Type__c == 'Simcard'){
                         Map<String, Object> nmu = AssetAttributesUtils.getJSONAttribute(orderItem.vlocity_cmt__Product2Id__r.vlocity_cmt__JSONAttribute__c,'NMU Simcard');
-                        datosProductoCRM.put('codProducto', nmu.get('attributeuniquecode__c'));    
+                        datosProductoCRM.put('codProducto', nmu.get('attributeuniquecode__c'));
                     }
                     else{
                         datosProductoCRM.put('codProducto', orderItem.vlocity_cmt__Product2Id__r.StockKeepingUnit);
@@ -372,7 +384,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
             String origenProducto = '';
             System.debug(Integer.valueOf(payment.Huawei_Invoice_Item_Sequence__c));
             System.debug(arrImpuestos.size());
-            if(Integer.valueOf(payment.Huawei_Invoice_Item_Sequence__c) - 1 < arrImpuestos.size() && 
+            if(Integer.valueOf(payment.Huawei_Invoice_Item_Sequence__c) - 1 < arrImpuestos.size() &&
                 arrImpuestos[Integer.valueOf(payment.Huawei_Invoice_Item_Sequence__c) - 1] != null){
                 Map<String, Object> detalleCargoInfo = new Map<String, Object>();
                 System.debug('necesitamos pasar a HW el porcentaje del CFT');
@@ -404,7 +416,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                 detalleCargoInfo.put('cantUnidadesProdAdquiridas', '1');
                 detalleCargoInfo.put('precioBase', IntegrationUtils.ParseAmount(price));
                 detalleCargoInfo.put('precioProducto', IntegrationUtils.ParseAmount(price));
-                
+
                 // detalleCargoInfo.put('origenProducto', 'NAC');
                 detalleCargoInfo.put('bienUso', false);
 
@@ -412,13 +424,13 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
 
                 Map<String, Object> auxImpuesto = (Map<String, Object>)arrImpuestos[Integer.valueOf(payment.Huawei_Invoice_Item_Sequence__c) - 1];
                 Map<String, Object> impuestoxItemInfo = (Map<String, Object>)auxImpuesto.get('impuestoxItemInfo');
-                
+
                 List<Object> listaInfoImpuestos = (List<Object>)impuestoxItemInfo.get('listaInfoImpuestos');
                 System.debug('listaInfoImpuestos: ' + JSON.serialize(listaInfoImpuestos));
                 for(Integer k = 0 ; k < listaInfoImpuestos.size(); k++){
                     Map<String, Object> infoImpuesto2 = (Map<String, Object>)listaInfoImpuestos[k];
                     Map<String, Object> infoImpuesto = (Map<String, Object>)infoImpuesto2.get('infoImpuesto');
-                    
+
                     Map<String, Object> impuesto = new Map<String, Object>();
                     impuesto.put('codImpuesto', infoImpuesto.get('codImpuesto'));
                     impuesto.put('importeImpuestoAplicado', infoImpuesto.get('importeImpuestoAplicado'));
@@ -428,10 +440,10 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                     listaImpuestos.add(impuesto);
                 }
 
-                detalleCargoInfo.put('listaImpuestos', listaImpuestos); 
+                detalleCargoInfo.put('listaImpuestos', listaImpuestos);
                 System.debug('6');
                 //////////////////////////////////
-                
+
                 Map<String, Object> datosProductoCRM = new Map<String, Object>();
                 datosProductoCRM.put('descripcionProducto', codCargoDescripcion);
                 datosProductoCRM.put('codProducto', codCargo);
@@ -450,20 +462,11 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
         infoCargos.put('listaDetalleCargoInfo', listaDetalleCargoInfo);
         infoCargos.put('codMoneda', 'ARS');
         request.put('infoCargos', infoCargos);
-
-        // Username
-        User user = [
-            SELECT Username
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
-        if(user != null){
-            request.put('codVendedor', user.Username.touppercase());    
-        }
+        request.put('codVendedor', UserInfo.getUserId());
 
         // METODOS DE PAGOS
         List<vlocity_cmt__PaymentAdjustment__c> paymentAdjustments = [
-            SELECT 
+            SELECT
                 Id,
                 vlocity_cmt__PaymentMethodId__r.BankEntityName__c,
                 vlocity_cmt__PaymentMethodId__r.vlocity_cmt__MethodType__c,
@@ -472,13 +475,13 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                 vlocity_cmt__PaymentMethodId__r.vlocity_cmt__ExpirationYear__c,
                 vlocity_cmt__PaymentMethodId__r.Security__c,
                 vlocity_cmt__TotalInstallments__c,
-                vlocity_cmt__Amount__c, 
+                vlocity_cmt__Amount__c,
                 Financial_Promotion__r.id,
                 Financial_Promotion__r.Name,
                 Financial_Promotion__r.CreditCards__c,
                 Financial_Promotion__r.NombrePromocion__c,
                 Financial_Promotion__r.InstalmentPlan__c
-                
+
             FROM vlocity_cmt__PaymentAdjustment__c
             WHERE Order__r.Id = :idOrder];
 
@@ -487,7 +490,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
             // System.debug('paymentAdjustment: ' + paymentAdjustment);
             Map<String, Object> infoPago = new Map<String, Object>();
             infoPago.put('codMedioPago', paymentAdjustment.vlocity_cmt__PaymentMethodId__r.vlocity_cmt__MethodType__c);
-            
+
             Map<String, Object> wondersoftInfo = new Map<String, Object>();
 
             if(paymentAdjustment.Financial_Promotion__r.Name != null){
@@ -515,7 +518,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                 // infoBanco.put('nroTarjetaEncriptado', paymentAdjustment.vlocity_cmt__PaymentMethodId__r.vlocity_cmt__CardNumber__c);
                 // if(paymentAdjustment.vlocity_cmt__PaymentMethodId__r.vlocity_cmt__ExpirationYear__c != null && paymentAdjustment.vlocity_cmt__PaymentMethodId__r.vlocity_cmt__ExpirationMonth__c != null){
                 //     infoBanco.put('fechaVencimientoTarjeta', paymentAdjustment.vlocity_cmt__PaymentMethodId__r.vlocity_cmt__ExpirationYear__c + paymentAdjustment.vlocity_cmt__PaymentMethodId__r.vlocity_cmt__ExpirationMonth__c);
-                // }                
+                // }
                 // infoBanco.put('codSeguridadTarjeta', paymentAdjustment.vlocity_cmt__PaymentMethodId__r.Security__c);
 
                 String cantidadCuotasTarjeta = null;
@@ -523,7 +526,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                     cantidadCuotasTarjeta = String.valueOf(paymentAdjustment.vlocity_cmt__TotalInstallments__c).leftPad(2, '0');
                 }
                 infoBanco.put('cantidadCuotasTarjeta', cantidadCuotasTarjeta);
-                
+
                 String codEntidadTC = null;
                 if(paymentAdjustment.Financial_Promotion__r.CreditCards__c != null){
                     codEntidadTC = paymentAdjustment.Financial_Promotion__r.CreditCards__c;
@@ -533,31 +536,31 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                 listaInfoBancos.add(infoBanco);
                 infoPago.put('listaInfoBancos', listaInfoBancos);
             // }
-            
+
             infoPago.put('codMoneda', 'ARS');
-            
+
             // System.debug('8.1.3');
             string tipoPago = 'SalesInvoice';
             if(order.Gestion__c == 'Recarga')
                 tipoPago = 'RechargeInvoice';
             infoPago.put('tipoPago', tipoPago);
-            
+
             infoPago.put('codCanal', order.OriginStoreLocation__r.PaymentChannel__c);
-            
+
             // System.debug('8.1.4');
             infoPago.put('importePago', IntegrationUtils.ParseAmount(paymentAdjustment.vlocity_cmt__Amount__c));
-            
+
             String planCuota = null;
             if(paymentAdjustment.Financial_Promotion__r.InstalmentPlan__c != null) {
                 planCuota = String.valueOf(paymentAdjustment.Financial_Promotion__r.InstalmentPlan__c);
             }
             infoPago.put('planCuota', planCuota);
-            
+
             listaInfoPagos.add(infoPago);
         }
         System.debug('8.3. listaInfoPagos:' + listaInfoPagos);
         request.put('listaInfoPagos', listaInfoPagos);
-        
+
         // "listaInfoPagos": [{
         //     "codMedioPago": "string",
         //     "listaInfoBancos": [
@@ -584,7 +587,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
         // }],
 
         // update order;
-        
+
         //PFTA-8166 y PFTA-8124
         Boolean haveTangible = taOrderController.ValidateTangibleExistence(idOrder);
         String impDiferida = 'N';
@@ -598,7 +601,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
 
         if(order.PickUpStoreLocation__r != null){
             System.debug(JSON.serialize(order.PickUpStoreLocation__r));
-            if( order.PickUpStoreLocation__r.Location__r != null && 
+            if( order.PickUpStoreLocation__r.Location__r != null &&
                 order.PickUpStoreLocation__r.Location__r.Name != null){
                 request.put('codLocalidad', String.valueOf(order.PickUpStoreLocation__r.Location__r.Name).touppercase());
             }
@@ -613,7 +616,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
 
         } else {
             if(order.OriginStoreLocation__r != null){
-                if( order.OriginStoreLocation__r.Location__r != null && 
+                if( order.OriginStoreLocation__r.Location__r != null &&
                     order.OriginStoreLocation__r.Location__r.Name != null){
                     request.put('codLocalidad', String.valueOf(order.OriginStoreLocation__r.Location__r.Name).touppercase());
                 }
@@ -659,7 +662,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                 OriginStoreLocation__r.PaymentChannel__c,
                 PickUpStoreLocation__r.BillingMode__c,
                 PickUpStoreLocation__r.Name
-            FROM Order 
+            FROM Order
             WHERE Id =: orderId LIMIT 1];
 
         String delivery = order.Delivery_Method__c;
@@ -668,7 +671,7 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
         // String pickupBillingMode = order.PickUpStoreLocation__r.Channel_Type_3__c;
 
         System.debug('delivery ' + delivery);
-        System.debug('canality ' + canality);        
+        System.debug('canality ' + canality);
         String billingMode = 'Fiscal';
 
         if(delivery == 'Delivery'){
@@ -690,14 +693,14 @@ global with sharing class taSalesOrderPaymentInteraction implements vlocity_cmt.
                 vlocity_cmt__BusinessSite__c storeLocation = ta_sales_UserUtils.getStoreLocation(userinfo.getUserId());
                 Id storeLocationId = storeLocation.Id;
                 billingMode = storeLocation.BillingMode__c;
-                
+
                 if(billingMode == null){
                     throw new FuncException('El Store Location (del usuario logeado) \'' + storeLocation.Name + '\' no tiene configurado BillingMode__c.');
                 }
             }
-            
+
         }
         System.debug('billing mode:' + billingMode);
         return billingMode;
-   }   
+   }
 }

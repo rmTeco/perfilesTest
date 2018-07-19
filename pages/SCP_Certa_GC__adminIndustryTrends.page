@@ -51,8 +51,8 @@
 			        </apex:selectList>       
 			        &nbsp;&nbsp;
 					-->
-			        Segmento vertical:
-			        <apex:inputField value="{!tempAccount.SCP_Certa_GC__Segmento_Vertical__c}"/>
+			        {!$Label.scp_certa_gc__segmento_vertical}:
+			        <apex:inputField value="{!tempAccount.SCP_Certa_GC__segmento_vertical__c}"/>
 			        &nbsp;&nbsp;        
 			        <!--
                     {!$ObjectType.Account.fields.Micro_Industry__c.Label}:
@@ -87,10 +87,10 @@
 							</tr>
 						</thead>
 						<tbody>
-							<apex:repeat value="{!trends}" var="item" rendered="{!IF(ISNULL(tempAccount.SCP_Certa_GC__Segmento_Vertical__c), false, true)}">
+							<apex:repeat value="{!trends}" var="item" rendered="{!IF(ISNULL(tempAccount.SCP_Certa_GC__segmento_vertical__c), false, true)}">
 								<tr>
 									<td>
-										<apex:commandButton styleClass="btn btn-default btn-sm" reRender="Content,errorMsg" action="{!del}" value="{!$Label.scp_certa_gc__delete}"  rendered="{!canEdit}">
+										<apex:commandButton styleClass="btn btn-default btn-sm" reRender="Content,errorMsg" action="{!del}" value="{!$Label.scp_certa_gc__delete}"  >
 					                        <apex:param assignTo="{!IdtoDel}" name="IdtoDelete" value="{!item.id}" />
 					                    </apex:commandButton>
 									</td>
@@ -127,11 +127,11 @@
 					        		<h4 class="modal-title" id="myModalLabel">{!$Label.Add_Share}</h4>
 					      		</div>
 					      		<div class="modal-body">
-                                    <apex:outputText rendered="{!tempAccount.SCP_Certa_GC__Segmento_Vertical__c==null}">
+                                    <apex:outputText rendered="{!tempAccount.SCP_Certa_GC__segmento_vertical__c==null}">
                                         <div class="alert alert-warning" role="alert">
                                             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                                             <span class="sr-only">Atención:</span>
-                                            Debe seleccionar primero un segmento vertical antes de poder cargar un contexto sectorial.
+                                            {!$Label.Debe_seleccionar_primero_un_segmento_vertical_antes_de_poder_cargar_un_contexto}
                                         </div>
                                     </apex:outputText>
 					      			<table style="border-collapse: separate;border-spacing: 5px;">
@@ -140,7 +140,7 @@
 					      						<apex:outputText value="{!$Label.scp_certa_gc__title}" />:
 					      					</td>
 					      					<td>
-					      						<apex:inputField style="width: 335px;" value="{!newTrend.SCP_Certa_GC__Title__c}" required="false"  rendered="{!canEdit}"/>
+					      						<apex:inputField style="width: 335px;" value="{!newTrend.SCP_Certa_GC__Title__c}" required="false"  />
 					      					</td>
 					      				</tr>
                                         <tr>
@@ -148,7 +148,7 @@
                                                 <apex:outputText value="{!$Label.scp_certa_gc__type}" />:
                                             </td>
                                             <td>
-                                                <apex:inputField style="width: 335px;" value="{!newTrend.SCP_Certa_GC__Type__c}" required="false"  rendered="{!canEdit}"/>
+                                                <apex:inputField style="width: 335px;" value="{!newTrend.SCP_Certa_GC__Type__c}" required="false"  />
                                             </td>
                                         </tr>
 					      				<tr>
@@ -156,14 +156,14 @@
 					      						<apex:outputText value="{!$Label.scp_certa_gc__description}" />:
 					      					</td>
 					      					<td>
-					      						<apex:inputField style="width: 335px;" value="{!newTrend.SCP_Certa_GC__Trend__c}" required="false"  rendered="{!canEdit}"/>
+					      						<apex:inputField style="width: 335px;" value="{!newTrend.SCP_Certa_GC__Trend__c}" required="false"  />
 					      					</td>
 					      				</tr>
 					      			</table>		        
 					      		</div>
 					      		<div class="modal-footer">
 					        		<button type="button" class="btn btn-default" data-dismiss="modal">{!$Label.close}</button>
-                                    <apex:outputPanel rendered="{!tempAccount.SCP_Certa_GC__Segmento_Vertical__c!=null}">
+                                    <apex:outputPanel rendered="{!tempAccount.SCP_Certa_GC__segmento_vertical__c!=null}">
                                         <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="InsertNewTrend()">{!$Label.add_buttom}</button>
                                     </apex:outputPanel>
 					      		</div>

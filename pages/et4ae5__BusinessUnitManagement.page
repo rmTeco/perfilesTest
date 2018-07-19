@@ -1,7 +1,6 @@
 <apex:page standardStylesheets="false">
 
-    <apex:includeLightning />     
-    <apex:stylesheet value="{!URLFOR($Resource.et4ae5__componentStyles)}" /> 
+    <apex:includeLightning />      
         
     <div id="lightning" />
 

@@ -18,12 +18,12 @@ public class SMSbyPINValidationTest {
         Update testContact[0];
         
         String body = '{"MobilePhone": "'+testContact[0].MobilePhone+'"}';
-		Map<String, Object> responseNode = (Map<String, Object>) JSON.deserializeUntyped(body);
+    Map<String, Object> responseNode = (Map<String, Object>) JSON.deserializeUntyped(body);
         input.put('Contact',responseNode);
         
         Test.startTest();
         smsByPinValid.invokeMethod(methodName, input, outMap, options);
-		Test.stopTest();
+    Test.stopTest();
         
         system.assertEquals( true, outMap.get('SMSbyPINValidation'));
                

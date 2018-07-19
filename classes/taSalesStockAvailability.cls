@@ -49,12 +49,13 @@ global with sharing class taSalesStockAvailability implements vlocity_cmt.Vlocit
     {
         System.debug('ParseIF221');       
         Map<String,Object> mapField;
+        Map<String,Object> mapField2;
         String codDeposito;
         String stockProducto;
         String stockAux;
-        Integer cantidadDiponible;
+        String cantidadDiponible;
         List<String> WHList;
-        Map<String,Integer> StockMap;
+        //Map<String,Integer> StockMap;
         List<Map<String,Object>> outList = new List<Map<String,Object>>();
         Map<String,Object> outMapAux = new Map<String,Object>();
         List<Object> listaNMU;
@@ -62,19 +63,21 @@ global with sharing class taSalesStockAvailability implements vlocity_cmt.Vlocit
         List<Object> listaPorCodigoStock;
         String AuxProdCode;
         String AuxStr;
-        Integer AuxInt;
+        String AuxInt;
         WHList = new List<String>();
-        StockMap = new  Map<String,Integer>();
+        Map <String,Object> StockMap = new  Map<String,Object>();
         Boolean result = false;
 
         try{
             String ProductCode = (String) options.get('ProdutCode');
             String stockProdCode = (String) options.get('stockProdCode');
-            System.debug('inputMap )' + inputMap);
+            system.debug('ProductCode = '+ProductCode);
+            //system.debug('listaDepositosConDisponibilidad ='+ options.get('listaDepositosConDisponibilidad'));
+            //System.debug('inputMap )' + inputMap);
             //ProductCode = 'PER1228AI';
             //stockProdCode = 'MTPL';
 
-            List<Object> listaDeposito = (List<Object>) inputMap.get('listaDeposito');
+            List<Object> listaDeposito = (List<Object>) options.get('listaDepositosConDisponibilidad');
 
             System.debug('listaDeposito = ' + listaDeposito);
 
@@ -86,7 +89,7 @@ global with sharing class taSalesStockAvailability implements vlocity_cmt.Vlocit
                 WHList.add(codDeposito);
                 System.debug('codDeposito = ' + codDeposito);
                 outMapAux.put('codDeposito',codDeposito);
-                listaNMU = (List<Object>) mapField.get('listaNMU');
+                listaNMU = (List<Object>) mapField.get('listaCodNMU');
                 System.debug('listaNMU = ' + listaNMU);
                 for (Object itemNMU:listaNMU){                
                     mapField = (Map<String,Object>) itemNMU;
@@ -96,11 +99,13 @@ global with sharing class taSalesStockAvailability implements vlocity_cmt.Vlocit
                     System.debug('AuxProdCode = ' + AuxProdCode);
                     if (AuxProdCode == ProductCode){
                         for (Object itemStock:listaPorCodigoStock){                
-                            mapField = (Map<String,Object>) itemStock;
-                            stockProducto = (String) mapField.get('stockProducto');   
-                            System.debug('stockProducto = ' + stockProducto);   
+                            mapField2 = (Map<String,Object>) itemStock;
+                            stockProducto = (String) mapField2.get('stockProducto');   
+                            System.debug('stockProducto = ' + stockProducto); 
+                            system.debug(stockProdCode + ' es igual a ' +stockProducto+ '?');
                             if (stockProducto == stockProdCode){
-                                cantidadDiponible = (Integer) mapField.get('cantidadDiponible');
+                                system.debug('mapField2' + mapField2);
+                                cantidadDiponible = (String) mapField2.get('cantidadDisponible');
                             }
                         }
                     }
@@ -129,7 +134,7 @@ global with sharing class taSalesStockAvailability implements vlocity_cmt.Vlocit
                 mapField.put('PostOfficeHours__c',itemBSList.PostOfficeHours__c);
                 mapField.put('PostOfficePhone__c',itemBSList.PostOfficePhone__c);
                 AuxStr = (String) itemBSList.AssociatedWarehouseId__c;
-                AuxInt = (Integer) StockMap.get(AuxStr);
+                AuxInt = (String) StockMap.get(AuxStr);
                 mapField.put('Cantidad',AuxInt);
                 outList2.add(mapField);
             }

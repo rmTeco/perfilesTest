@@ -8,8 +8,7 @@ global class IFS_S038_updateCycleMock implements HttpCalloutMock {
         HttpResponse response = new HttpResponse();
         response.setHeader('Content-Type', 'application/json');
         
-       // String jsonString='{"codError":"e001", "descError":"descripcion1"}'; respuesta
-       String jsonString='{"codError":"e001", "descError":"descripcion1","respuesta":"Answer","idCuenta":"001"}';
+        String jsonString='{"codError":"e001", "descError":"descripcion1"}';
         Map<String, Object> responseNode = (Map<String, Object>) JSON.deserializeUntyped(jsonString);
         system.debug(responseNode);
         response.setBody(jsonString);
@@ -18,5 +17,4 @@ global class IFS_S038_updateCycleMock implements HttpCalloutMock {
         response.setStatusCode(status);
         return response; 
     }
-    
 }

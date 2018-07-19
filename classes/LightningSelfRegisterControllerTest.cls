@@ -96,6 +96,11 @@ System.assertEquals(new List < Map < String, Object >> (), LightningSelfRegister
     }
     
     @IsTest
+    static void validateUsernameTest() {
+        LightningSelfRegisterController.validateUsername(null);
+    }
+    
+    @IsTest
     static void createUserTest() {
         LightningSelfRegisterController.createUser(null, null, null);
     }

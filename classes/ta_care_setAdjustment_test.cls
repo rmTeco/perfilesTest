@@ -105,24 +105,20 @@ public class ta_care_setAdjustment_test {
         
         Id recordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByName().get('Diagnosis').getRecordTypeId();
         Case caseObj = new Case(
-            Origin = 'Personalizado',
-            TipoConcepto__c = 'CREDITO POSPAGO',
-            Tipo__c = 'No aplica Pospago',
-            TipoItem__c = 'Renovacion cuota datos',
-            vlocity_cmt__Amount__c = 400,
-            AccountId = acc.Id,
-            RecordTypeId = recordTypeId,
-            OwnerId = '0056C000000gQeF', //Federico
-            Subject = 'Inconvenientes con cargos tasados y facturados',
-            vlocity_cmt__ServiceId__c = ass.Id,
-            AssetId = ass.Id,
-            TipoSeleccion__c = 'Cuenta',
-            CantidadAjuste__C = '',
-            UnidadAjuste__c = 'Credito',
-            TipoAjuste__c = 'NC/ND',
-            TipoOperacionAjuste__c = 'NC - Comprobante',
-            Status = 'En espera de ejecución',
-            Owner_Team__c = 'a4l6C000000Gu8Z'//'Back_Office_GGCC' 
+        Status = 'En espera de ejecución',
+        Origin = 'Personalizado',
+        TipoConcepto__c = 'CREDITO POSPAGO',
+        Tipo__c = 'No aplica Pospago',
+        TipoItem__c = 'Renovacion cuota datos',
+        TipoAjuste__c = 'NC/ND',
+        TipoOperacionAjuste__c = 'CREDITO',
+        vlocity_cmt__Amount__c = 400,
+        TipoSeleccion__c = 'Cuenta',
+        UnidadAjuste__c = 'Credito',
+        AccountId = acc.Id,
+        RecordTypeId = recordTypeId,
+        CantidadAjuste__c = '01:03:00',
+        vlocity_cmt__ServiceId__c = ass.Id
         );
         insert caseObj;
 
@@ -133,6 +129,76 @@ public class ta_care_setAdjustment_test {
         //TipoSeleccion != 'Servicio'
         ta_care_setAdjustment.setAdjustment(listCase);
             
+        Test.stopTest();
+    }
+
+    @IsTest static void invoke_setAdjustment_empty4(){
+        Account acc = [SELECT Id, AccountIntegrationId__c FROM Account];
+        acc.AccountIntegrationId__c = '';
+        update acc;
+        
+        Asset ass = [SELECT Id FROM Asset];
+        
+        Id recordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByName().get('Diagnosis').getRecordTypeId();
+        Case caseObj = new Case(
+        Status = 'En espera de ejecución',
+        Origin = 'Personalizado',
+        TipoConcepto__c = 'CREDITO PREPAGO',
+        Tipo__c = 'No aplica Prepago',
+        TipoItem__c = 'Consumos de datos',
+        TipoAjuste__c = 'Credito',
+        TipoOperacionAjuste__c = 'CREDITO',
+        vlocity_cmt__Amount__c = 400,
+        TipoSeleccion__c = 'Servicio',
+        UnidadAjuste__c = 'SMS',
+        AccountId = acc.Id,
+        RecordTypeId = recordTypeId,
+        CantidadAjuste__c = '01:03:00',
+        vlocity_cmt__ServiceId__c = ass.Id
+        );
+        insert caseObj;
+
+        List<Case> listCase = new List<Case>();
+        listCase.add(caseObj);
+
+        Test.startTest();
+        //Test with unidadajuste = 'VOZ'
+        ta_care_setAdjustment.setAdjustment(listCase);            
+        Test.stopTest();
+    }
+
+    @IsTest static void invoke_setAdjustment_empty5(){
+        Account acc = [SELECT Id, AccountIntegrationId__c FROM Account];
+        acc.AccountIntegrationId__c = '';
+        update acc;
+        
+        Asset ass = [SELECT Id FROM Asset];
+        
+        Id recordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByName().get('Diagnosis').getRecordTypeId();
+        Case caseObj = new Case(
+        Status = 'En espera de ejecución',
+        Origin = 'Personalizado',
+        TipoConcepto__c = 'CREDITO PREPAGO',
+        Tipo__c = 'No aplica Prepago',
+        TipoItem__c = 'Consumos de datos',
+        TipoAjuste__c = 'Credito',
+        TipoOperacionAjuste__c = 'CREDITO',
+        vlocity_cmt__Amount__c = 400,
+        TipoSeleccion__c = 'Servicio',
+        UnidadAjuste__c = 'Datos(Mb)',
+        AccountId = acc.Id,
+        RecordTypeId = recordTypeId,
+        CantidadAjuste__c = '100',
+        vlocity_cmt__ServiceId__c = ass.Id
+        );
+        insert caseObj;
+
+        List<Case> listCase = new List<Case>();
+        listCase.add(caseObj);
+
+        Test.startTest();
+        //Test with unidadajuste = 'VOZ'
+        ta_care_setAdjustment.setAdjustment(listCase);            
         Test.stopTest();
     }
 }

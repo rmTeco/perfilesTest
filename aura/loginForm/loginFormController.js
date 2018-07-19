@@ -19,14 +19,14 @@
     },
     onKeyUp: function(component, event, helpler){
         //checks for "enter" key
-        console.log($('.sfdc_usernameinput').value.length);
+        //console.log($('.sfdc_usernameinput').value.length);
         
-        if (component.find("username").get('v.value').length > 1 &&
+        /*if (component.find("username").get('v.value').length > 1 &&
             component.find("password").get('v.value').length > 1){
                 component.find("submitButton").set('v.disabled', false);
             }else{
                 component.find("submitButton").set('v.disabled', true);
-            }
+            }*/
         if (event.getParam('keyCode')===13) {
             helpler.handleLogin(component, event, helpler);
         }

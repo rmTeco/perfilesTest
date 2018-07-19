@@ -34,6 +34,12 @@ global class TaCareSuspensionsAndReconnections implements vlocity_cmt.VlocityOpe
                 when 'createTrasactionHistory' {
                     this.createTrasactionHistory();
                 }
+                when 'GetAssetByIMEI' {
+                    this.GetAssetByIMEI();
+                }
+                when 'GetNewGuid' {
+                    this.GetNewGuid();
+                }                
             }
 
             return true;
@@ -80,6 +86,24 @@ global class TaCareSuspensionsAndReconnections implements vlocity_cmt.VlocityOpe
 
             Id orderId = AssetService.Resume(accountId, assetToResumeIds);
             this.output.put('OrderId', orderId);
+        }
+        catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    private void GetAssetByIMEI() {
+        try {
+            AssetsSelector assetsSelector = (AssetsSelector) Application.Selector.NewInstance(Asset.SObjectType);
+            String IMEI = (String) this.options.get('IMEI');
+
+            List<Asset> assets = assetsSelector.SelectByIMEI(new Set<String> { IMEI });
+
+            if (!assets.IsEmpty()) {     
+                this.output.put('AccountId', assets[0].AccountId);
+                this.output.put('Status', assets[0].Status);
+                this.output.put('AssetId', assets[0].Id);
+            }
         }
         catch (Exception ex) {
             throw ex;
@@ -194,7 +218,7 @@ global class TaCareSuspensionsAndReconnections implements vlocity_cmt.VlocityOpe
             List<Map<String, object>> listClientSuspensions = new List<Map<String, object>>();
             
             Map<String, Object> clientSuspensionsMap;
-            List<transaction_history__c> clientSuspensions = [SELECT Id, Asset__c, Asset__r.id, Asset__r.Name, asset__r.imei__c, imei__c FROM transaction_history__c where new_status__c = 'Active' AND Account__c = :accountId AND RecordTypeId = :recordTypeId AND Description__c = 'Suspensión' AND Type__c = 'Siniestro' AND ((asset__r.tipo_de_producto__c = 'dispositivo' and asset__R.Linked_Product_Family__c = 'Movil') OR (imei__c <> null ))];
+            List<transaction_history__c> clientSuspensions = [SELECT Id, Asset__r.AccountId, Asset__c, Asset__r.id, Asset__r.Name, asset__r.imei__c, imei__c FROM transaction_history__c where new_status__c = 'Active' AND Account__c = :accountId AND RecordTypeId = :recordTypeId AND Description__c = 'Suspensión' AND Type__c = 'Siniestro' AND ((asset__r.tipo_de_producto__c = 'dispositivo' and asset__R.Linked_Product_Family__c = 'Movil') OR (imei__c <> null ))];
             System.debug('clientSuspensions: ' + clientSuspensions);
             for(transaction_history__c susp : clientSuspensions){
                 clientSuspensionsMap = new Map<String, String>();
@@ -203,6 +227,7 @@ global class TaCareSuspensionsAndReconnections implements vlocity_cmt.VlocityOpe
                     clientSuspensionsMap.put('TransactionId', (String) susp.Id); 
                     clientSuspensionsMap.put('assetName', (String) susp.Asset__r.Name);
                     clientSuspensionsMap.put('Imei', (String) susp.asset__r.imei__c);
+                    clientSuspensionsMap.put('AccountId', (String) susp.Asset__r.AccountId);
                 }
                 else {
                     clientSuspensionsMap.put('TransactionId', (String) susp.Id);
@@ -247,5 +272,10 @@ global class TaCareSuspensionsAndReconnections implements vlocity_cmt.VlocityOpe
         upsert myTransactionHis;
         output.put('TransactionHistoryCreate',myTransactionHis);
     }
-    
+
+    //Norwill Gutierrez - To Get unique id for transaction
+    private void GetNewGuid(){
+        String idUnico = GuidUtil.NewGuid();
+        this.output.put('UniqueTransactionID', idUnico);
+    }     
 }

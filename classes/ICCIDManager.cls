@@ -124,8 +124,9 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
             Order dbOrder = [SELECT Delivery_Method__c, Gestion__c FROM Order WHERE Id = :orderId LIMIT 1];
             Boolean cambioDeSim = (dbOrder.Gestion__c == 'Cambio de SIM' || dbOrder.Gestion__c == 'Cambio de SIM por siniestro');
             List<OrderItem> orderItems = taOrderController.GetOrderSerials(orderId);
-            if(Test.isRunningTest()) orderItems = [SELECT Id, Product2.ProductCode, Product2.Name, Product2.vlocity_cmt__Type__c, vlocity_cmt__SerialNumber__c, vlocity_cmt__JSONAttribute__c, FromStock__c FROM OrderItem WHERE OrderId = :orderId];
+            //if(Test.isRunningTest()) orderItems = [SELECT Id, Product2.ProductCode, Product2.Name, Product2.vlocity_cmt__Type__c, vlocity_cmt__SerialNumber__c, vlocity_cmt__JSONAttribute__c, FromStock__c FROM OrderItem WHERE OrderId = :orderId];
             deliveryMethod = dbOrder.Delivery_Method__c;
+            //System.debug('dbOrder: ' + JSON.serialize(dbOrder));
 
             List<Object> serialList = new List<Object>();
 
@@ -152,6 +153,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
             // PFTA-7892
 
             for(OrderItem item : orderItems){
+                // valAux = true;
                 String stockProducto = stockProductoBK;
                 Map<String,Object> serialNode = new Map<String, Object>();
                 serialNode.put('itemId', item.Id);
@@ -161,11 +163,16 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
                 if (item.Product2.vlocity_cmt__Type__c == 'Simcard')
                 {
                     System.debug('va por Simcard');
-                    String nmuCode = (String) serialNode.get('productCode');
+                    //String nmuCode = (String) serialNode.get('productCode');
                     //String stockDef = GetStockDef(stocksCode, nmuCode, existences);
                     // String stockDef = 'MTPL';
                     // System.debug('stocksCode: ' + stockDef);
                     // if(GetSimcardsSerial(item, codPuntoDeVenta, codDeposito, stockDef,  serialNode))
+                    system.debug ('item: ' + item );
+                    system.debug ('codPuntoDeVenta: ' + codPuntoDeVenta );
+                    system.debug ('codDeposito: ' + codDeposito );
+                    system.debug ('stockProducto: ' + stockProducto );
+                    system.debug ('serialNode: ' + serialNode );
                     if(GetSimcardsSerial(item, codPuntoDeVenta, codDeposito, stockProducto, serialNode))
                     {
                         String serial = (String) serialNode.get('serial');
@@ -176,6 +183,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
                         //Si habia seriales cargados, y no es cambio de sim, los libero
                         if (String.isNotBlank(item.vlocity_cmt__SerialNumber__c) && !cambioDeSim)
                         {
+                            //oldSerialNumbers.add(item.vlocity_cmt__SerialNumber__c);
                             oldSerialNumbers.put(item.vlocity_cmt__SerialNumber__c, item.FromStock__c);
                         }
                         item.vlocity_cmt__SerialNumber__c = serial;
@@ -183,7 +191,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
                         SetSerialItemAttributes (item, serial, (String) serialNode.get('IMSI'), (String) serialNode.get('KI'), (String) serialNode.get('aduanaIngreso'), (String) serialNode.get('paisOrigen'), (String) serialNode.get('codOrdenDespacho'));
 
                         item.FromStock__c = stockProducto;
-                        //taOrderController.AddNmuToRelease(nmusMap,nmu,codDeposito);//Validar si se deben reservar los simcards
+                        //taOrderController.AddNmuToRelease(nmusMap,nmu,codDeposito);
                         //newSerialNumbers.add(serial);
                         newSerialNumbers.put(serial, stockProducto);
                     } else {
@@ -196,42 +204,26 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
                 else
                 {
                     System.debug('va por no Simcard');
-
-                    // String nmu = taOrderController.GetNMU(item.vlocity_cmt__JSONAttribute__c);
-                    // String nmu = item.Product2.StockKeepingUnit;
-                    String nmu = '1231312';
-
-                    //String stockDef = GetStockDef(stocksCode, nmu, existences);
-                    // String stockDef = 'MTPL';
-                    // System.debug('stocksCode: ' + stockDef);
-                    serialNode.put('productCode', nmu);
+                    system.debug ('item: ' + item );
+                    system.debug ('codPuntoDeVenta: ' + codPuntoDeVenta );
+                    system.debug ('codDeposito: ' + codDeposito );
+                    system.debug ('stockProducto: ' + stockProducto );
+                    system.debug ('serialNode: ' + serialNode );
+                    serialNode.put('productCode', item.Product2.NMU__c);
                     //PFTA - 10326 - Se envia siempre punto de venta 0
-                    Map<String, Object> input = Generate_RequestS094(codDeposito, '0', nmu, stockProducto);
+                    Map<String, Object> input = Generate_RequestS094(codDeposito, '0', item.Product2.NMU__c, stockProducto);
                     Map<String, Object> output = new Map<String, Object>();
                     Map<String, Object> options2 = new Map<String, Object>();
                     System.debug('request s094: ' + JSON.serialize(input));
                     vlocity_cmt.IntegrationProcedureService integProcService = new vlocity_cmt.IntegrationProcedureService();
                     
-                    if(!Test.isRunningTest()){
-                        integProcService.invokeMethod('IFS_S094', input, output, options2);
-                    } else {
-                        Map<String,Object> IPResultTest = new Map<String,Object>();
-                        List<Object> listaDeSeriadosTest = new List<Object>();
-                        Map<String,Object> seriadoTest = new Map<String,Object>();
-                        seriadoTest.put('numeroSerie','numeroSerie');
-                        seriadoTest.put('stockProducto','stockProducto');
-                        seriadoTest.put('aduanaIngreso','aduanaIngreso');
-                        seriadoTest.put('paisOrigen','paisOrigen');
-                        seriadoTest.put('codOrdenDespacho','codOrdenDespacho');
-                        if(!options.containsKey('isTestListaDeSeriadosTestEmpty'))listaDeSeriadosTest.add(seriadoTest);
-                        IPResultTest.put('listaDeSeriados',listaDeSeriadosTest);
-                        output.put('IPResult',IPResultTest);
-                    }
+                    integProcService.invokeMethod('IFS_S094', input, output, options2);
                     System.debug('response s094: ' + output);
 
                     Map<String, Object> s094_response = (Map<String, Object>)output.get('IPResult');
                     List<Object> listaDeSeriados = (List<Object>) s094_response.get('listaDeSeriados');
                     if (listaDeSeriados.size() > 0){
+                        // System.debug('listaDeSeriados' + listaDeSeriados);
                         Map<String,Object> seriado = (Map<String,Object>) listaDeSeriados[0];
                         string serial = (string) seriado.get('numeroSerie');
                         stockProducto = (string) seriado.get('stockProducto');
@@ -241,6 +233,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
                         serialNode.put('validacionSerial', 'El ICCID fue asignado');
                         if (String.isNotBlank(item.vlocity_cmt__SerialNumber__c))//Si habia seriales cargados, los libero
                         {
+                            //oldSerialNumbers.add(item.vlocity_cmt__SerialNumber__c);
                             oldSerialNumbers.put(item.vlocity_cmt__SerialNumber__c, item.FromStock__c);
                         }
 
@@ -250,6 +243,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
                         item.FromStock__c = stockProducto;
 
                         //taOrderController.AddNmuToRelease(nmusMap,nmu,codDeposito);//DESCOMENTAR - Volver a activar cuando ande el S101
+                        //newSerialNumbers.add(serial);
                         newSerialNumbers.put(serial, stockProducto);
                     }else{
                         System.debug('response: ' + output);
@@ -257,7 +251,8 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
                         serialNode.put('serialValidado', null);
                         serialNode.put('validacionSerial', 'No se encontraron seriales disponibles para la venta');
                         valAux = false;
-                    }  
+                    }
+                    
                 }
 
                 // aca tengo q evaluar si es facturado o no el tangible de acuerdo a la matriz y al dato de FromStock
@@ -271,21 +266,19 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
 
                 serialList.add(serialNode);
             }
-            if(deliveryMethod == 'Presencial' || deliveryMethod == 'Store Pick Up')//Solo en estos casos se realiza la reserva
+            
+            if (oldSerialNumbers.KeySet().size() > 0)
             {
-                if (oldSerialNumbers.KeySet().size() > 0)
-                {
-                    System.debug('1');
-                    taOrderController.MoveSerialsStock(INSTANCE_VENTA_NORMAL,INSTANCE_ANULAR_RESERVA,oldSerialNumbers, codDeposito, deliveryMethod);
-                    deReserveDone = true;
-                }
-                if (newSerialNumbers.KeySet().size() > 0)
-                {
-                    System.debug('2');
-                    Map<String, String> newSerialNumbersForReserve = ClearStockOrigin(newSerialNumbers);//Para reservar se debe enviar NOAPLICA
-                    if(!Test.isRunningTest())taOrderController.MoveSerialsStock(INSTANCE_VENTA_NORMAL,INSTANCE_RESERVA,newSerialNumbersForReserve, codDeposito, deliveryMethod);
-                    reserveDone = true;
-                }
+                System.debug('1');
+                taOrderController.MoveSerialsStock(INSTANCE_VENTA_NORMAL,INSTANCE_ANULAR_RESERVA,oldSerialNumbers, codDeposito, deliveryMethod);
+                deReserveDone = true;
+            }
+            if (newSerialNumbers.KeySet().size() > 0)
+            {
+                System.debug('2');
+                Map<String, String> newSerialNumbersForReserve = ClearStockOrigin(newSerialNumbers);//Para reservar se debe enviar NOAPLICA
+                if(!Test.isRunningTest())taOrderController.MoveSerialsStock(INSTANCE_VENTA_NORMAL,INSTANCE_RESERVA,newSerialNumbersForReserve, codDeposito, deliveryMethod);
+                reserveDone = true;
             }
             if (nmusMap.size() > 0)
             {
@@ -335,6 +328,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
         return JSON.serialize(jsonAttributeMap);
     }
 
+    /*
     public static List<Object> IFS_S089Call(String codPuntoDeVenta, String codDeposito, String codeMarc, String codFamProd, String nmuCart){
         Map<String, Object> jSonResponse;
         jSonResponse = IFS_S089_conseguirDisponibilidad.conseguirDisponibilidad(codPuntoDeVenta, codDeposito, codeMarc, codFamProd, nmuCart, null);
@@ -342,7 +336,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
         existencias = (List<Object>) jSonResponse.get('ListaExistencias');
         return existencias;
     }                    
-
+    */
     public static String GetStockDef(List<String> stocksCode, String nmuCart, List<Object> existences)
     {
         System.debug('GetStockDef');
@@ -447,27 +441,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
 
             System.debug('IFS_S444 - request : ' + JSON.serialize(input));
             vlocity_cmt.IntegrationProcedureService integProcServ = new vlocity_cmt.IntegrationProcedureService();
-            if(!Test.isRunningTest()){
-                integProcServ.invokeMethod('IFS_S444', input, output, options);
-            } else {
-                if(item.Product2.Name == 'IsGetSimcardsSerialTest'){
-                    Map<String,Object> IPResult = new Map<String,Object>();
-                    List<Object> listaNumeroSerie = new List<Object>();
-                    Map<String,Object> responseNmu = new Map<String,Object>();
-                    responseNmu.put('codNMU','codNMU');
-                    responseNmu.put('stockProducto','stockProducto');
-                    responseNmu.put('numeroSerie','numeroSerie');
-                    responseNmu.put('imsi','imsi');
-                    responseNmu.put('ki','ki');
-                    responseNmu.put('aduanaIngreso','aduanaIngreso');
-                    responseNmu.put('paisOrigen','paisOrigen');
-                    responseNmu.put('codOrdenDespacho','codOrdenDespacho');
-                    listaNumeroSerie.add(responseNmu);
-                    IPResult.put('listaNumeroSerie',listaNumeroSerie);
-                    output.put('IPResult',IPResult);
-                }
-                
-            }
+            integProcServ.invokeMethod('IFS_S444', input, output, options);
             System.debug('response S444: ' + JSON.serialize(output));
 
             Map<String,Object> ipResult = (Map<String,Object>) output.get('IPResult');
@@ -519,100 +493,52 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
         }
     }
 
-    public void ValidateSerialNumbers(Map<String, Object> serials, String codDeposito, List<String> stocks)
+    private Boolean ValidSerialNumber(String serial, String codDeposito, List<String> stock, Map<String, Object> itemNode)
     {
-        System.debug('ValidateSerialNumbers');
+        System.debug('ValidSerialNumber');
         try
         {
             System.debug('codDeposito: ' + codDeposito);
-            System.debug('stocks: ' + stocks);
-            Set<String> setStocksCode = new Set<String>(stocks);
-            System.debug(setStocksCode);
-            GetSerialNumbersInformation(serials);
-            for(String serial : serials.KeySet())
-            {
-                Map<String, Object> serialNode = (Map<String, Object>) serials.get(serial);
-                String codDepositoReal = (String) serialNode.get('codDeposito');
-                String stockProductoReal = (String) serialNode.get('stockProducto');
-                if (codDeposito == codDepositoReal && setStocksCode.contains(stockProductoReal))
-                {
-                    serialNode.put('serialValidado', serial);
-                }
-                else serialNode.put('serialValidado', null);
-            }
-        }
-        catch(Exception ex){
-            System.debug('ICCIDManager:ValidateSerialNumbers -> exception: '+ex);
-            throw ex;
-        }
-    }
-
-    //Obtiene informacion detallada de los seriales recibidos
-    /*Estructura de entrada varible "serials"
-    {
-        "123412341234123":{},
-        "567856785687788":{}
-    }
-    */
-    public void GetSerialNumbersInformation(Map<String, Object> serials)
-    {
-        System.debug('GetSerialNumbersInformation');
-        try
-        {
+            System.debug('stock: ' + stock);
             String integProcName = 'IFS_S095';
             Map<String, Object> input = new Map<String, Object>();
             Map<String, Object> output = new Map<String, Object>();
             Map<String, Object> options = new Map<String, Object>();
-            String body = '{"body":{"listaNumeroSeries":[';
-            Integer count = 0;
-            for(String serial : serials.KeySet())
-            {
-                if (count > 0) body += ',';
-                body += '{"numeroSerie":"' + serial + '"}';
-                count++;
-            }
-            body += ']}}';
+            String body = '{"body":{"listaNumeroSeries":[{"numeroSerie":"' + serial + '"}]}}';
+            // String body = '{"body":{"listaNumeroSeries":[{"numeroSerie":"89543411203523667554"}]}}';
             input = (Map<String, Object>)JSON.deserializeUntyped(body);
             
             System.debug('IFS_S095 - request: ' + input);
             vlocity_cmt.IntegrationProcedureService integProcServ = new vlocity_cmt.IntegrationProcedureService();
-            if(!Test.isRunningTest()){
-                integProcServ.invokeMethod(integProcName, input, output, options);
-            } else {
-                Map<String,Object> IPResult = new Map<String,Object>();
-                
-                List<Object> listaNumeroSeries = new List<Object>();
-                Map<String,Object> serialNode = new Map<String,Object>();
-                serialNode.put('codDeposito','codDeposito');
-                serialNode.put('stockProducto','stockProducto');
-                serialNode.put('numeroSerie','numeroSerie');
-                listaNumeroSeries.add(serialNode);
-                IPResult.put('listaNumeroSeries',listaNumeroSeries);
-                output.put('IPResult',IPResult);
-            }
+            integProcServ.invokeMethod(integProcName, input, output, options);
             System.debug('response s095: ' + output);
 
             Map<String, Object> response = (Map<String, Object>) output.get('IPResult');
             List<Object> listaNumeroSerie = (List<Object>) response.get('listaNumeroSeries');
-            for(Object serialOcurrence : listaNumeroSerie)
-            {
-                Map<String, Object> serialNode = (Map<String, Object>) serialOcurrence;
-                String serialNumber = (String) serialNode.get('numeroSerie');
-                Map<String, Object> itemNode = (Map<String, Object>) serials.get(serialNumber);
+            Map<String, Object> serialNode = (Map<String, Object>) listaNumeroSerie[0];
+            String codDepositoReal = (String) serialNode.get('codDeposito');
+            String stockProductoReal = (String) serialNode.get('stockProducto');
+            /* PTFA-6033 Verificar cuando llegan los tres codigos */ 
+            Set<String> setStocksCode = new Set<String>(stock);
+            System.debug(setStocksCode);
 
+            if (codDeposito == codDepositoReal && setStocksCode.contains(stockProductoReal))
+            {
                 itemNode.put('productCode', (String) serialNode.get('codNMU'));
                 itemNode.put('IMSI', (String) serialNode.get('imsi'));
                 itemNode.put('KI', (String) serialNode.get('ki'));
                 itemNode.put('aduanaIngreso', (String) serialNode.get('aduanaIngreso'));
                 itemNode.put('paisOrigen', (String) serialNode.get('paisOrigen'));
                 itemNode.put('codOrdenDespacho', (String) serialNode.get('codOrdenDespacho'));
-                itemNode.put('stockProducto', (String) serialNode.get('stockProducto'));
-                itemNode.put('codDeposito', (String) serialNode.get('codDeposito'));
+                itemNode.put('stockProducto', stockProductoReal);
+                itemNode.put('serialValidado', serial);
+                return true;
             }
+            else return false;
         }
-        catch(Exception ex){
-            System.debug('ICCIDManager:GetSerialNumbersInformation -> exception: '+ex);
-            throw ex;
+        catch(Exception e){
+            System.debug('ICCIDManager:ValidSerialNumber -> exception: '+e);
+            return null;
         }
     }
 
@@ -657,74 +583,61 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
             }
             Map<Id, WrapOrderItem> wrapOrderItemsMap = new Map<Id, WrapOrderItem>();
             List<Object> newSerialList = new List<Object>();
-            Map<String, Object> serialsMap = new Map<String, Object>();
             for(Object item : serialList){
                 Map<String, Object> itemMap = (Map<String, Object>) item;
                 String validationResult = (String) itemMap.get('validacionSerial');
+                String itemId = (String) itemMap.get('itemId');
                 if (validationResult != 'El ICCID fue asignado')
                 {
                     String inputSerial = (String) itemMap.get('serial');
                     String oldSerial = (String) itemMap.get('serialValidado');
-                    String oldStock = (String) itemMap.get('stockProducto');
                     Map<String,Object> serialNode = new Map<String, Object>();
                     serialNode.put('itemId', itemMap.get('itemId'));
                     serialNode.put('productName', itemMap.get('productName'));
                     serialNode.put('productCode', itemMap.get('productCode'));
-                    serialNode.put('oldSerial', oldSerial);
-                    serialNode.put('oldStock', oldStock);
+                    serialNode.put('serial', inputSerial);
                     System.debug('inputSerial: ' + inputSerial);
                     System.debug('oldSerial: ' + oldSerial);
-
-                    serialsMap.put(inputSerial, serialNode);
+                    if (ValidSerialNumber(inputSerial, codDeposito, stocksCode, serialNode))
+                    {
+                        System.debug('serialNode: ' + serialNode);
+                        serialNode.put('validacionSerial', 'El ICCID fue asignado');
+                        if (String.IsNotBlank(oldSerial))
+                            //oldSerialNumbers.add(oldSerial);
+                            oldSerialNumbers.put(oldSerial, (String) itemMap.get('stockProducto'));
+                        //newSerialNumbers.add(inputSerial);
+                        String stock = (String)serialNode.get('stockProducto');
+                        newSerialNumbers.put(inputSerial,stock);
+                        Map<String, Object> responseMatrix2 = TaMatrixUtils.GetStockBillable(stock);
+                        if(Test.isRunningTest()){
+                            responseMatrix2 = new Map<String, Object>();
+                            responseMatrix2.put('StockBillable__Billable',true);
+                        }
+                        System.debug('StockBillable: ' + responseMatrix2);
+                        Boolean billeable = Boolean.ValueOf(responseMatrix2.get('StockBillable__Billable'));
+                        WrapOrderItem wrapOrderItem = new WrapOrderItem(inputSerial, (String) serialNode.get('IMSI'), (String) serialNode.get('KI'), (String) serialNode.get('aduanaIngreso'), (String) serialNode.get('paisOrigen'), (String) serialNode.get('codOrdenDespacho'), stock, billeable);
+                        wrapOrderItemsMap.put(itemId, wrapOrderItem);
+                    }
+                    else
+                    {
+                        serialNode.put('validacionSerial', 'El serial ingresado no se encuentra disponible para la venta');
+                        valAux = false;
+                    }
+                    newSerialList.add(serialNode);
                 }
                 else newSerialList.add(itemMap);
             }
-            if (!serialsMap.KeySet().isEmpty())
-                ValidateSerialNumbers(serialsMap, codDeposito, stocksCode);
-            for(String serial : serialsMap.KeySet())
-            {
-                Map<String, Object> serialNode = (Map<String, Object>) serialsMap.get(serial);
-                String validatedSerial = (String) serialNode.get('serialValidado');
-                if(String.IsNotBlank(validatedSerial))
-                {
-                    System.debug('serialNode: ' + serialNode);
-                    serialNode.put('validacionSerial', 'El ICCID fue asignado');
-                    String oldSerial = (String) serialNode.get('oldSerial');
-                    if (String.IsNotBlank(oldSerial))
-                        oldSerialNumbers.put(oldSerial, (String) serialNode.get('oldStock'));
-                    String stock = (String)serialNode.get('stockProducto');
-                    newSerialNumbers.put(validatedSerial,stock);
-                    Map<String, Object> responseMatrix2 = TaMatrixUtils.GetStockBillable(stock);
-                    if(Test.isRunningTest()){
-                        responseMatrix2 = new Map<String, Object>();
-                        responseMatrix2.put('StockBillable__Billable',true);
-                    }
-                    System.debug('StockBillable: ' + responseMatrix2);
-                    Boolean billeable = Boolean.ValueOf(responseMatrix2.get('StockBillable__Billable'));
-                    WrapOrderItem wrapOrderItem = new WrapOrderItem(validatedSerial, (String) serialNode.get('IMSI'), (String) serialNode.get('KI'), (String) serialNode.get('aduanaIngreso'), (String) serialNode.get('paisOrigen'), (String) serialNode.get('codOrdenDespacho'), stock, billeable);
-                    wrapOrderItemsMap.put((Id) serialNode.get('itemId'), wrapOrderItem);
-                }
-                else
-                {
-                        serialNode.put('validacionSerial', 'El serial ingresado no se encuentra disponible para la venta');
-                        valAux = false;
-                }
-                newSerialList.add(serialNode);
-            }
-            Boolean makeReserves = (deliveryMethod == 'Presencial' || deliveryMethod == 'Store Pick Up');//Solo en estos casos se realiza la reserva
-            if (oldSerialNumbers.KeySet().size() > 0 && makeReserves)
+            
+            if (oldSerialNumbers.KeySet().size() > 0)
             {
                 if(!Test.isRunningTest())taOrderController.MoveSerialsStock(INSTANCE_VENTA_NORMAL,INSTANCE_ANULAR_RESERVA,oldSerialNumbers, codDeposito, deliveryMethod);
                 deReserveDone = true;
             }
             if (newSerialNumbers.KeySet().size() > 0)
             {
-                if (makeReserves)
-                {
-                    Map<String, String> newSerialNumbersForReserve = ClearStockOrigin(newSerialNumbers);//Para reservar se debe enviar NOAPLICA
-                    if(!Test.isRunningTest())taOrderController.MoveSerialsStock(INSTANCE_VENTA_NORMAL,INSTANCE_RESERVA,newSerialNumbersForReserve, codDeposito, deliveryMethod);
-                    reserveDone = true;
-                }
+                Map<String, String> newSerialNumbersForReserve = ClearStockOrigin(newSerialNumbers);//Para reservar se debe enviar NOAPLICA
+                if(!Test.isRunningTest())taOrderController.MoveSerialsStock(INSTANCE_VENTA_NORMAL,INSTANCE_RESERVA,newSerialNumbersForReserve, codDeposito, deliveryMethod);
+                reserveDone = true;
                 List<OrderItem> orderItems = [ SELECT Id, vlocity_cmt__JSONAttribute__c FROM OrderItem WHERE Id in :wrapOrderItemsMap.KeySet()];
                 for(OrderItem item : orderItems)
                 {
@@ -809,18 +722,30 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
         Map<String, Object> request = new Map<String, Object>();
 
         //-----Datos para probar-------
+        /*
         codDeposito = '1111';
         codPuntoDeVenta = null;
         codNMU = null;
         stockProducto = null;
+        */
         //-----------------------------
-
+        Map<String, Object> params = new Map<String, Object>();
+        request.put('params', params);
         if(codDeposito != null){
-            Map<String, Object> params = new Map<String, Object>();
             params.put('codDeposito', codDeposito);
-            request.put('params', params);
+        }
+        if(codPuntoDeVenta != null){
+            params.put('codPuntoDeVenta', codPuntoDeVenta);
         }
 
+        if(codNMU != null){
+            params.put('codNMU', codNMU);
+        }
+
+        if(stockProducto != null){
+            params.put('stockProducto', stockProducto);
+        }
+/*
         Map<String, Object> body = new Map<String, Object>();
         if(codPuntoDeVenta != null){
             body.put('codPuntoDeVenta', codPuntoDeVenta);
@@ -835,6 +760,7 @@ global with sharing class ICCIDManager implements vlocity_cmt.VlocityOpenInterfa
         }
 
         request.put('body', body);
+*/
 
         return request;
     }

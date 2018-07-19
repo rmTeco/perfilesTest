@@ -242,7 +242,7 @@
                     <label>MASTERCARD</label>
                 </value>
                 <value>
-                    <fullName>377</fullName>
+                    <fullName>VISA</fullName>
                     <default>false</default>
                     <label>VISA</label>
                 </value>

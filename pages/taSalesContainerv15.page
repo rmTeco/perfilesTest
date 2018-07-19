@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div ng-if="ccc.showCart">
-                    <apex:include pageName="taSalesCPQv15"/>
+                    <apex:include pageName="TaSalesCPQv15"/>
                 </div>
             </div>
             

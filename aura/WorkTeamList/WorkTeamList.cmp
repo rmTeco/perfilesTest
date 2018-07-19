@@ -21,14 +21,14 @@
     <aura:registerEvent name="WorkTeamNewEventFired" type="c:WorkTeamNewEvent"/>
     
     <div class="header__c">
-        <h1>{! $Label.c.Work_Team_Management_Title_Page }</h1>
+        <h1>Administración de Equipos de Trabajo</h1>
         <div class="button__c slds-max-small-size--6-of-6 slds-size--1-of-6">
-        	<lightning:button variant="brand" label="{! $Label.c.Work_Team_Create_Button }" title="{! $Label.c.Work_Team_Create_Button }" onclick="{! c.newWorkTeam }" />
+        	<lightning:button variant="brand" label="Nuevo Equipo de Trabajo" title="Nuevo Equipo de Trabajo" onclick="{! c.newWorkTeam }" />
         </div>
         <div class="input_search slds-max-small-size--6-of-6 slds-size--4-of-6">
             <div class="slds-form-element inputKeyName lightningInput" data-aura-class="lightningInput">
                 <div class="slds-form-element__control slds-grow">
-            		<ui:inputText keyup="{! c.keyCheck }" class="slds-input" value="{!v.KeyName}" placeholder="{! $Label.c.Work_Team_Search_Label_Input + '...'}" label="" />
+            		<ui:inputText keyup="{! c.keyCheck }" class="slds-input" value="{!v.KeyName}" placeholder="Buscar..." label="" />
                 </div>
                 <span id="btn-search" onclick="{! c.getWorkTeams }"><lightning:icon iconName="utility:search" alternativeText="Buscar" variant="success"/></span>
                 <span id="btn-aux" style="display:none!important;"></span>
@@ -40,7 +40,7 @@
         <aura:if isTrue="{!v.isLoading}">
             <div id="spinner_loading" style="height: 100%;">
               <div role="status" class="slds-spinner slds-spinner_medium">
-                <span class="slds-assistive-text">Loading</span>
+                <span class="slds-assistive-text">Cargando</span>
                 <div class="slds-spinner__dot-a"></div>
                 <div class="slds-spinner__dot-b"></div>
               </div>
@@ -53,19 +53,23 @@
                     <aura:set attribute="title">
                         {! WorkTeam.Name }
                     </aura:set>
-                    <p><strong>{! v.LabelsW.LabelWorkTeamManager }: </strong> <span>{! WorkTeam.Manager__r.Name }</span></p>
-                    <p><strong>{! v.LabelsW.LabelWorkTeamParent }: </strong> <span>{! WorkTeam.Parent_Team__r.Name }</span></p>
+                    <p><strong>Gerente: </strong> <span>{! WorkTeam.Manager__r.Name }</span></p>
+                    <p><strong>Equipo de trabajo padre: </strong> <span>{! WorkTeam.Parent_Team__r.Name }</span></p>
                     <br/>
-                    <p><strong>{! v.LabelsW.LabelWorkTeamAmountOfActiveChildTeams }: </strong><br/><span>{! WorkTeam.AmountOfActiveChildTeams__c + ' ' +$Label.c.Work_Team_Employee_Text }</span></p>
+                    <p><strong>Equipos de trabajos hijos activos: </strong><br/><span>{! WorkTeam.AmountOfActiveChildTeams__c }</span></p>
                     <br/>
-                    <p><strong>{! v.LabelsW.LabelWorkTeamIsActive }: </strong><span>{! WorkTeam.Is_Active__c }</span></p>
+                    <p>
+                        <strong>Activo: </strong>
+                        <aura:if isTrue="{! WorkTeam.Is_Active__c == true}"><span>verdadero</span></aura:if>
+                        <aura:if isTrue="{! WorkTeam.Is_Active__c == false}"><span>falso</span></aura:if>
+                    </p>
                     <br/>
-                    <p><strong>{! v.LabelsW.LabelWorkTeamCodigo }: </strong><br/><span>{! WorkTeam.Work_Team_Number__c }</span></p>
+                    <p><strong>Código: </strong><br/><span>{! WorkTeam.Work_Team_Number__c }</span></p>
                     <lightning:buttonGroup >
-                        <lightning:button variant="brand" label="{! $Label.c.Work_Team_Detail_Buttom }" title="{! $Label.c.Work_Team_Detail_Buttom }" name="{! WorkTeam.Id }" onclick="{! c.detailWorkTeam }" />
-                        <lightning:button name="{! WorkTeam.Id }" onclick="{! c.editWorkTeam }" title="Edit" class="btn-wrap"><lightning:icon iconName="utility:edit_form" alternativeText="Edit" variant="success"/></lightning:button>
-                        <aura:if isTrue="{! WorkTeam.Is_Active__c == false}"><lightning:button title="Inactivate" class="btn-wrap gray"><lightning:icon iconName="utility:delete" alternativeText="Delete" variant="success"/></lightning:button></aura:if>
-                        <aura:if isTrue="{! WorkTeam.Is_Active__c == true}"><lightning:button title="Inactivate" class="btn-wrap" name="{! WorkTeam.Id }" onclick="{! c.deleteRecord }"><lightning:icon iconName="utility:delete" alternativeText="Delete" variant="success"/></lightning:button></aura:if>
+                        <lightning:button variant="brand" label="Detalles" title="Detalles" name="{! WorkTeam.Id }" onclick="{! c.detailWorkTeam }" />
+                        <lightning:button name="{! WorkTeam.Id }" onclick="{! c.editWorkTeam }" title="Editar" class="btn-wrap"><lightning:icon iconName="utility:edit_form" alternativeText="Editar" variant="success"/></lightning:button>
+                        <aura:if isTrue="{! WorkTeam.Is_Active__c == false}"><lightning:button title="" class="btn-wrap gray"><lightning:icon iconName="utility:delete" alternativeText="Eliminar" variant="success"/></lightning:button></aura:if>
+                        <aura:if isTrue="{! WorkTeam.Is_Active__c == true}"><lightning:button title="Inactivar" class="btn-wrap" name="{! WorkTeam.Id }" onclick="{! c.deleteRecord }"><lightning:icon iconName="utility:delete" alternativeText="Eliminar" variant="success"/></lightning:button></aura:if>
                     </lightning:buttonGroup>
                 </lightning:card>
             </aura:iteration>

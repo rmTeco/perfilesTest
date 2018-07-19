@@ -2,6 +2,7 @@
 global with sharing class IFS_S184_recievesFromBDO {
 
     public static final boolean K_DEBUG_ON =  true;
+    private static String guId = null;
 
     @HttpPost
     global static void getData() {
@@ -15,6 +16,8 @@ global with sharing class IFS_S184_recievesFromBDO {
 
         res.addHeader('Content-Type', 'application/json');
         try {
+            
+            writeLog ('REQ', req.requestBody.toString());
 
             res.statuscode = 200;
             jsonBody = (FromJSON)JSON.deserialize(req.requestBody.toString(),FromJSON.class);
@@ -38,21 +41,42 @@ global with sharing class IFS_S184_recievesFromBDO {
                 insertarCasoRedireccionar(jsonBody);
             }
 
-
             result.put('nroSolicitudPortacion',nroSolicitudPortacion);
             res.responseBody = Blob.valueOf(JSON.serialize(result));
+
+            writeLog ('RES', res.statuscode + ';' + JSON.serialize(result));
         }
         catch (FunctionalException fe) {
             res.statuscode = 417;
             res.responseBody = Blob.valueOf(JSON.serialize(getRespuestaNoOk('417',fe.getMessage())));
+            writeLog ('RES', res.statuscode + ';' + getRespuestaNoOk('417',fe.getMessage()));
         }
         catch (CalloutException ce) {
             res.statuscode = 400;
             res.responseBody = Blob.valueOf(JSON.serialize(getRespuestaNoOk('400',ce.getMessage())));
+            writeLog ('RES', res.statuscode + ';' + getRespuestaNoOk('417',ce.getMessage()));
         }
         catch (IPException e) {
             res.statuscode = 417;
             res.responseBody = Blob.valueOf(JSON.serialize(getRespuestaNoOk('184-01','Mensaje ya enviado')));
+            writeLog ('RES', res.statuscode + ';' + getRespuestaNoOk('417',e.getMessage()));
+        }
+    }
+
+    /**
+     * Wrapper del IFS_LogRecord.record
+     */
+    private static void writeLog (String pTipo, String pDatos) {
+        printDebug('Entre en writeLog - pTipo --> ' + pTipo + ' - pDatos --> ' + pDatos);
+        DateTime dt = DateTime.now();
+        String dts = dt.format('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'');
+
+        if (pTipo == 'REQ') {
+            guId = GuidUtil.NewGuid(); //-- Calculo el Guid.
+            /*IFS_LogRecord.record(dts, 'SERVICIO', 'S184', guId, pTipo, pDatos, '');  */
+        }
+        else {
+           /* IFS_LogRecord.record(dts, 'SERVICIO', 'S184', guId, pTipo, '', pDatos);  */
         }
     }
 
@@ -75,8 +99,9 @@ global with sharing class IFS_S184_recievesFromBDO {
                 idCaso.add(cHH.Id);
             }
             PortabilityHandler.ProcessPortability(idCaso);
+        } else {
+                insertarCaso(jsonBody);
         }
-        insertarCaso(jsonBody);
     }
 
     static Case getCase (FromJSON jsonBody){
@@ -100,7 +125,6 @@ global with sharing class IFS_S184_recievesFromBDO {
     static Case getCasePadre (FromJSON jsonBody){
         Long pNroSolicitud = jsonBody.requestFromBDO.nroSolicitudPortacion;
         String lNroSolicitud = String.valueOf(pNroSolicitud);
-        String strLineas = JsonBody.requestFromBDO.lineasPortacion;
         try{
             Case c = [SELECT Port_Rejection_Cod__c, Port_Line_Qty__c, Due_Date__c,Port_Network_Type__c, Port_Receiver_Cod__c, Port_Donor_Cod__c, Port_Doc_No__c, Port_Doc_Type__c, RecordTypeId, Id, ExternalCaseId__c, Area__c, Subarea__c, Origin, Speech__c, Modified_Date__c FROM Case WHERE ExternalCaseId__c = :lNroSolicitud];
             return c;
@@ -189,18 +213,13 @@ global with sharing class IFS_S184_recievesFromBDO {
         String strLineas = pJsonBody.requestFromBDO.lineasPortacion;
         String[] arrLineas = strLineas.split('\\|');
         for(Integer a=0; a<arrLineas.size();a++){
-            if (a==0){
-                c.LineNumber__c = arrLineas[a];
-                insert c;
-            }else{
                 strList.add(arrLineas[a]);
-            }
         }
         List<Id> idCaso = new List<Id>();
-        idCaso.add(c.Id);
-        
         List<Case> cH = new List<Case>();
         if(strList.size() > 1){
+            insert c;
+            idCaso.add(c.Id);
             for(String strNum : strList){
                 insertarCasoHijo(pJsonBody, c.id, cH, strNum);
             }
@@ -208,6 +227,10 @@ global with sharing class IFS_S184_recievesFromBDO {
             for (Case cHH : cH){
                 idCaso.add(cHH.Id);
             }
+        } else {
+            c.LineNumber__c = strList[0];
+            insert c;
+            idCaso.add(c.Id);
         }
         PortabilityHandler.ProcessPortability(idCaso);
     }

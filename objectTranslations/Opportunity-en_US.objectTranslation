@@ -105,8 +105,12 @@ Filled in by: The account manager. --></help>
         <name>SCP_Certa_GC__FCV__c</name>
     </fields>
     <fields>
-        <label><!-- Fecha comprometida instalación --></label>
+        <label><!-- SCP Dep --></label>
         <name>SCP_Certa_GC__Fecha_comprometida_instalaci_n__c</name>
+    </fields>
+    <fields>
+        <label><!-- Fecha comprometida instalación --></label>
+        <name>SCP_Certa_GC__Fecha_comprometida_instalaci_n_formula__c</name>
     </fields>
     <fields>
         <label><!-- Fecha probable de instalación --></label>
@@ -197,12 +201,20 @@ Filled in by: The account manager. --></help>
         <name>SCP_Certa_GC__Total_Abono_USD__c</name>
     </fields>
     <fields>
-        <label><!-- Total CUV (ARG) --></label>
+        <label><!-- SCP dep --></label>
         <name>SCP_Certa_GC__Total_CUV_ARG__c</name>
     </fields>
     <fields>
-        <label><!-- Total CUV (USD) --></label>
+        <label><!-- Total CUV (ARG) --></label>
+        <name>SCP_Certa_GC__Total_CUV_ARG_resumen__c</name>
+    </fields>
+    <fields>
+        <label><!-- SCP Dep --></label>
         <name>SCP_Certa_GC__Total_CUV_USD__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total CUV (USD) --></label>
+        <name>SCP_Certa_GC__Total_CUV_USD_resumen__c</name>
     </fields>
     <fields>
         <help><!-- = Calculated FCV * calculated win probability

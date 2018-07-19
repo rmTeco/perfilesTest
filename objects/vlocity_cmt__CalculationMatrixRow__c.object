@@ -44,7 +44,6 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <deprecated>false</deprecated>
-    <description>Represents a row within a specific version of a Vlocity Calculation Matrix.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
@@ -105,7 +104,7 @@
         <label>Input Data MD5 Hash</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Vlocity Calculation Matrix Row</pluralLabel>
+    <pluralLabel>Vlocity Calculation Matrix Rows</pluralLabel>
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>

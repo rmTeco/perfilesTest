@@ -428,17 +428,17 @@
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
-    <label>Vlocity DataRaptor Interface</label>
+    <label>Vlocity DataRaptor Bundle</label>
     <listViews>
         <fullName>vlocity_cmt__All</fullName>
         <filterScope>Everything</filterScope>
         <label>All</label>
     </listViews>
     <nameField>
-        <label>DataRaptor Interface Name</label>
+        <label>DataRaptor Bundle Name</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Vlocity DataRaptor Interfaces</pluralLabel>
+    <pluralLabel>Vlocity DataRaptor Bundles</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

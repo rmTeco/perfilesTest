@@ -20,5 +20,6 @@
         <label><!-- Estimated Resolution Time --></label>
         <name>Estimated_Resolution_Time__c</name>
     </fields>
+    <nameFieldLabel><!-- Case Resolution Time Name --></nameFieldLabel>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

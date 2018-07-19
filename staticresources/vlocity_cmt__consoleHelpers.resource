@@ -1,36 +1,120 @@
 // Blank for now.
 consoleHelper = (function () {
-	var openSubTabList;
-	var tabEvent = "ATabEventHasHappened";
-	var SubTabMap = {};
-	var tabInfoFreshness = null;
-	var tabInfo;
-	var objectInfoFreshness = null;
-	var objectInfo;
+    var openSubTabList;
+    var tabEvent = "ATabEventHasHappened";
+    var SubTabMap = {};                                // This is SFID : subtabID
+    var tabInfoFreshness = null;
+    var tabInfo;
+    var objectInfoFreshness = null;
+    var objectInfo;
+    var events = [];
 
-	// FROM Persistent
-	// I don't know if this is actually needed. 
-	// sforce.connection.sessionId = '{!$Api.Session_ID}';
-	
-	var enclosingTabId;
-	var delayTime = 200;
-	// END Persistent
+    // FROM Persistent
+    // I don't know if this is actually needed. 
+    // sforce.connection.sessionId = '{!$Api.Session_ID}';
+    
+    var enclosingTabId;
+    var delayTime = 200;
+    // END Persistent
 
     var subTabMapcbFunc; // This is the callback for when mapping subtabs is done. This should probably be a list.
     var callsMade = 0; // This is the count of asych calls made when mapping subtabs.
     var currentlyRunning = false; // This is a simple lock to make sure that callsMade isn't modified until it is done.
     var queuedTabRequests = new Array();
+    
+    var currentTabID = "";
+    var currentOjbID = "";
 
+    /*
+     * So far the following event types are:
+     *   start
+     *   open
+     *   closed
+     *   focus
+     */
+
+    function startLogging() {
+        var lastEvent = events.pop();
+        events = [];
+        events.push(lastEvent);
+        addEvent("start", getCurrentTabID, getCurrentObjID);
+    }
+
+    function stopLogging() {
+        // Package
+        var jsonString = JSON.stringify(events);
+        console.log(jsonString);
+        
+        
+        // Clear the events log;
+        events = [];
+    }
+
+    function addEvent(type, tabID, objID) {
+        // Timestamp
+        // append to events
+        var eventToAppend = {};
+        eventToAppend.UTCTimeOfEvent = new Date().getTime();
+        eventToAppend.type = type;
+        eventToAppend.tabID = tabID;
+        eventToAppend.objID = objID;
+        events.push(eventToAppend);
+    }
+
+    // TODO: This needs to update the SubTabMap
     function tabOpenListener(result) {
         console.log(result.message);
+        sforce.console.getPageInfo(result.id, function (result1) {
+            addEvent("open", JSON.parse(result1.pageInfo).url, result.id);
+        });
     }
 
+    // TODO: This needs to update the SubTabMap
     function tabClosedListener(result) {
         console.log(result.message);
+        sforce.console.getPageInfo(result.id, function (result1) {
+            addEvent("closed", JSON.parse(result1.pageInfo).url, result.id);
+        });
     }
+
+    function listeningForStuff(resutl) {
+        console.log("Not sure when this is called msg: " + result.message);
+    }
+
+    // TODO: This needs to create an event
+    function focuseChangeListener(result) {
+        console.log("FOCUS CHANGED! id: " + result.id + ", " + result.objectId);
+        addEvent("focus", result.objectId, result.id);
+        currentTabID = result.id;
+        currentOjbID = result.objectId;
+    }
+
+
+    // I'm getting the following and this isn't being called.
+    // onTabSave: Cannot get view from frameId: ext-comp-1034
+
+    // TODO: This needs to create an event
+    function tabSaveCalled(result) {
+        console.log("Tab Saved id: " + result.id + ", " + result.objectId);
+        // This is needed according to the console API. 
+        // Set first argument to true to indicate a failed save operation.
+        
+        //addEvent()
+        sforce.console.setTabUnsavedChanges(false, undefined, result.id);
+    }
+
+
+    sforce.console.onFocusedSubtab(focuseChangeListener);
+    //sforce.console.onTabSave(tabSaveCalled);
+
+    // Not sure what this callback should do.
+    // sforce.console.onEnclosingTabRefresh(function (result) {var i = 0; i++;});
 
     sforce.console.addEventListener(sforce.console.ConsoleEvent.OPEN_TAB, tabOpenListener);
     sforce.console.addEventListener(sforce.console.ConsoleEvent.CLOSE_TAB, tabClosedListener);
+    sforce.console.addEventListener(sforce.console.ConsoleEvent.PRESENCE.STATUS_CHANGED, listeningForStuff);
+
+
 
     // window.onload = function() {
     //     sforce.console.getEnclosingPrimaryTabId(getSubtabs);
@@ -101,6 +185,14 @@ consoleHelper = (function () {
         };
     }
 
+    function getCurrentTabID() {
+        currentTabID;
+    }
+
+    function getCurrentObjID() {
+        currentOjbID;
+    }
+
     function getSubtabsHelper(subTabID) {
         callsMade++;
         //var thisObj = this;
@@ -129,7 +221,7 @@ consoleHelper = (function () {
 
         //TODO TEST THIS!
         loadTabData: function(cbSuc, cbFail) {
-        	restCall('/services/data/v31.0/tabs', cbSuc, cbFail);
+            restCall('/services/data/v31.0/tabs', cbSuc, cbFail);
         },
 
         /*=====================================================================
@@ -189,7 +281,6 @@ consoleHelper = (function () {
         // ptID                 stObjID  focus           stName           stLoc      cbFunc                       stName1                                               
         // primaryTabId:String, url:URL, active:Boolean, tabLabel:String, id:String, (optional)callback:Function, (optional)name:String
         openSubTabManager: function(stObjID, stName, stLoc, focus, ptId, cbFunc, stName1) {
-            
             if (stName == undefined) {
                 stName = "New Subtab";
             }
@@ -228,23 +319,23 @@ consoleHelper = (function () {
                 if (result.success) {
                     stId = result.id;
                     sforce.console.refreshSubtabById(stId, focus, function (result) {
-                    	console.log("refreshed success: " + result.success + ", " + stId);
+                        console.log("refreshed success: " + result.success + ", " + stId);
                     }); // This doesnt appear to be working. 
-                   sforce.console.setTabIcon(null, result.id);
+                    sforce.console.setTabIcon(null, result.id);
 
                 }  
             }
 
             function finallyCallOpen(result) {
-
-                for (argParm in queuedTabRequests) {
+                var argParm
+                while (argParm = queuedTabRequests.pop()) {
                     // This should be reduced to a function call(no if).
-                    argParm = queuedTabRequests[argParm];
                     if (result[argParm.stObjID] == null) {
                         sforce.console.openSubtab(argParm.ptId, argParm.stObjID, argParm.focus, 
                                                   argParm.stName, argParm.stId, 
                                                   argParm.handleSubtabOpen, argParm.stName1);
                     }
+                    //ToDo Make sure this terminates. 
                     
                 }
             }
@@ -263,12 +354,11 @@ consoleHelper = (function () {
 
             if (Object.keys(SubTabMap).length === 0) {
                 if (!this.startMappingSubtabs(finallyCallOpen)) {
-                    
+                    // do nothing since the request has been logged and mapping is currently running. 
                 }
             } else {
                 // This should determine if the SubTabMap is stale.
                 finallyCallOpen(SubTabMap);
-
             }
 
         },
@@ -304,6 +394,14 @@ consoleHelper = (function () {
                 return false;
             }
             return true;
+        },
+
+        startInteraction: function() {
+            startLogging();
+        },
+
+        endInteraction: function() {
+            stopLogging();
         }
     };
 })();

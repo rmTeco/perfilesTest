@@ -148,6 +148,7 @@ global without sharing class ta_care_AccountResumeIntegration implements vlocity
     
     global void GetAccountResumeIntegration3(Map<String,Object> inputMap, Map<String,Object> outMap, Map<String,Object> options) {
         
+        try{
         inputMap = (Map<string, Object>)inputMap.get('body');
         System.debug('inputMap: ' + inputMap);
 
@@ -156,11 +157,49 @@ global without sharing class ta_care_AccountResumeIntegration implements vlocity
         Map<String,Object> outMapS059 = new Map<String,Object>();
 
         vlocity_cmt.IntegrationProcedureService integProcServ = new vlocity_cmt.IntegrationProcedureService();
-        
-        if(!Test.isRunningTest()){integProcServ.invokeMethod('IFS_S018',new Map<String,Object>{'body' => inputMap.get('bodyS018')}, outMapS018, options);}
-        if(!Test.isRunningTest()){integProcServ.invokeMethod('IFS_S024',new Map<String,Object>{'body' => inputMap.get('bodyS024')}, outMapS024, options);}
-        if(!Test.isRunningTest()){integProcServ.invokeMethod('IFS_S059',new Map<String,Object>{'body' => inputMap.get('bodyS059')}, outMapS059, options);}
-
+        Map<String, Object> outResult =  new Map<String, Object>();
+        if(!Test.isRunningTest()){
+            integProcServ.invokeMethod('IFS_S024',new Map<String,Object>{'body' => inputMap.get('bodyS024')}, outMapS024, options);
+            Map<String, Object> resultS024 = (Map<String, Object>)outMapS024.get('IPResult');
+            if(resultS024.get('detalle') == null)
+            {
+                System.debug('outMapS024: '+ String.valueOf(outMapS024));
+                outResult.put('comprobantes', (Map<String, Object>)outMapS024.get('IPResult'));
+            }
+            else
+            {
+                outResult.put('comprobantes', 'Sin datos');
+            }
+            
+            integProcServ.invokeMethod('IFS_S018',new Map<String,Object>{'body' => inputMap.get('bodyS018')}, outMapS018, options);
+            Map<String, Object> resultS018 = (Map<String, Object>)outMapS018.get('IPResult');
+            if(resultS018.get('detalle') == null)
+            {
+                System.debug('outMapS018: '+ String.valueOf(outMapS018));
+                outResult.put('datosBalance', (Map<String, Object>)outMapS018.get('IPResult'));
+            }
+            else
+            {
+                outResult.put('datosBalance', 'Sin datos');
+            }
+            
+            
+            Map<String,Object> inputMapS059 = new Map<String,Object>{'body' => inputMap.get('bodyS059')};
+            System.debug('inputMapS059'+ String.valueOf(inputMapS059));
+            integProcServ.invokeMethod('IFS_S059',inputMapS059, outMapS059, options);
+            System.debug('outMapS059: '+outMapS059);
+            Map<String, Object> resultS059 = (Map<String, Object>)outMapS059.get('IPResult');
+            System.debug('resultS059: '+String.valueOf(resultS059));
+            if(resultS059.get('detalle') == null)
+            {
+                System.debug('outMapS059: '+ String.valueOf(outMapS059));
+                outResult.put('pagos', (Map<String, Object>)outMapS059.get('IPResult'));
+            }
+            else
+            {
+                outResult.put('pagos', 'Sin datos');
+            }
+        }
 
         System.debug('outMapS018'+outMapS018);
         System.debug('outMapS024'+outMapS024);
@@ -175,12 +214,18 @@ global without sharing class ta_care_AccountResumeIntegration implements vlocity
 			outMapS059.put('IPResult', resultAux);
 			
 		}	
-	
-        Map<String, Object> outResult =  new Map<String, Object>{'datosBalance' => (Map<String, Object>)outMapS018.get('IPResult')};
+       
+        /*Map<String, Object> outResult =  new Map<String, Object>{'datosBalance' => (Map<String, Object>)outMapS018.get('IPResult')};
 		outResult.put('comprobantes', (Map<String, Object>)outMapS024.get('IPResult'));
-		outResult.put('pagos', (Map<String, Object>)outMapS059.get('IPResult'));
+		outResult.put('pagos', (Map<String, Object>)outMapS059.get('IPResult'));*/
         outMap.put('IPResult', outResult);
-        
+            System.debug('outMap --> '+outMap);
+
+        }catch(Exception ex)
+        {
+            System.debug('Ocurrio un error en ta_care_AccountResumeIntegration.GetAccountResumeIntegration3');
+            throw ex;
+        }
     }
     
 /*

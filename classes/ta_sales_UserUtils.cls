@@ -1,8 +1,7 @@
 global class ta_sales_UserUtils implements vlocity_cmt.VlocityOpenInterface {
     global Boolean invokeMethod(String methodName, Map<String, Object> input, Map<String, Object> outMap, Map<String, Object> options) {
         Boolean result = true;
-        try
-        {
+        try {
             String userId = (String) options.get('userId');
             if (methodName.equals('checkUserHasCustomPermissionAccess')) {
                 String customPermission = (String) options.get('customPermission');
@@ -22,20 +21,19 @@ global class ta_sales_UserUtils implements vlocity_cmt.VlocityOpenInterface {
                 outMap.put('UserStoreLocation', storeLocation.Id);
             }
             result = false; 
-        } 
-        catch(Exception e)
-        {
+        }
+        catch(Exception e) {
             System.debug('Exception Msg: ' + e.getMessage());
             System.debug('Exception Cause: ' + e.getCause());
             System.debug('Exception Stack Trace: ' + e.getStackTraceString());
             result = false;
         }
+
         return result; 
     }
 
     public static vlocity_cmt__BusinessSite__c getStoreLocation(Id userId) {
-        try
-        {
+        try {
             Team_Member__c tm = [
                 SELECT Work_Team__r.Work_Place__c,
                        Work_Team__r.Work_Place__r.Name,
@@ -53,8 +51,7 @@ global class ta_sales_UserUtils implements vlocity_cmt.VlocityOpenInterface {
 
             return tm.Work_Team__r.Work_Place__r;
         }
-        catch(QueryException e)
-        {
+        catch(QueryException e) {
             System.debug('Exception Msg: ' + e.getMessage());
             System.debug('Exception Cause: ' + e.getCause());
             System.debug('Exception Stack Trace: ' + e.getStackTraceString());
@@ -63,10 +60,9 @@ global class ta_sales_UserUtils implements vlocity_cmt.VlocityOpenInterface {
     }
 
     public static Boolean checkUserHasCustomPermissionAccess(String customPermission, Id userId) {
-        try
-        {
-            Set <Id> permissionSetIds = new Set <Id>();
-            List < User > userList = new List < User >();
+        try {
+            Set<Id> permissionSetIds = new Set<Id>();
+            List<User> userList = new List<User>();
             for (SetupEntityAccess access : [SELECT ParentId
                                                FROM SetupEntityAccess 
                                               WHERE SetupEntityId IN (SELECT Id 
@@ -82,8 +78,7 @@ global class ta_sales_UserUtils implements vlocity_cmt.VlocityOpenInterface {
 
             return userList.isEmpty() ? false : true;
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             System.debug('Exception Msg: ' + e.getMessage());
             System.debug('Exception Cause: ' + e.getCause());
             System.debug('Exception Stack Trace: ' + e.getStackTraceString());

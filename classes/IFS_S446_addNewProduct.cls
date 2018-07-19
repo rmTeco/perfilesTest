@@ -209,6 +209,7 @@ global with sharing class IFS_S446_addNewProduct {
                     lstReturn = new List<OrderItem>();
                 }
                 lstReturn.add(oi);
+                System.debug(oi);
                 lstReturn.addAll(getOfferChild (oi.vlocity_cmt__LineNumber__c, pLstTemplateItems));
                 break;
             }
@@ -225,15 +226,23 @@ global with sharing class IFS_S446_addNewProduct {
     private static List<OrderItem> getOfferChild (String pLineNumber, List<OrderItem> pLstTemplateItems) {
         printDebug('---- getOfferChild() - pLineNumber --> ' + pLineNumber);
         List<OrderItem> lstReturn = new List<OrderItem>();
+        String [] tree = pLineNumber.split('\\.');
         for (Integer i=0; pLstTemplateItems != null && i < pLstTemplateItems.size(); i++) {
             OrderItem oi = pLstTemplateItems.get(i);
-            String [] tree = pLineNumber.split('\\.');
             String oiLineNumber = oi.vlocity_cmt__LineNumber__c; 
+
+            if (oiLineNumber == null) {
+                continue;
+            }
+
             String [] treeTmpl = oiLineNumber.split('\\.');
 
             if (treeTmpl.size() <= tree.size()) {
                 continue;  //-- La consigna es que tiene que ser hijo esto es nivel mayor que el padre.
             }
+
+            printDebug('tree --> ' + tree + ' - treeTmpl --> ' + treeTmpl);
+
             if (tree[0] == treeTmpl[0] && tree[1] == treeTmpl[1]) { //-- Encontre el root de la oferta.
                 lstReturn.add(oi);
             }
@@ -418,6 +427,8 @@ global with sharing class IFS_S446_addNewProduct {
             if (lstOrderItems == null || lstOrderItems.isEmpty()) {
                 throw new FunctionalException('No se recuperaron items de la orden template.');
             }
+
+            System.debug(lstOrderItems);
 
             return lstOrderItems;
         }

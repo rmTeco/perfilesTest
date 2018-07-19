@@ -37,8 +37,8 @@
         var workTeamName = component.get("v.WorkTeamName");
         var workTeamRoleName = component.get("v.WorkTeamRoleName");
 
-        if(queueName == '') {
-            component.set("v.messageHelp", "Debe elegir un queue");
+        if(queueName == '' || queueName == 'NoSelected') {
+            component.set("v.messageHelp", "Debe elegir una cola");
             document.getElementById("message__helper").style.display = "block";
         }else{
             var action = component.get("c.saveWorkTeamQueue");

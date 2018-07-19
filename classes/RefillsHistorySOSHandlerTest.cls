@@ -14,7 +14,7 @@ public class RefillsHistorySOSHandlerTest {
         
         Test.startTest();
         refillsHistorySOS.invokeMethod(methodName, input, outMap, options);
-		Test.stopTest();
+    Test.stopTest();
         
         system.debug('outMap.get(Result) = '+outMap.get('Result'));
         Map<String, Object> resultList = (Map<String, Object>)outMap.get('Result');

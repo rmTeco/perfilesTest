@@ -2,38 +2,17 @@
     
         <apex:includeScript value="/support/console/41.0/integration.js"/>
         
-        <script src="{!URLFOR($Resource.vlocity_cmt__vlocity_core_assets, '/latest/vlocity_core_assets.js')}"></script>
-        <script src="{!URLFOR($Resource.vlocity_cmt__angular_strap_bundle_1_6)}"></script>
-        
         <script type="text/javascript">
-        
-            String primaryTabId = sforce.console.getEnclosingPrimaryTabId();
-        	String accId = ApexPages.currentPage().getparameters().get('accId')
-        	String URL = URL.getSalesforceBaseUrl().toExternalForm()+'/'+accId;
-        	String URL2 = URL.replace("vlocity-cmt", "c");
-    
-        	var previousOnload = window.onload;
-        	window.onload = function() { 
-            if (previousOnload) { 
-                previousOnload();
-                console.info('URL'+URL2);
-                console.info('accId'+accId);
-                alert('URL'+URL2);
-                alert('accId'+accId);
-                sforce.console.openPrimaryTab(null,URL2, true, null, null, null);
-                    
-                    
-            }
-                setTimeout(setTabTitle(), 500); 
-            }
-        	
-        	//https://ta-dev--desa01--vlocity-cmt.cs63.visual.force.com/apex/taOpen360?accId=0016C000009Kx8aQAC
-        	//sforce.console.openPrimaryTab(null,'salesforce.com', true, null, null, null);
-        	
-        	//console.info('URL'+URL2);
-        	//console.info('primaryTabId'+primaryTabId);
-            //console.info('accId'+accId);
-        	//sforce.console.openSubtab(primaryTabId, URL2, true, null, null);
+            
+            var accId = '{!$CurrentPage.parameters.accId}';
+
+            window.onload = function() {
+                sforce.console.getEnclosingTabId(redirectToClientNewAccount);
+            };
+            var redirectToClientNewAccount = function redirectToClientNewAccount(result) {
+                sforce.console.openPrimaryTab(null, '/' + accId, true);
+                sforce.console.closeTab(result.id);
+            };
 
         </script>
 

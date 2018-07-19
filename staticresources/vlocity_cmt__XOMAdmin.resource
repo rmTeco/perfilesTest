@@ -18,7 +18,7 @@
     var lowerCasePrefix = thisScript.indexOf('__') == -1 ? '' : thisScript.substring(0, thisScript.indexOf('__') + 2);
     //check for the cached namespace first
     lowerCasePrefix = lowerCasePrefix === '' && localStorage.getItem('nsPrefix') ? localStorage.getItem('nsPrefix'): lowerCasePrefix;
-    
+
     if(lowerCasePrefix !== ''){
         lowerCasePrefix = /__$/.test(lowerCasePrefix) ? lowerCasePrefix : lowerCasePrefix + '__';
     }
@@ -26,10 +26,10 @@
       return function() {
         //then check if the app has put a namespace and take that one as it is newer
         lowerCasePrefix = window.nsPrefix ? window.nsPrefix: lowerCasePrefix;
-        //add the underscore if it doesn't have them    
+        //add the underscore if it doesn't have them
         if(lowerCasePrefix !== ""){
             lowerCasePrefix = /__$/.test(lowerCasePrefix) ? lowerCasePrefix : lowerCasePrefix + '__';
-        }  
+        }
         return lowerCasePrefix;
       };
     } else {
@@ -78,7 +78,7 @@
             };
           }
           if(typeof Visualforce !== 'undefined') { //inside VF
-            scanObjectForNs(Visualforce.remoting.Manager.providers, []);  
+            scanObjectForNs(Visualforce.remoting.Manager.providers, []);
           } else {
             return lowerCasePrefix;
           }
@@ -160,9 +160,9 @@ angular.module('xomadmin').controller('XOMAdminController',
                 var sliceBatch = function(scope, start)
                 {
 
-                    console.log('Scope', scope);
+                    console.log('Scope length', scope.length);
 
-                    console.log('Slicing batch ', start);
+                    console.log('Preparing batch starting with', start);
 
                     var pos = 0;
 
@@ -183,10 +183,10 @@ angular.module('xomadmin').controller('XOMAdminController',
 
                             if (pos>=start)
                             {
-                                console.log('Starting');
+                                // console.log('Starting');
                                 if (!itemReq)
                                 {
-                                    console.log('New sObjType');
+                                    // console.log('New sObjType');
                                     itemReq = {
                                         sObjTypeName: item.sObjTypeName,
                                         ids: []
@@ -215,7 +215,7 @@ angular.module('xomadmin').controller('XOMAdminController',
 
                     var request = sliceBatch(scope, start);
 
-                    console.log(request);
+                    console.log('Creating deltas for ', request);
 
                     if (request.length > 0)
                     {
@@ -232,6 +232,30 @@ angular.module('xomadmin').controller('XOMAdminController',
                     }
 
                 };
+
+                var cleanup = function (cont) {
+                    console.log('Cleaning up');
+                    remoteActions.cleanupSyncDelta().then(function (result) {
+                        if (result) {
+                            cont();
+                        }
+                        else {
+                            // Not finished yet, retrying
+                            cleanup(cont);
+                        }
+
+                    });
+                }
+
+                cleanup(function() {
+                    // Don't forget to populate sync deltas
+                    console.log('Starting to popuate sync deltas');
+                    remoteActions.calcScopeForSyncDelta().then(function(scope)
+                    {
+                        populateSyncDelta(scope, 0);
+                    });
+                });
+
             }
 
             $scope.cleanupSyncDelta = function()
@@ -264,7 +288,7 @@ angular.module('xomadmin').controller('XOMAdminController',
 
                 $scope.showSpinner = true;
 
-                function _ensureGlobalKeysBatch(idx) {
+                function _ensureGlobalKeys(idx) {
 
                     remoteActions.ensureGlobalKeysBatch(idx).then(function (idx) {
                         if (idx < 0 ) {
@@ -278,7 +302,7 @@ angular.module('xomadmin').controller('XOMAdminController',
 
                 }
 
-                _ensureGlobalKeysBatch(0);
+                _ensureGlobalKeys(0);
 
 
             }

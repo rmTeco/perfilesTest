@@ -52,11 +52,6 @@
         <label>One Time Discount</label>
     </standardValue>
     <standardValue>
-        <fullName>Premio</fullName>
-        <default>false</default>
-        <label>Premio</label>
-    </standardValue>
-    <standardValue>
         <fullName>Prepaid</fullName>
         <default>false</default>
         <label>Prepaid</label>
@@ -70,10 +65,5 @@
         <fullName>Simcard</fullName>
         <default>false</default>
         <label>Simcard</label>
-    </standardValue>
-    <standardValue>
-        <fullName>TV</fullName>
-        <default>false</default>
-        <label>TV</label>
     </standardValue>
 </StandardValueSet>

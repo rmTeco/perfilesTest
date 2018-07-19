@@ -4,36 +4,48 @@
         .alinear{
         text-align: right;  
         }
+        .centrar{
+        text-align: center;
+        }
     </style>
     <apex:repeat value="{!wrappersProyectos}" var="Wppproducto">
-        
-        <apex:pageBlock title="Producto: {!Wppproducto.productoNombre}">
-            <apex:pageBlockTable value="{!Wppproducto.proyectos}" var="proyecto">
-                <apex:column width="40%" value="{!proyecto.name}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Nombre Proyecto" />
-                <apex:column width="10%" value="{!proyecto.SCP_Certa_GC__Numero_de_Proyecto__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Número Proyecto" />
-                <apex:column width="5%" value="{!proyecto.SCP_Certa_GC__Cantidad__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Cantidad"/>
-                <apex:column width="10%" value="{!proyecto.SCP_Certa_GC__Estado__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Estado"/>
-                <apex:column width="10%" value="{!proyecto.SCP_Certa_GC__TMI__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="TMI"/>
-                <apex:column width="5%" value="{!proyecto.SCP_Certa_GC__Moneda__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Moneda"/>
-                <apex:column width="5%" value="{!proyecto.SCP_Certa_GC__Plazo_contrato__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Plazo contrato (meses)"/>
-                <apex:column width="5%" value="{!proyecto.SCP_Certa_GC__montoMensual__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Monto Mensual"/>
-                <apex:column headerClass="alinear" width="10%" value="{!proyecto.SCP_Certa_GC__Precio__c}" style="text-align: right;{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Monto Única Vez" rendered="{!proyecto.name != '  Subtotal'}"/>
-                <apex:column headerClass="alinear" width="10%" value="{!proyecto.SCP_Certa_GC__PrecioFinal__c}" style="text-align: right;{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Precio Total (ARG)" rendered="{!proyecto.name != '  Subtotal'}"/>
-                <apex:column headerClass="alinear" width="10%" value="{!proyecto.SCP_Certa_GC__TMI__c}" style="text-align: right;{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Precio Total" rendered="{!proyecto.name = '  Subtotal'}"/>
-                <apex:column headerClass="alinear" width="10%" value="{!proyecto.SCP_Certa_GC__Precio__c}" style="text-align: right;{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
-                             headerValue="Precio Total (ARG)" rendered="{!proyecto.name = '  Subtotal'}"/>
-            </apex:pageBlockTable>
+         
+        <apex:pageBlock title="Proyecto: {!Wppproducto.productoNombre}"  >
+            
+            <apex:pageBlockSection collapsible="true" columns="1" title="Informacion del Proyecto">
+                <apex:pageBlockTable value="{!Wppproducto}" var="wpp" >
+                    <apex:column style="text-align: center;" width="33%" value="{!wpp.productoNombre}" headerValue="Nombre" headerClass="centrar" />
+                    <apex:column style="text-align: center;" width="33%" value="{!wpp.proyectoNumero}" 
+                                 headerValue="Número" headerClass="centrar" />
+                    <apex:column style="text-align: center;" width="34%" value="{!wpp.proyectoEstado}" 
+                                 headerValue="Estado" headerClass="centrar" />
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <br/>
+            <apex:pageBlockSection collapsible="true" columns="1" title="Productos">
+                <apex:pageBlockTable value="{!Wppproducto.proyectos}" var="proyecto">
+                    <apex:column width="40%" value="{!proyecto.producto__r.name}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="Nombre Producto" />
+                    <apex:column width="10%" value="{!proyecto.SCP_Certa_GC__Cantidad__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="Cantidad"/>
+                    <apex:column width="10%" value="{!proyecto.SCP_Certa_GC__TMI__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="TMI"/>
+                    <apex:column width="5%" value="{!proyecto.SCP_Certa_GC__Moneda__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="Moneda"/>
+                    <apex:column width="5%" value="{!proyecto.SCP_Certa_GC__Plazo_contrato__c}" style="{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="Plazo contrato (meses)"/>
+                    <apex:column width="10%" value="{!proyecto.SCP_Certa_GC__Monto_Mensual__c}" style="text-align: right; {!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerClass="alinear" headerValue="Monto Mensual"/>
+                    <apex:column headerClass="alinear" width="10%" value="{!proyecto.SCP_Certa_GC__Monto_One__c}" style="text-align: right;{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="Monto Única Vez" rendered="{!proyecto.name != '  Subtotal'}"/>
+                    <apex:column headerClass="alinear" width="10%" value="{!proyecto.SCP_Certa_GC__PrecioFinal__c}" style="text-align: right;{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="Precio Total (ARG)" rendered="{!proyecto.name != '  Subtotal'}"/>
+                    <apex:column headerClass="alinear" width="10%" value="{!proyecto.SCP_Certa_GC__TMI__c}" style="text-align: right;{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="Precio Total" rendered="{!proyecto.name = '  Subtotal'}"/>
+                    <apex:column headerClass="alinear" width="10%" value="{!proyecto.SCP_Certa_GC__Monto_One__c}" style="text-align: right;{!if(proyecto.name = '  Subtotal', 'font-weight:bold;background-color: rgb(242, 243, 243);', '')}"
+                                 headerValue="Precio Total (ARG)" rendered="{!proyecto.name = '  Subtotal'}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
         </apex:pageBlock>
         
     </apex:repeat>

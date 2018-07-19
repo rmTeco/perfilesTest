@@ -61,19 +61,10 @@
         <label>Menor</label>
     </customValue>
     <customValue>
-        <fullName>SOHO</fullName>
+        <fullName>Segmentacion de Prueba Modificado</fullName>
         <default>false</default>
-        <label>SOHO</label>
-    </customValue>
-    <customValue>
-        <fullName>Empresas</fullName>
-        <default>false</default>
-        <label>Empresas</label>
-    </customValue>
-    <customValue>
-        <fullName>PyME</fullName>
-        <default>false</default>
-        <label>PyME</label>
+        <isActive>false</isActive>
+        <label>Segmentacion de Prueba Modificado</label>
     </customValue>
     <masterLabel>SegmentLevel2</masterLabel>
     <sorted>false</sorted>

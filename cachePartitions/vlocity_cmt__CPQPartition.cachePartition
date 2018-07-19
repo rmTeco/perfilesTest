@@ -3,13 +3,13 @@
     <isDefaultPartition>false</isDefaultPartition>
     <masterLabel>CPQPartition</masterLabel>
     <platformCachePartitionTypes>
-        <allocatedCapacity>15</allocatedCapacity>
+        <allocatedCapacity>0</allocatedCapacity>
         <allocatedPurchasedCapacity>0</allocatedPurchasedCapacity>
         <allocatedTrialCapacity>0</allocatedTrialCapacity>
         <cacheType>Session</cacheType>
     </platformCachePartitionTypes>
     <platformCachePartitionTypes>
-        <allocatedCapacity>15</allocatedCapacity>
+        <allocatedCapacity>10</allocatedCapacity>
         <allocatedPurchasedCapacity>0</allocatedPurchasedCapacity>
         <allocatedTrialCapacity>0</allocatedTrialCapacity>
         <cacheType>Organization</cacheType>

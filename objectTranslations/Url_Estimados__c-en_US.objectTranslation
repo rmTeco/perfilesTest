@@ -9,6 +9,18 @@
         <value>Url Estimados</value>
     </caseValues>
     <fields>
+        <label><!-- URL_Facebook --></label>
+        <name>URL_Facebook__c</name>
+    </fields>
+    <fields>
+        <label><!-- URL_Instagram --></label>
+        <name>URL_Instagram__c</name>
+    </fields>
+    <fields>
+        <label><!-- URL_Twitter --></label>
+        <name>URL_Twitter_del__c</name>
+    </fields>
+    <fields>
         <label><!-- URL --></label>
         <name>URL__c</name>
     </fields>

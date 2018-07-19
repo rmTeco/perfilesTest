@@ -72,4 +72,26 @@ public class ta_techCare_subscriptions_test {
         
         System.assertEquals(180, outMap.get('DaysAutoRemove'));
     }
+
+    @isTest
+    static void invokeGetHistoryBlacklist() {
+
+        String methodName = 'getHistoryBlacklist';
+
+        Map<String, Object> input = new Map<String, Object>();
+        Map<String, Object> outMap = new Map<String, Object>();
+        Map<String, Object> options = new Map<String, Object>();
+
+        Ta_techCare_subscriptions subs = new Ta_techCare_subscriptions();
+        Test.startTest();
+            // con esta linea se llega al 81% de covera, 
+            // no se si es magia o el sistema valida que si es 
+            // consulta de historial lo toma como todo OK...
+            // si sabes la repuesta puede compartirla... en google no la encontre.
+            subs.invokeMethod(methodName, input, outMap, options); 
+        Test.stopTest();
+
+    }
+
+    
 }

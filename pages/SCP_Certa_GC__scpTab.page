@@ -161,7 +161,7 @@
                 }
             }
             
-            if(contenido == 'Vencimiento Contrato Activo con la Competencia' || contenido == '{!$Label.Vencimiento_Contrato_Activo_con_la_Competencia}'){
+            if(contenido == 'Vencimiento Contrato Activo con la Competencia' ){
                 var parent = $j(this).parent().parent().parent();
                 if(parent.hasClass("tl-timemarker-content-container")){
                     parent.addClass("colorVencimientoCompetencia");
@@ -502,7 +502,7 @@
         }
         
         .colorVencimientoCompetencia{
-        background-color:hsla(132,100%,40%,1) !important;
+        background-color:hsla(132,100%,55%,1) !important;
         }
 		
         .colorBlanco{

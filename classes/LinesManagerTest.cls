@@ -140,7 +140,7 @@ public class LinesManagerTest {
         Product2 product = [SELECT Id FROM Product2 LIMIT 1];
         PricebookEntry pricebookEntry = [SELECT Id, Pricebook2Id FROM PricebookEntry WHERE Product2Id =: product.Id LIMIT 1];
 
-        Order order = new Order(AccountId = acc.Id, EffectiveDate = Date.today(), Status = 'Draft', Pricebook2Id = pricebookEntry.Pricebook2Id);
+        Order order = new Order(AccountId = acc.Id, EffectiveDate = Date.today(), Status = 'Draft', Pricebook2Id = pricebookEntry.Pricebook2Id, Delivery_Method__c='Delivery', vlocity_cmt__OriginatingChannel__c='Agentes');
         insert order;
         List<OrderItem> ordItemList = new List<OrderItem>();
         ordItemList.add(new OrderItem(OrderId = order.Id, Product2Id = product.Id, Quantity = 100, PricebookEntryId = pricebookEntry.Id, UnitPrice = 500));
@@ -208,7 +208,7 @@ public class LinesManagerTest {
     static testMethod void TestCreditRechargeOK() {
         LinesManager lineManager = new LinesManager();
 
-        String mockResponse = '{"txId" : "OK"}';
+        String mockResponse = '{"txId" : "260174721"}';
         VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S143', mockResponse);
 
         Map<String, Object> options = new Map<String, Object>();
@@ -222,13 +222,13 @@ public class LinesManagerTest {
         lineManager.invokeMethod('CreditRecharge', null, outMap, options);
 		Test.stopTest();
 
-        System.assertEquals(outMap.get('txId'), 'OK');
+        System.assertEquals('260174721', outMap.get('txId'));
     }
 
     static testMethod void TestCreditRechargeNoOK() {
         LinesManager lineManager = new LinesManager();
 
-        String mockResponse = '{"txId" : null, "mensaje" : "fallo el servicio"}';
+        String mockResponse = '{"txId" : "260174721", "mensaje" : "fallo el servicio"}';
         VlocityIntegrationProcedureTestUtility.mockIntegrationProcedure('IFS_S143', mockResponse);
 
         Map<String, Object> options = new Map<String, Object>();
@@ -242,6 +242,6 @@ public class LinesManagerTest {
         lineManager.invokeMethod('CreditRecharge', null, outMap, options);
 		Test.stopTest();
 
-        System.assertEquals(outMap.get('Error'), 'fallo el servicio');
+        System.assertEquals('fallo el servicio', outMap.get('Error'));
     }
 }

@@ -2,48 +2,48 @@
 <StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <sorted>false</sorted>
     <standardValue>
-        <fullName>Business User</fullName>
+        <fullName>Usuario de negocio</fullName>
         <default>false</default>
-        <label>Business User</label>
+        <label>Usuario de negocio</label>
     </standardValue>
     <standardValue>
-        <fullName>Decision Maker</fullName>
+        <fullName>Persona con capacidad para tomar decisiones</fullName>
         <default>false</default>
-        <label>Decision Maker</label>
+        <label>Persona con capacidad para tomar decisiones</label>
     </standardValue>
     <standardValue>
-        <fullName>Economic Buyer</fullName>
+        <fullName>Comprador financiero</fullName>
         <default>false</default>
-        <label>Economic Buyer</label>
+        <label>Comprador financiero</label>
     </standardValue>
     <standardValue>
-        <fullName>Economic Decision Maker</fullName>
+        <fullName>Persona con capacidad para tomar decisiones económicas</fullName>
         <default>false</default>
-        <label>Economic Decision Maker</label>
+        <label>Persona con capacidad para tomar decisiones económicas</label>
     </standardValue>
     <standardValue>
-        <fullName>Evaluator</fullName>
+        <fullName>Evaluador</fullName>
         <default>false</default>
-        <label>Evaluator</label>
+        <label>Evaluador</label>
     </standardValue>
     <standardValue>
-        <fullName>Executive Sponsor</fullName>
+        <fullName>Patrocinador ejecutivo</fullName>
         <default>false</default>
-        <label>Executive Sponsor</label>
+        <label>Patrocinador ejecutivo</label>
     </standardValue>
     <standardValue>
-        <fullName>Influencer</fullName>
+        <fullName>Influyente</fullName>
         <default>false</default>
-        <label>Influencer</label>
+        <label>Influyente</label>
     </standardValue>
     <standardValue>
-        <fullName>Technical Buyer</fullName>
+        <fullName>Comprador técnico</fullName>
         <default>false</default>
-        <label>Technical Buyer</label>
+        <label>Comprador técnico</label>
     </standardValue>
     <standardValue>
-        <fullName>Other</fullName>
+        <fullName>Otros</fullName>
         <default>false</default>
-        <label>Other</label>
+        <label>Otros</label>
     </standardValue>
 </StandardValueSet>

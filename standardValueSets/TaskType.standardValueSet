@@ -26,9 +26,4 @@
         <default>false</default>
         <label>OrderNotification-Pendiente-Entrega</label>
     </standardValue>
-    <standardValue>
-        <fullName>SMS</fullName>
-        <default>false</default>
-        <label>SMS</label>
-    </standardValue>
 </StandardValueSet>

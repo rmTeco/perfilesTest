@@ -57,5 +57,5 @@
     </customValue>
     <description>Case Channels</description>
     <masterLabel>Case Channels</masterLabel>
-    <sorted>true</sorted>
+    <sorted>false</sorted>
 </GlobalValueSet>

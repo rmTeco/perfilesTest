@@ -74,9 +74,9 @@
 	    					{!$Label.scp_certa_gc__action_plan_builder}
 	    				</span>
 
-	    				<span style="float:left;">
-	    					<c:showVideo />
-	    				</span>
+                    <span style="float:left;">
+                        <a class="btn btn-xs btn-default" style="font-size:11px;color:#5c7995;" target="_blank" href="https://youtu.be/1yQ4LfSkapg"><apex:outputText value="{!$Label.scp_certa_gc__show_video}"/></a>	    
+                    </span>	 
 	    			</h3>
 	    			<div class="row paddingRight">
 	    				<apex:actionFunction action="{!SaveChanges}" name="SaveChanges" rerender="pageContent,errorMsg" status="renderMeStatus" oncomplete="createDataTableSerch()"/>
@@ -159,12 +159,12 @@
 					                        <apex:inputField styleClass="NewSubject" style="display:none;" value="{!item.task.Subject}" rendered="{!canEdit}"/>
 					                         -->
 											<apex:outputField value="{!item.task.Subject}">
-					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
+					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" />
 					                        </apex:outputField>
 					                    </td>
 					                    <td>                    
 					                        <apex:outputField value="{!item.task.Description}">
-					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
+					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" />
 					                        </apex:outputField>
 					                    </td>
                                         <!--
@@ -175,7 +175,7 @@
 										-->
 					                    <td class="{!IF(item.task.ActivityDate<Today(),'taskColor','')}">                    
 					                        <apex:outputField value="{!item.task.ActivityDate}">
-					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
+					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" />
 					                        </apex:outputField>
 					                    </td>
 					                    <td>             
@@ -184,29 +184,29 @@
 					                    </td>
 					                    <td>                    
 					                        <apex:outputField value="{!item.task.Status}">
-					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
+					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
 					                        </apex:outputField>
 					                    </td>
 					                    <td>                    
 					                        <apex:outputField value="{!item.task.Priority}">
-					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit" rendered="{!canEdit}"/>
+					                            <apex:inlineEditSupport event="ondblclick" changedStyleClass="myBoldClass" resetFunction="resetInlineEdit"/>
 					                        </apex:outputField>
 					                    </td>
 					                    <td>                    
 					                        <apex:outputText styleClass="AssignedToName" value="{!item.task.Owner.name}"/>
-					                        <apex:inputField required="false" styleClass="AssignedToId" style="display:none;" value="{!item.task.Ownerid}" rendered="{!canEdit}"/>
+					                        <apex:inputField required="false" styleClass="AssignedToId" style="display:none;" value="{!item.task.Ownerid}"/>
 					                    </td>
 					                </tr>
 				                </apex:repeat>
 							</tbody>
 						</table>
 					</div>
-					<apex:outputText rendered="{!canEdit}"><div style="clear:both; text-align:center; font-style: italic;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>
+					<apex:outputText ><div style="clear:both; text-align:center; font-style: italic;">{!$Label.scp_certa_gc__double_click}</div></apex:outputText>
 				</apex:outputPanel>
 				<apex:outputPanel layout="block"  styleClass="panel-footer">
 	    			<div class="row paddingRight">
 	    				<div class="btn-group pull-right" role="group" aria-label="...">	    					
-       			        	<apex:outputText rendered="{!canEdit}">
+       			        	<apex:outputText >
 		           				<button type="button" class="btn btn-default btn-sm" onclick="SaveChanges()">
 			   						<span class="glyphicon glyphicon-floppy-disk icon-btn-left"></span>&nbsp;{!$Label.save}
 			                    </button>
@@ -214,7 +214,7 @@
 		                    <button type="button" class="btn btn-default btn-sm" onclick="exportToExcel()">
 		   						<span class="glyphicon glyphicon-file icon-btn-left"></span>&nbsp;{!$Label.Export_to_Excel}
 		                    </button>
-		                    <apex:outputText rendered="{!canEdit}">
+		                    <apex:outputText >
 			                    <button type="button" class="btn btn-default btn-sm" onclick="MergeTasks()">
 			   						<span class="glyphicon glyphicon-link icon-btn-left"></span>&nbsp;{!$Label.Merge_tasks}
 			                    </button>

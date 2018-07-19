@@ -5,7 +5,7 @@ global with sharing class ta_sales_ordersByUser implements vlocity_cmt.VlocityOp
         if(methodName.equals('getOrderList')){
             getOrderList(input, outMap, options);
         }
-
+        
         return true;
     }
     
@@ -21,6 +21,7 @@ global with sharing class ta_sales_ordersByUser implements vlocity_cmt.VlocityOp
                                      OrderNumber,
                                      Account.Name,
                                      Account.Id, 
+                              		 Account.RecordTypeId,
                                      Status, 
                                      vlocity_cmt__OriginatingChannel__c, 
                                      CreatedDate, 

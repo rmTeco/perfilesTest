@@ -314,5 +314,6 @@
             <translation><!-- 8 CASILLA DE CORREO --></translation>
         </picklistValues>
     </fields>
+    <nameFieldLabel><!-- Zone Name --></nameFieldLabel>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

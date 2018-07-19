@@ -26,11 +26,12 @@ global with sharing class taNewContact implements vlocity_cmt.VlocityOpenInterfa
         
         for( Schema.PicklistEntry f : ple)
         { 
-            if(f.value == 'DNI' || f.value == 'PAS')
+            if(f.value == 'DNI' || f.value == 'PAS' || f.value == 'LEN' || f.value == 'LCV' || f.value == 'CID')
             {
-                Map <String, String> tempMap = new Map<String, String>();
+                Map <String, String> tempMap = new Map<String, String>();  
                 tempMap.put('name', f.getValue());
                 tempMap.put('value', f.getLabel());
+                //tempMap.put('value', f.getValue()); 
                 options.add(tempMap);
             }
         }

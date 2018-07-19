@@ -126,8 +126,21 @@ global with sharing class Mkt_CPDataManager implements vlocity_cmt.VlocityOpenIn
         Map<String, Object> input = new Map<String, Object>();
         List<Map<String, Object>> newMembers = new List<Map<String, Object>>();
         List<Map<String, Object>> membersPointsList = new List<Map<String, Object>>();
-        
+        Set<String> accSet = new Set<String>();
+        Map<Id, Account> accInfoMap;
+
         if(consumers != null){
+            for(Object acc : consumers) {
+                Map<String,Object> mapacc = (Map<String,Object>)acc;
+                accSet.add(String.valueOf(mapacc.get('Id')));
+            }
+            if(business != null){
+                for(Object acc : business) {
+                    Map<String,Object> mapacc = (Map<String,Object>)acc;
+                    accSet.add(String.valueOf(mapacc.get('Id')));
+                }
+            }
+            accInfoMap = new Map<Id, Account>([SELECT Id, PersonalClubCategory__c FROM Account WHERE Id IN :accSet]);
             for(Object acc : consumers){
                 Map<String, Object> memberPoints = new Map<String, Object>();
                 Map<String,Object> mapacc = (Map<String,Object>)acc;
@@ -143,7 +156,7 @@ global with sharing class Mkt_CPDataManager implements vlocity_cmt.VlocityOpenIn
                 Map<String,Object> aux = new Map<String,Object>();
                 aux.put('variable','CATEGORIA DE SOCIO');
                 aux.put('tipo','STRING');
-                aux.put('valorString', mapacc.get('ClubCategory'));
+                aux.put('valorString', accInfoMap.get(String.valueOf(mapacc.get('Id'))).PersonalClubCategory__c);
                 eventAtt.add(aux);
                 memberPoints.put('atributosEvento',eventAtt);
                 membersPointsList.add(memberPoints);
@@ -165,9 +178,9 @@ global with sharing class Mkt_CPDataManager implements vlocity_cmt.VlocityOpenIn
                 Map<String,Object> aux = new Map<String,Object>();
                 aux.put('variable','CATEGORIA DE SOCIO');
                 aux.put('tipo','STRING');
-                aux.put('valorString', mapacc.get('ClubCategory'));
+                aux.put('valorString', accInfoMap.get(String.valueOf(mapacc.get('Id'))).PersonalClubCategory__c);
                 eventAtt.add(aux);
-                memberPoints.put('atributosEvento',eventAtt);
+                memberPoints.put('atributosEvento',eventAtt); 
                 membersPointsList.add(memberPoints);
             }
         }   
@@ -178,7 +191,7 @@ global with sharing class Mkt_CPDataManager implements vlocity_cmt.VlocityOpenIn
             GP_adapter.crearAcumuladorSocioTitular(input);
             outMap.put('AltaGP','Ok');
         }catch(Exception e){
-            System.debug('createMembers:invokeMethod -> exception: '+e);
+            System.debug('createMembers:invokeMethod: ' + input + '  -> exception: '+e);
             outMap.put('Exception',e);
        }
        try{//This is not the best practice but we cannot differentiate the exception returned from the API 
@@ -187,7 +200,7 @@ global with sharing class Mkt_CPDataManager implements vlocity_cmt.VlocityOpenIn
             System.debug('Yamil sumar: '+sumar);
             GP_adapter.sumarRestarPuntos(sumar, outMap);
         }catch(Exception e){
-            System.debug('createMembers:invokeMethod -> exception: '+e);
+            System.debug('sumarRestarPuntos:invokeMethod: ' + membersPointsList + ' -> exception: '+e);
             outMap.put('Exception',e);
         }
    }

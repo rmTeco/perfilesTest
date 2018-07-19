@@ -164,14 +164,14 @@ public class AccountTriggers {
             else if (acc.RecordTypeId == billingRecordTypeId && acc.ParentId != null)
                 billingAccountsInsertedIds.add(acc.Id);
         }
-        /*
-        if (!customerAccountsInsertedIds.isEmpty())
+        
+        if (!customerAccountsInsertedIds.isEmpty()) {
             callFutureIPS202(customerAccountsInsertedIds);
+        }
 
-        if (!billingAccountsInsertedIds.isEmpty())
+        if (!billingAccountsInsertedIds.isEmpty()) {
             callFutureIPS015(billingAccountsInsertedIds);
-
-        */
+        }
     }
 
     /**

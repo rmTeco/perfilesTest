@@ -55,6 +55,12 @@
         <default>false</default>
         <label>Portal Cautivo 102</label>
     </customValue>
+    <customValue>
+        <fullName>Portal Cautivo</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Portal Cautivo</label>
+    </customValue>
     <masterLabel>Resultados Pruebas</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>

@@ -9,7 +9,6 @@
             
             action.setCallback(this, function(response) {
                 if (response.getState() === "SUCCESS") {
-                    console.log('kjzbd: ' + JSON.stringify(response.getReturnValue()));
                     component.set("v.WorkTeam.Id", response.getReturnValue().Id);
                     component.set("v.WorkTeam.Name", response.getReturnValue().Name);
                     component.set("v.WorkTeam.Is_Active__c", response.getReturnValue().Is_Active__c);
@@ -77,5 +76,14 @@
     },
     showMessageModal : function(component, event, helper) {
         helper.showMessageModal();
+    },
+    searchStoreLocations : function(component, event, helper) {
+        helper.searchStoreLocations(component, event);
+    },
+    selectThisStoreLocation : function(component, event, helper) {
+        helper.selectThisStoreLocation(component, event);
+    },
+    hiddenStoreLocationsModal : function(component, event, helper) {
+        helper.hiddenStoreLocationsModal();
     }
 })

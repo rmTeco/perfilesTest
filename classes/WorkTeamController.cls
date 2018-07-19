@@ -22,19 +22,18 @@ public with sharing class WorkTeamController {
         }
         return result;
     }
-    
 
     @AuraEnabled
     public static Map<String,Object> getWorkTeamById(String id) {
         Map<String,Object> result = new Map<String,Object>();
         
         try {
-            WorkTeam__c WorkTeam = [select Name, WorkTeam__c.Manager__r.Name, WorkTeam__c.Manager__r.Id, WorkTeam__c.Manager__r.Profile.UserLicense.Name, WorkTeam__c.Parent_Team__r.Name, WorkTeam__c.Parent_Team__r.Id, AmountOfActiveChildTeams__c, Work_Team_Number__c, Team_Queue__c, Is_Active__c from WorkTeam__c where Id =: id];
+            WorkTeam__c WorkTeam = [select Name, WorkTeam__c.Manager__r.Name, WorkTeam__c.Manager__r.Id, WorkTeam__c.Manager__r.Profile.UserLicense.Name, WorkTeam__c.Parent_Team__r.Name, WorkTeam__c.Work_Place__r.Name, WorkTeam__c.Parent_Team__r.Id, AmountOfActiveChildTeams__c, Work_Team_Number__c, Team_Queue__c, Is_Active__c from WorkTeam__c where Id =: id];
             System.debug('este es el workteam: ' + WorkTeam);
             result = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(WorkTeam));
             result.put('Parent_Team__r',WorkTeam.Parent_Team__r);
             result.put('Manager__r',WorkTeam.Manager__r);
-            
+            result.put('Work_Place__r',WorkTeam.Work_Place__r);            
             result.put('LabelWorkTeamName',getFieldLabelFromObject('WorkTeam__c','Name'));
             result.put('LabelWorkTeamManager',getFieldLabelFromObject('WorkTeam__c','Manager__c'));
             result.put('LabelWorkTeamParent',getFieldLabelFromObject('WorkTeam__c','Parent_Team__c'));
@@ -147,11 +146,12 @@ public with sharing class WorkTeamController {
     }
     
     @AuraEnabled
-    public static WorkTeam__c createWorkTeam(WorkTeam__c workTeam, String manager, String parent) {
+    public static WorkTeam__c createWorkTeam(WorkTeam__c workTeam, String manager, String parent, String location) {
         
         try {
             if (String.isNotBlank(manager)) workTeam.Manager__c = manager;
             if (String.isNotBlank(parent)) workTeam.Parent_Team__c = parent;
+            if (String.isNotBlank(location)) workTeam.Work_Place__c = location;
             if (String.isBlank(workTeam.Id)) workTeam.Is_Active__c = true;
             upsert workTeam;
         } catch (Exception e) {
@@ -317,7 +317,6 @@ children.add(userRoleId);*/
         return allNameForQueue;
         
     }
-
 
     @AuraEnabled
     public static Boolean saveWorkTeamMembers(String UserManagerName, String workTeamName, String roleAPIname){
@@ -515,5 +514,15 @@ children.add(userRoleId);*/
         	System.enqueueJob(new InactivateTeamMebersWhenInactiveUsers('inactivateTeamMebers', input));
         }
     }
-    
+
+    @AuraEnabled
+    public static List<vlocity_cmt__BusinessSite__c> getStoreLocationByWorkTeamName(String keyName) {
+        List<vlocity_cmt__BusinessSite__c> teamSites = new List<vlocity_cmt__BusinessSite__c>();
+        try {
+            teamSites = [SELECT Name FROM vlocity_cmt__BusinessSite__c WHERE Name like: keyName+'%' ORDER BY Name];
+        } catch (Exception e) {
+            System.debug('Error: ' + e);
+        }
+        return teamSites;
+    }    
 }

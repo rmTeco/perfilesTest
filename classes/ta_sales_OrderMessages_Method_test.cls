@@ -34,6 +34,7 @@ public class ta_sales_OrderMessages_Method_test {
         prods[3].ProductCode = 'FAN_PV_GFNF_SMS';
         prods[4].ProductCode = 'FAN_PSIM_STANDARD';
         update prods;
+        String attributeC = '{"FAN_ATTCAT_000044":[{"$$AttributeDefinitionStart$$":null,"objectid__c":"01t6C000000ZudOQAS","attributeid__c":"a0G6C000000pofyUAA","attributecategoryid__c":"a0F6C000000BaAWUA0","categorycode__c":"FAN_ATTCAT_000044","categoryname__c":"TA Linea Basica","attributeuniquecode__c":"FAN_ATT_000038","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"Numero de Linea","displaysequence__c":"null","categorydisplaysequence__c":18,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":true,"ishidden__c":false,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":false,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqfyUAC","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":null,"value__c":null,"valuedatatype__c":"Text","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Text", "value":"3456787654"},"$$AttributeDefinitionEnd$$":null}]}';
         
         for (Integer i = 0;i<parentOrders.size();i++) {
             List<OrderItem> parentOrderItemsAux = TestDataFactory.createOrderItem(1, parentOrders[0]);
@@ -41,14 +42,18 @@ public class ta_sales_OrderMessages_Method_test {
             List<OrderItem> childOrderItemsAux2 = TestDataFactory.createOrderItem(1, parentOrders[0]);
             parentOrderItemsAux[0].vlocity_cmt__ParentItemId__c = childOrderItemsAux2[0].Id;
             parentOrderItemsAux[0].vlocity_cmt__Product2Id__c = prods[i].Id;    
+            parentOrderItemsAux[0].vlocity_cmt__JSONAttribute__c = attributeC;    
             parentOrderItems.add(parentOrderItemsAux[0]);
             childOrderItemsAux[0].vlocity_cmt__ParentItemId__c = parentOrderItemsAux[0].Id;
 			childOrderItemsAux[0].vlocity_cmt__Product2Id__c = prods[i].Id;            
+			childOrderItemsAux[0].vlocity_cmt__JSONAttribute__c = attributeC;            
             childOrderItems.add(childOrderItemsAux[0]);
             childOrderItemsAux2[0].vlocity_cmt__ParentItemId__c = childOrderItemsAux[0].Id;
 			childOrderItemsAux2[0].vlocity_cmt__Product2Id__c = prods[i].Id;            
+			childOrderItemsAux2[0].vlocity_cmt__JSONAttribute__c = attributeC;            
             childOrderItems.add(childOrderItemsAux2[0]);
         }
+
         
         update parentOrderItems;
         update childOrderItems;
@@ -72,8 +77,9 @@ public class ta_sales_OrderMessages_Method_test {
         List<Account> accs = TestDataFactory.createAccounts(1, 'Consumer');
         List<Order> parentOrders = TestDataFactory.createOrders(1, accs[0]);
         List<OrderItem> parentOrderItemsAux = TestDataFactory.createOrderItem(1, parentOrders[0]);
-        
-        String args = '[{"numerosAmigosXPlan":[{"numerosAmigoVoz": [{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"43543532342","validated":true},{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"47564532342","validated":false}], "numerosAmigoSms": [{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"43543532342","validated":true}]}],"numerosAmigoVoz": [{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"43543532342","validated":true},{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"47564532342","validated":false}], "numerosAmigoSms": [{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"43543532342","validated":true}]}]';
+        parentOrderItemsAux[0].vlocity_cmt__JSONAttribute__c = '{"FAN_ATTCAT_000042":[{"$$AttributeDefinitionStart$$":null,"objectid__c":"01t6C000000ZuacQAC","attributeid__c":"a0G6C000000pwkBUAQ","attributecategoryid__c":"a0F6C000000BoqlUAC","categorycode__c":"FAN_ATTCAT_000042","categoryname__c":"Integracion","attributeuniquecode__c":"FAN_ATT_000084","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"Numero Amigo","displaysequence__c":"31","categorydisplaysequence__c":31,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":false,"ishidden__c":true,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":false,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqPvUAK","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":"Dropdown","value__c":1111111111,"valuedatatype__c":"Picklist","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Picklist","uiDisplayType":"Dropdown","default":[{"displayText":"SIM","id":30,"value":"C_OT_MB_EQUIPMENT_SIM"}],"values":[{"displayText":"Telefono","id":10,"value":"C_OT_MB_EQUIPMENT_PHONES"},{"displayText":"Modem","id":20,"value":"C_OT_MB_EQUIPMENT_MODEMS"},{"displayText":"SIM","id":30,"value":"C_OT_MB_EQUIPMENT_SIM"},{"displayText":"Accesorio","id":40,"value":"C_OT_MB_EQUIPMENT_ACCESORIOS"},{"displayText":"Netbook","id":50,"value":"C_OT_MB_EQUIPMENT_NETBOOK"}]},"$$AttributeDefinitionEnd$$":null}]}';
+        update parentOrderItemsAux;
+        String args = '[{"numerosAmigoVoz": [{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"43543532342","validated":true},{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"47564532342","validated":false}], "numerosAmigoSms": [{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"43543532342","validated":true}]}],"numerosAmigoVoz": [{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"43543532342","validated":true},{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"47564532342","validated":false}], "numerosAmigoSms": [{"id":"'+parentOrderItemsAux[0].Id+'","linenumber":"43543532342","validated":true}]';
         List<Object> numAmigos = (List<Object>)JSON.deserializeUntyped(args);   
         options.put('numerosAmigosXPlan',numAmigos);
         Test.startTest();
@@ -104,12 +110,19 @@ public class ta_sales_OrderMessages_Method_test {
         Map<String,Object> inputMap = new Map<String, Object>();
         Map<String,Object> outMap = new Map<String, Object>();
 		Map<String,Object> options = new Map<String, Object>();
-
+        Product2 prod = TestDataFactory.createProduct(1)[0];
+        prod.ProductCode = 'TestPC';
+        update prod;
         List<Account> accs = TestDataFactory.createAccounts(1, 'Consumer');
         List<Order> parentOrders = TestDataFactory.createOrders(1, accs[0]);
+        List<Asset> assetAux = TestDataFactory.createAssets(1, prod, accs[0]);
         List<OrderItem> parentOrderItemsAux = TestDataFactory.createOrderItem(1, parentOrders[0]);
-
-        Asset assetId = [SELECT Id FROM Asset LIMIT 1];
+        Product2 product = [SELECT Id FROM Product2 where Id=:parentOrderItemsAux[0].Product2Id LIMIT 1];
+        product.ProductCode = 'TestPC';
+        update product;
+        parentOrderItemsAux[0].vlocity_cmt__JSONAttribute__c = '{"FAN_ATTCAT_000042":[{"$$AttributeDefinitionStart$$":null,"objectid__c":"01t6C000000ZuacQAC","attributeid__c":"a0G6C000000pwkBUAQ","attributecategoryid__c":"a0F6C000000BoqlUAC","categorycode__c":"FAN_ATTCAT_000042","categoryname__c":"Integracion","attributeuniquecode__c":"FAN_ATT_000084","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"Numero Amigo","displaysequence__c":"31","categorydisplaysequence__c":31,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":false,"ishidden__c":true,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":false,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqPvUAK","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":"Dropdown","value__c":1111111111,"valuedatatype__c":"Picklist","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Picklist","uiDisplayType":"Dropdown","default":[{"displayText":"SIM","id":30,"value":"C_OT_MB_EQUIPMENT_SIM"}],"values":[{"displayText":"Telefono","id":10,"value":"C_OT_MB_EQUIPMENT_PHONES"},{"displayText":"Modem","id":20,"value":"C_OT_MB_EQUIPMENT_MODEMS"},{"displayText":"SIM","id":30,"value":"C_OT_MB_EQUIPMENT_SIM"},{"displayText":"Accesorio","id":40,"value":"C_OT_MB_EQUIPMENT_ACCESORIOS"},{"displayText":"Netbook","id":50,"value":"C_OT_MB_EQUIPMENT_NETBOOK"}]},"$$AttributeDefinitionEnd$$":null}],"FAN_ATTCAT_000045":[{"$$AttributeDefinitionStart$$":null,"objectid__c":"01t6C000000ZuacQAC","attributeid__c":"a0G6C000000pwHOUAY","attributecategoryid__c":"a0F6C000000Bor5UAC","categorycode__c":"FAN_ATTCAT_000045","categoryname__c":"Caracteristicas Principales","attributeuniquecode__c":"FAN_ATT_000068","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"Facturable en Venta","displaysequence__c":"71","categorydisplaysequence__c":71,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":false,"ishidden__c":false,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":true,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqPxUAK","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":null,"value__c":"true","valuedatatype__c":"Text","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Text","default":"true"},"$$AttributeDefinitionEnd$$":null}],"FAN_ATTCAT_000048":[{"$$AttributeDefinitionStart$$":null,"objectid__c":"01t6C000000ZuacQAC","attributeid__c":"a0G6C000000pwIbUAI","attributecategoryid__c":"a0F6C000000BovEUAS","categorycode__c":"FAN_ATTCAT_000048","categoryname__c":"Caracteristicas Simcard","attributeuniquecode__c":"FAN_ATT_000070","attributeconfigurable__c":true,"attributedisplaysequence__c":"1","attributefilterable__c":true,"attributecloneable__c":true,"isactive__c":true,"attributedisplayname__c":"NMU Simcard","displaysequence__c":"95","categorydisplaysequence__c":95,"customconfiguitemplate__c":null,"formatmask__c":null,"hasrule__c":false,"isconfigurable__c":true,"ishidden__c":false,"valueinnumber__c":null,"objecttype__c":"Product2","querycode__c":null,"isreadonly__c":false,"isquerydriven__c":false,"querylabel__c":null,"id":"a0D6C000000UqQ3UAK","isrequired__c":false,"rulemessage__c":null,"uidisplaytype__c":"Dropdown","value__c":null,"valuedatatype__c":"Picklist","valuedescription__c":null,"attributeRunTimeInfo":{"dataType":"Picklist","uiDisplayType":"Dropdown","values":[{"displayText":"Simcard Magenta: (3FF Micro SIM)","id":10,"value":"PTP3FFMMI"},{"displayText":"Simcard Cyan: (2FF Bolsita)","id":20,"value":"PTP2FFCCI"},{"displayText":"Simcard Violeta: (4FF Nano SIM)","id":30,"value":"PTP4FFVNI"},{"displayText":"Simcard Cyan 2FF/3FF Bolsita comunes","id":40,"value":"PTP23FFCI"},{"displayText":"Usimcard Triple Corte Bolsita","id":50,"value":"PTPBOLTCI"}],"default":[]},"$$AttributeDefinitionEnd$$":null}]}';
+        update parentOrderItemsAux;
+        Asset assetId = assetAux[0];
         System.debug('assetId: ' + assetId.Id);
 
         String args = '[{"numerosAmigosXPlan":[{"numerosAmigoVoz": [{"id":"'+parentOrderItemsAux[0].Id+'","lineNumber":"43543532342","validated":true},{"id":"'+parentOrderItemsAux[0].Id+'","lineNumber":"47564532342","validated":false}], "numerosAmigoSms": [{"id":"'+parentOrderItemsAux[0].Id+'","lineNumber":"43543532342","validated":true}]}],"numerosAmigoVoz": [{"id":"'+parentOrderItemsAux[0].Id+'","lineNumber":"43543532342","validated":true,"modified":true,"originalLine":"1111111111","ofertaId":"'+String.ValueOf(assetId.Id)+'","assetId":"'+String.ValueOf(assetId.Id)+'"},{"id":"'+parentOrderItemsAux[0].Id+'","lineNumber":"47564532342","validated":false}], "numerosAmigoSms": [{"id":"'+parentOrderItemsAux[0].Id+'","lineNumber":"43543532342","validated":true}]}]';
@@ -313,13 +326,14 @@ public class ta_sales_OrderMessages_Method_test {
     }
 
     private static vlocity_cmt__BusinessSite__c createStoreLocation () {
+        Id idRecordType = Schema.SObjectType.vlocity_cmt__BusinessSite__c.getRecordTypeInfosByName().get('Punto de venta OC').getRecordTypeId();
         System.debug('---------- Entre en createStoreLocation()');
 
         System.debug('------------ Antes de crear el Account (Organization) ----');
         Account orgAcc = getCreatedAccount('TelecomTest');
         System.debug('------------ Despues de crear el Account (Organization) ----');
 
-        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(Name='Barrio Norte', 
+        vlocity_cmt__BusinessSite__c storeLocation = new vlocity_cmt__BusinessSite__c(RecordTypeId=idRecordType, Name='Barrio Norte', 
             vlocity_cmt__OrganizationId__c=orgAcc.Id, Status__c='Activo', Type__c='POS', Channel__c='Físico',
              Channel_Type__c='Oficinas Comerciales', Channel_Type_2__c='Oficinas Comerciales', Channel_Type_3__c='Oficinas Comerciales',
              Region__c='AMBA');

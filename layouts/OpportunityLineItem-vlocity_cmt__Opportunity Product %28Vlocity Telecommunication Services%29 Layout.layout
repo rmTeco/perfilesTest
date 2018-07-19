@@ -94,10 +94,13 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <multilineLayoutFields>Product2Id</multilineLayoutFields>
-    <multilineLayoutFields>Quantity</multilineLayoutFields>
-    <multilineLayoutFields>UnitPrice</multilineLayoutFields>
     <multilineLayoutFields>OpportunityId</multilineLayoutFields>
+    <multilineLayoutFields>Product2Id</multilineLayoutFields>
+    <multilineLayoutFields>UnitPrice</multilineLayoutFields>
+    <multilineLayoutFields>Quantity</multilineLayoutFields>
+    <multilineLayoutFields>ServiceDate</multilineLayoutFields>
+    <multilineLayoutFields>Description</multilineLayoutFields>
+    <multilineLayoutFields>TotalPrice</multilineLayoutFields>
     <relatedLists>
         <relatedList>RelatedScheduleList</relatedList>
     </relatedLists>

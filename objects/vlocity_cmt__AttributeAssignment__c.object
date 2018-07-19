@@ -49,7 +49,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>true</enableHistory>
+    <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
@@ -340,24 +340,11 @@
         <label>ProductJsonAttribute</label>
     </fieldSets>
     <fields>
-        <fullName>Attribute_Value_Type__c</fullName>
-        <externalId>false</externalId>
-        <formula>TEXT(vlocity_cmt__AttributeId__r.vlocity_cmt__ValueType__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Attribute Value Type</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>isParentMark__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Campo para indicar si la marca es a nivel de Cuit / Dni</description>
         <externalId>false</externalId>
         <label>isParentMark</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -368,7 +355,6 @@
         <externalId>false</externalId>
         <label>Date Added</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
@@ -383,7 +369,6 @@
         <relationshipLabel>Attribute Assignments</relationshipLabel>
         <relationshipName>AttributeAssignments</relationshipName>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -395,7 +380,6 @@
         <formula>vlocity_cmt__AttributeId__r.vlocity_cmt__IsCloneable__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Cloneable</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -407,7 +391,6 @@
         <formula>vlocity_cmt__AttributeId__r.vlocity_cmt__Configurable__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Configurable</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -419,7 +402,6 @@
         <label>Attribute Name Override</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -433,7 +415,6 @@
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Display Name</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -446,7 +427,6 @@
         <label>Attribute Display Sequence</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -459,7 +439,6 @@
         <formula>vlocity_cmt__AttributeId__r.vlocity_cmt__Filterable__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Filterable</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -474,7 +453,6 @@
         <relationshipLabel>Attribute Assignments</relationshipLabel>
         <relationshipName>AttributeAssignments</relationshipName>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -487,7 +465,6 @@
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Name</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -501,7 +478,6 @@
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Code</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -515,7 +491,6 @@
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Category Code</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -530,7 +505,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -544,7 +518,6 @@
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Category Name</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -555,7 +528,6 @@
         <externalId>false</externalId>
         <label>Configuration Detail</label>
         <length>131072</length>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Html</type>
         <visibleLines>25</visibleLines>
@@ -568,7 +540,6 @@
         <label>Custom Config UI Template</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -581,7 +552,6 @@
         <label>Data</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -594,7 +564,6 @@
         <label>Default Picklist Entry Id</label>
         <length>18</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -610,7 +579,6 @@
         <relationshipLabel>Attribute Assignments</relationshipLabel>
         <relationshipName>AttributeAssignments</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -622,7 +590,6 @@
         <label>Category Display Sequence</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -635,7 +602,6 @@
         <label>Removed During</label>
         <length>18</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -647,7 +613,6 @@
         <externalId>false</externalId>
         <label>Excluded Picklist Items</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
@@ -658,7 +623,6 @@
         <externalId>false</externalId>
         <label>Excluded Picklist Values</label>
         <length>131072</length>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
@@ -671,7 +635,6 @@
         <label>Format Mask</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -684,7 +647,6 @@
         <label>Global Key</label>
         <length>80</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -696,7 +658,6 @@
         <description>Indicates whether this attribute assigned to this product has one or more rules governing its configuration.</description>
         <externalId>false</externalId>
         <label>Has Rule</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -707,7 +668,6 @@
         <externalId>false</externalId>
         <label>Help Text</label>
         <length>2000</length>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
@@ -719,7 +679,6 @@
         <description>Indicates if the attribute assignment is active.</description>
         <externalId>false</externalId>
         <label>Active</label>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -731,7 +690,6 @@
         <formula>vlocity_cmt__AttributeId__r.vlocity_cmt__ActiveFlg__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Attribute Is Active</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -742,7 +700,6 @@
         <description>For product attributes, indicates if this attribute is configurable. Overrides the Configurable value from the attribute itself.</description>
         <externalId>false</externalId>
         <label>Is Configurable</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -752,7 +709,6 @@
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Is Dynamic</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -763,7 +719,6 @@
         <description>Indicates if this attribute should be hidden from end users in the UI.</description>
         <externalId>false</externalId>
         <label>Is Hidden</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -774,7 +729,6 @@
         <description>Indicates if this Attribute Assignment record is an override record that changes the definition of the attribute assignment in the context of some offer or other product.</description>
         <externalId>false</externalId>
         <label>IsOverride</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -784,7 +738,6 @@
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Query Driven</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -795,7 +748,6 @@
         <description>Indicates if this attribute is read-only for the assigned parent object (usually a product).</description>
         <externalId>false</externalId>
         <label>Read Only</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -806,7 +758,6 @@
         <description>Indicates if a value for this attribute is required for the assigned parent object (usually a product).</description>
         <externalId>false</externalId>
         <label>Required</label>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -816,7 +767,6 @@
         <externalId>false</externalId>
         <label>Lookup Filter</label>
         <length>32768</length>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
@@ -831,7 +781,6 @@
         <relationshipLabel>Attribute Assignments</relationshipLabel>
         <relationshipName>AttributeAssignments</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -845,7 +794,6 @@
         <relationshipLabel>Attribute Assignments (Lookup Object Type)</relationshipLabel>
         <relationshipName>AttributeAssignments1</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -857,7 +805,6 @@
         <label>Assigned To Object Id</label>
         <length>18</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -871,7 +818,6 @@
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Assigned To Object</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -884,7 +830,6 @@
         <label>Assigned To Object Name</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -900,7 +845,6 @@
         <relationshipLabel>Attribute Assignments</relationshipLabel>
         <relationshipName>AttributeAssignments</relationshipName>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -911,7 +855,6 @@
         <label>Query Code</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -923,7 +866,6 @@
         <label>Query Label</label>
         <length>20</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -935,7 +877,6 @@
         <externalId>false</externalId>
         <label>Date Removed</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
@@ -946,7 +887,6 @@
         <description>Indicates whether this assignment has been removed from the object.</description>
         <externalId>false</externalId>
         <label>Attribute Has Been Removed</label>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -956,7 +896,6 @@
         <externalId>false</externalId>
         <label>Rule</label>
         <length>131072</length>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
@@ -968,7 +907,6 @@
         <label>Rule Message</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -981,7 +919,6 @@
         <label>Added During</label>
         <length>18</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -994,7 +931,6 @@
         <label>Style Class</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1007,7 +943,6 @@
         <label>UI Display Type</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1019,7 +954,6 @@
         <externalId>false</externalId>
         <label>Valid Values Data</label>
         <length>131072</length>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
@@ -1031,7 +965,6 @@
         <externalId>false</externalId>
         <label>Value Data Type</label>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -1098,7 +1031,6 @@
         <label>Value Description</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -1114,7 +1046,6 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -1127,77 +1058,32 @@
         <label>Value</label>
         <length>255</length>
         <required>false</required>
-        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <label>Attribute Assignment</label>
     <listViews>
-        <fullName>Assigned_to_Object_Id</fullName>
-        <columns>vlocity_cmt__ObjectId__c</columns>
-        <columns>NAME</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>vlocity_cmt__AttributeUniqueCode__c</columns>
-        <columns>vlocity_cmt__ObjectLink__c</columns>
-        <columns>vlocity_cmt__ObjectType__c</columns>
-        <columns>vlocity_cmt__AttributeDisplayName__c</columns>
-        <columns>vlocity_cmt__IsOverride__c</columns>
-        <columns>vlocity_cmt__AttributeId__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>vlocity_cmt__ObjectId__c</field>
-            <operation>contains</operation>
-            <value>01t6C000000Zu</value>
-        </filters>
-        <label>Assigned to Object Id</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Specific_Object</fullName>
-        <columns>NAME</columns>
-        <columns>vlocity_cmt__IsActiveAssignment__c</columns>
-        <columns>vlocity_cmt__AttributeUniqueCode__c</columns>
-        <columns>vlocity_cmt__IsHidden__c</columns>
-        <columns>vlocity_cmt__IsReadOnly__c</columns>
-        <columns>vlocity_cmt__UIDisplayType__c</columns>
-        <columns>vlocity_cmt__ValueDataType__c</columns>
-        <columns>vlocity_cmt__DefaultPicklistValueId__c</columns>
-        <columns>vlocity_cmt__ValidValuesData__c</columns>
-        <columns>vlocity_cmt__IsRequired__c</columns>
-        <columns>CREATEDBY_USER</columns>
-        <columns>CREATED_DATE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>vlocity_cmt__ObjectId__c</field>
-            <operation>contains</operation>
-            <value>01t6C0000004PrL,01t6C0000004QBf</value>
-        </filters>
-        <label>Specific Object</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>vlocity_cmt__All</fullName>
-        <columns>vlocity_cmt__ObjectId__c</columns>
         <columns>NAME</columns>
         <columns>CREATED_DATE</columns>
         <columns>vlocity_cmt__AttributeUniqueCode__c</columns>
         <columns>vlocity_cmt__ObjectLink__c</columns>
-        <columns>vlocity_cmt__ObjectType__c</columns>
         <columns>vlocity_cmt__AttributeDisplayName__c</columns>
         <columns>vlocity_cmt__IsOverride__c</columns>
-        <columns>vlocity_cmt__AttributeId__c</columns>
+        <columns>vlocity_cmt__GlobalKey__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>
     </listViews>
     <nameField>
         <label>Attribute Assignment Name</label>
-        <trackHistory>false</trackHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>Attribute Assignments</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <searchResultsAdditionalFields>vlocity_cmt__Value__c</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <startsWith>Vowel</startsWith>
     <visibility>Public</visibility>

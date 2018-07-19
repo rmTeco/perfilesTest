@@ -18,13 +18,10 @@ public class CaseTriggerHandler {
         Map<String, Integer> affectedCasesAmmount = new Map<String, Integer>();
         try
         {
-            teamId = [SELECT Work_Team__c FROM Team_Member__c WHERE User_member__c = :UserInfo.getUserId()].Work_Team__c;
-            //String teamName = [SELECT Team_Name__c FROM WorkTeam__c WHERE Id = :teamId].Team_Name__c;
-            
-            
+            teamId = [SELECT Work_Team__c FROM Team_Member__c WHERE User_member__c = :UserInfo.getUserId() AND Is_Active__c = true].Work_Team__c;
+            //String teamName = [SELECT Team_Name__c FROM WorkTeam__c WHERE Id = :teamId].Team_Name__c; 
         }
         catch(Exception ex){
-
         }
 
         for (Case c : triggerNew) {
@@ -58,9 +55,7 @@ public class CaseTriggerHandler {
         String userGroupName = '';
         Id userId = UserInfo.getUserId();
 
-        List<GroupMember> groupMemberList = [SELECT Group.Name, Group.Id FROM GroupMember WHERE UserOrGroupId = :userId AND Group.Type = 'Queue'];
-
-        for (GroupMember groupMemberObject : groupMemberList) {
+        for(GroupMember groupMemberObject : [SELECT Group.Name, Group.Id FROM GroupMember WHERE UserOrGroupId = :userId AND Group.Type = 'Queue']){
             userGroupName = groupMemberObject.Group.Name;
         }
 
@@ -83,6 +78,7 @@ public class CaseTriggerHandler {
         }
     }
 
+    
     public static void deleteChildonMassive(List<Case> triggerOld) 
     {
         try
@@ -109,6 +105,7 @@ public class CaseTriggerHandler {
         }
         catch(Exception ex){}
     }
+   
 
     public static void updateCaseAfterInsert(List<Case> triggerNew){
 
@@ -333,71 +330,99 @@ public class CaseTriggerHandler {
             } 
             System.debug('Case: '+ newCases.size());
 
-            String profileName;
-
-            if(!Test.isRunningTest())
+            if(newCases.size() > 0)
             {
+                List<Profile> profiles;
+                Map<Id, Id> approverCase = new Map<Id, Id>();
                 //Nota: Si los usuarios no se encuentran configurados con el perfil adecuado esto puede fallar! Verificar los perfiles.
                 Id profileId=userinfo.getProfileId();
-                profileName = [Select Id,Name from Profile where Id=:profileId].Name;
-                System.debug('ProfileName: '+profileName);
+                Id profileIdApprover;
+                Set<Id> profileIds = new Set<Id>();
+                String profileName;
 
-                if(profileName == 'System Administrator')  //Para que funcione en desarrollo con usuarios de desarrolladores.
-                    profileName = 'TA - Back Office';
-            }
-            else
-                profileName = 'TA - Back Office';
-
-            for(Case tCase : newCases)
-            {
-                System.debug('Entro');            
-                Map<string, object> inputMap = new Map<string, object>();
-                Map<string, object> outMap = new Map<string, object>();
-                Map<string, object> options = new Map<string, object>();
-                String codError = '0';
-                String descError = 'Ocurrio un error grave, contacte al soporte tecnico.';
-
-                System.debug('Type: '+tCase.OwnerId.getsobjecttype());
-                //Si el caso paso de una queue a un user, significa que el caso fue tomado por un backoffice, o si el caso ya lo tiene un user.
-                if (tCase.OwnerId.getsobjecttype() == User.sobjecttype)
-                {    
-                    System.debug('Tipo user: '+User.sobjecttype);
-
-                    if(tCase.TipoSeleccion__c != 'Cuenta')
-                    {
-                        options.put('Amount', tCase.vlocity_cmt__Amount__c);
-                        options.put('approvalProfile', profileName); //IMPORTANTE: Modificar el hardcode cuando los usuarios esten configurados!!!!!
-                        options.put('TipoSeleccion', tCase.TipoSeleccion__c);
-                        options.put('ServiceId', tCase.vlocity_cmt__ServiceId__c);
-                        options.put('caseId', tCase.Id);
-                        ta_care_queryAdjustmentsHelper.AmountLimitForUser(inputMap, outMap, options);
-
-                        Map<String, Object> result = (Map<String, Object>)outMap.get('result');
-                        codError = (String)result.get('codError');
-                        descError = (String)result.get('descError');
-                        system.debug('error code: '+ result.get('codError'));
-                        system.debug('error code: '+ result.get('descError'));
-                    }
+                for(Case tCase : newCases)
+                {
+                    if(profileId == tCase.approver__c)
+                        profileIdApprover = profileId;
+                    else if (tCase.approver__c == null)
+                            profileIdApprover = profileId;
+                        else
+                            profileIdApprover = tCase.approver__c;
                     
-                    if(codError != '0')
+                    approverCase.put(tCase.Id, profileIdApprover);
+                    profileIds.add(profileIdApprover);
+                }
+                profiles = [Select Id,Name from Profile where Id IN :profileIds];  
+                
+                for(Case tCase : newCases)
+                {
+                    System.debug('Entro');   
+                    if(!Test.isRunningTest())
                     {
-                        tCase.Status = 'No se pudo realizar';
-                        tCase.Resolution_Comment__c = descError;
+                        Id aprovador = (Id)approverCase.get(tCase.Id);      
+                        for(Profile profile : profiles)
+                        {   
+                            if(profile.get('Id') == aprovador)
+                                profileName = (String)profile.get('Name');
+                        }
                     }
-                    else 
-                    {
-                        if(tCase.Approver__c == null && tCase.Owner_Team__c != null && tCase.vlocity_cmt__Amount__c > 0 && tCase.Status != 'No se pudo realizar') //Teams
-                            submitApprovalProcess('RAV_Escalamiento_a_Equipo', tCase.Id);
+                    else
+                        profileName = 'FAN - Front OOCC';        
 
-                        if(tCase.Approver__c != null && tCase.vlocity_cmt__Amount__c > 0 && tCase.Status != 'No se pudo realizar') //Users
-                            submitApprovalProcess('RAV_Escalamiento_a_Usuario', tCase.Id);
-                    }
-                }       
+                    Map<string, object> inputMap = new Map<string, object>();
+                    Map<string, object> outMap = new Map<string, object>();
+                    Map<string, object> options = new Map<string, object>();
+                    String codError = '0';
+                    String descError = 'Ocurrio un error grave, contacte al soporte tecnico.';
+
+                    System.debug('Type: '+tCase.OwnerId.getsobjecttype());
+                    //Si el caso paso de una queue a un user, significa que el caso fue tomado por un backoffice, o si el caso ya lo tiene un user.
+                    if (tCase.OwnerId.getsobjecttype() == User.sobjecttype)
+                    {    
+                        System.debug('Tipo user: '+User.sobjecttype);
+
+                        if(tCase.TipoSeleccion__c != 'Cuenta')
+                        {
+                            options.put('Amount', tCase.vlocity_cmt__Amount__c);
+                            options.put('approvalProfile', profileName); //IMPORTANTE: Modificar el hardcode cuando los usuarios esten configurados!!!!!
+                            options.put('TipoSeleccion', tCase.TipoSeleccion__c);
+                            options.put('ServiceId', tCase.vlocity_cmt__ServiceId__c);
+                            options.put('caseId', tCase.Id);
+                            try
+                            {
+                                ta_care_queryAdjustmentsHelper.AmountLimitForUser(inputMap, outMap, options);
+                                Map<String, Object> result = (Map<String, Object>)outMap.get('result');
+                                codError = (String)result.get('codError');
+                                descError = (String)result.get('descError');
+                                System.debug('codError: '+ codError);
+                                System.debug('descError: '+ descError);
+                            }catch(Exception ex)
+                            {  
+                                System.debug('Error en ta_care_queryAdjustmentsHelper.AmountLimitForUser: '+ex.getMessage());
+                            }
+                        }
+                        
+                        System.debug('codError: '+codError);
+                        if(codError != '0')
+                        {
+                            tCase.Status = 'No se pudo realizar';
+                            tCase.Resolution_Comment__c = descError;
+                        }
+                        else 
+                        {
+                            if(tCase.Approver__c == null && tCase.Owner_Team__c != null && tCase.vlocity_cmt__Amount__c > 0 && tCase.Status != 'No se pudo realizar') //Teams
+                                submitApprovalProcess('RAV_Escalamiento_a_Equipo', tCase.Id);
+
+                            if(tCase.Approver__c != null && tCase.vlocity_cmt__Amount__c > 0 && tCase.Status != 'No se pudo realizar') //Users
+                                submitApprovalProcess('RAV_Escalamiento_a_Usuario', tCase.Id);
+                        }
+                    }       
+                }
             }
         }
         catch(Exception ex)
         { 
-            System.debug('Error muerte');
+            System.debug('Error general: '+ex.getMessage());
         }
     }
     
@@ -467,19 +492,9 @@ public class CaseTriggerHandler {
        try
        {  
             System.debug('Inicio proceso confirmar ajuste.');
+            List<Case> listCaseToUpdate = new List<Case>();
             
-            List<Case> allCase = [SELECT AccountId,AssetId,CantidadAjuste__c,ContactId,FechaDesde__c,FechaHasta__c,Id,Initiator_team__c,Motivo__c,VoucherNumber__c,OwnerId,Owner_Team__c,Reason,RecordTypeId,Resolution_Comment__c,Status,Subject,TipoAjuste__c,TipoConcepto__c,TipoItem__c,TipoOperacionAjuste__c,TipoSeleccion__c,Tipo__c,UnidadAjuste__c,vlocity_cmt__Amount__c, vlocity_cmt__ServiceId__c FROM Case WHERE Id =:ids];
-            List<String> cAux = new List<String>();
-            for (Case c : allCase){
-                cAux.add(c.vlocity_cmt__ServiceId__c);
-            }
-
-            map<Id, Asset> assetMap = new Map<Id, Asset>();
-            for(Asset a : [SELECT Subscription_Id__c FROM Asset WHERE Id IN :cAux]){
-                assetMap.put(a.Id,a);
-            }
-
-            for(Case myCase : allCase)
+            for(Case myCase : [SELECT AccountId,AssetId,CantidadAjuste__c,ContactId,FechaDesde__c,FechaHasta__c,Id,Initiator_team__c,Motivo__c,VoucherNumber__c,OwnerId,Owner_Team__c,RecordTypeId,Resolution_Comment__c,Status,Subject,TipoAjuste__c,TipoConcepto__c,TipoItem__c,TipoOperacionAjuste__c,TipoSeleccion__c,Tipo__c,UnidadAjuste__c,vlocity_cmt__Amount__c, vlocity_cmt__ServiceId__c, Account.AccountIntegrationId__c, vlocity_cmt__ServiceId__r.Subscription_Id__c FROM Case WHERE Id =:ids])
             {
                 try
                 {
@@ -507,14 +522,14 @@ public class CaseTriggerHandler {
 
                         if(myCase.UnidadAjuste__c == 'SMS')
                         {
-                            codTipoBalance = 'FU_SMO_NACIONAL';
+                            codTipoBalance = 'C_FU_SMO_NACIONAL';
                             montoAjustar = myCase.CantidadAjuste__c + '.0000';
                         }
                             
                         if(myCase.UnidadAjuste__c == 'VOZ')
                         {
                             Integer segundos;
-                            codTipoBalance = 'FU_VMO_NACIONAL';
+                            codTipoBalance = 'C_FU_VMO_NACIONAL';
                             montoAjustar = myCase.CantidadAjuste__c;
 
                             if(montoAjustar.Contains(':'))
@@ -527,22 +542,19 @@ public class CaseTriggerHandler {
 
                         if(myCase.UnidadAjuste__c == 'Datos(Mb)')
                         {
-                            codTipoBalance = 'FU_DATA_HS';
+                            codTipoBalance = 'C_FU_DATA_HS';
                             montoAjustar = String.ValueOf((Integer.ValueOf(myCase.CantidadAjuste__c) * 1024)) + '.0000';
                         }
 
                         System.debug('Obtengo los assets');
-                        Asset assetObj = new Asset();
-                        If (assetMap.containsKey(myCase.vlocity_cmt__ServiceId__c)){
-                            assetObj = assetMap.get(myCase.vlocity_cmt__ServiceId__c);
-                        }
-                        System.debug('assetObj: '+assetObj);
+                        //Asset assetObj = [SELECT Subscription_Id__c FROM Asset WHERE Id =:myCase.vlocity_cmt__ServiceId__c];
+                        //System.debug('assetObj: '+assetObj);
                         
-                        if(!(assetObj != null && assetObj.Subscription_Id__c != null))
+                        if(myCase.vlocity_cmt__ServiceId__r.Subscription_Id__c == null)
                             throw new FuncException('No existe el codigo de subscripcion.');
 
                         Map<String, Object> AccesoPorSubscriptor = new Map<String, Object>();
-                        AccesoPorSubscriptor.put('codSuscripcion', assetObj.Subscription_Id__c);
+                        AccesoPorSubscriptor.put('codSuscripcion', myCase.vlocity_cmt__ServiceId__r.Subscription_Id__c);
                         body.put('accesoPorSubscriptor', AccesoPorSubscriptor);
 
                         body.put('tipoOperacionAjuste', '1');
@@ -551,6 +563,19 @@ public class CaseTriggerHandler {
                         {
                             List<Map<String, Object>> listaAjusteBalance = new List<Map<String, Object>>();
                             Map<String, Object> ajusteBalance = new Map<String, Object>();
+                            //PFTA-11312 - INI
+                            //Para Credito el tipo de ajuste es numerico ver IDD.
+                            //Para Cuenta (unidades libres) el tipo de ajuste es String (CREDITO / DEBITO).
+                            if(tipoOperacion == 'CREDITO')
+                                tipoOperacion = '1';
+                            else {
+                                if(tipoOperacion == 'DEBITO')
+                                    tipoOperacion = '2';
+                                else 
+                                    throw new FuncException('No se pudo determinar el tipo de ajuste.');
+                            }
+                            //PFTA-11312 - FIN
+                            
                             ajusteBalance.put('codTipoBalance', codTipoBalance);
                             ajusteBalance.put('tipoAjuste', tipoOperacion);
                             ajusteBalance.put('montoAjuste', montoAjustar.replace(',','.'));
@@ -568,7 +593,7 @@ public class CaseTriggerHandler {
                             ajusteLibre.put('montoAjuste', montoAjustar);
 
                             listaAjusteunidadesLibres.add(ajusteLibre);
-                            body.put('listaAjusteunidadesLibres', listaAjusteunidadesLibres);
+                            body.put('listaAjusteUnidadesLibres', listaAjusteunidadesLibres);
                         }
 
                         input.put('body', body);
@@ -603,14 +628,14 @@ public class CaseTriggerHandler {
                             {     
 
                                 System.debug('NC - Libre');
-                                Account accountObj = [SELECT AccountIntegrationId__c FROM Account WHERE Id =:myCase.AccountId];
+                                //Account accountObj = [SELECT AccountIntegrationId__c FROM Account WHERE Id =:myCase.AccountId];
 
-                                if(!(accountObj != null && accountObj.AccountIntegrationId__c != null))
+                                if(myCase.Account.AccountIntegrationId__c == null)
                                     throw new FuncException('No existe el account integration id.');
 
                                 Map<String, Object> AccesoPorCuenta = new Map<String, Object>();
-                                AccesoPorCuenta.put('idCuenta', accountObj.AccountIntegrationId__c);
-                                AccesoPorCuenta.put('codSuscripcion', accountObj.AccountIntegrationId__c);
+                                AccesoPorCuenta.put('idCuenta', myCase.Account.AccountIntegrationId__c);
+                                AccesoPorCuenta.put('codSuscripcion', myCase.Account.AccountIntegrationId__c);
                                 body.put('accesoPorCuenta', AccesoPorCuenta);
                                 
                                 body.put('tipoOperacionAjuste', '1');
@@ -648,8 +673,11 @@ public class CaseTriggerHandler {
                     myCase.Resolution_Comment__c = 'Ups, ocurrio un error al intentar confirmar el ajuste. '+ ex.getMessage();
                 }
 
-                update myCase;
+                listCaseToUpdate.add(myCase);
             }
+
+            if(listCaseToUpdate.size() > 0)
+                Update listCaseToUpdate;
         }      
         catch(Exception ex) 
         {
@@ -681,7 +709,7 @@ public class CaseTriggerHandler {
                 { 
                     myCase.status = 'Realizada exitosa';
                     myCase.Resolution_Comment__c = 'La Gestión ha sido realizada exitosamente.';
-                    myCase.Reason = 'Reclamo';
+                    //myCase.Reason = 'Reclamo'; //Se quita a pedido de la US PFTA-10052 modifica PFTA-9470
                 }
                 else 
                 {
@@ -897,7 +925,7 @@ public class CaseTriggerHandler {
                 {
                     myCase.status = 'Realizada exitosa';
                     myCase.Resolution_Comment__c = 'La Gestión ha sido realizada exitosamente. Se genero un ajuste por $'+totalAmountItems;
-                    myCase.Reason = 'Reclamo';
+                    //myCase.Reason = 'Reclamo'; //Se quita a pedido de la US PFTA-10052 modifica PFTA-9470
                 }
 
                 try 
@@ -1047,23 +1075,31 @@ public class CaseTriggerHandler {
 
     @future
     public static void setFirstBackOfficeQueueFuture(Map<id,String> casesMap, Map<id,id> idQueueMap) {
-        Set <Id> setIds = New Set<Id>();
-        List<Case> casesToUpdate = New List<Case>();
-        for(String cases: casesMap.values()){
-            Case caseObj = (Case)Json.deserialize(cases,System.Type.forName('Case'));
-            setIds.add(caseObj.Id);
-            caseObj.OwnerId = idQueueMap.get(caseObj.id);
-            casesToUpdate.add(caseObj);
-        }
-
-        List<CaseMilestone> cmsToUpdate = [SELECT Id, completionDate FROM CaseMilestone cm WHERE caseId IN: setIds  AND cm.MilestoneType.Name='TechCare10Days' AND completionDate = null];
-        if (cmsToUpdate.size() > 0){
-            for (CaseMilestone cm : cmsToUpdate){
-                cm.completionDate = System.now();
+        try{
+            Set <Id> setIds = New Set<Id>();
+            List<Case> casesToUpdate = New List<Case>();
+            for(String cases: casesMap.values()){
+                Case caseObj = (Case)Json.deserialize(cases,System.Type.forName('Case'));
+                setIds.add(caseObj.Id);
+                caseObj.OwnerId = idQueueMap.get(caseObj.id);
+                casesToUpdate.add(caseObj);
             }
-            update cmsToUpdate;
+    
+            /*List<CaseMilestone> cmsToUpdate = [SELECT Id, completionDate FROM CaseMilestone cm WHERE caseId IN: setIds  AND cm.MilestoneType.Name='TechCare10Days' AND completionDate = null];
+            if (cmsToUpdate.size() > 0){
+                for (CaseMilestone cm : cmsToUpdate){
+                    cm.completionDate = System.now();
+                }
+                update cmsToUpdate;
+            }*/
+            
+            EntitlementManager.UpdateCompletionDateMilestone('TechCare10Days',setIds);
+            update casesToUpdate;
         }
-        update casesToUpdate;
+        catch(Exception ex) 
+        {
+            System.debug('Error:' + ex.getMessage());
+        }
     }
     
     /***************************************************************************/
@@ -1130,4 +1166,29 @@ public class CaseTriggerHandler {
             }
     }
 
+    public static void SetOwnerTeam(List<Case> triggerNew, Map<Id, Case> triggerOldMap) {
+        Set<Id> ownerIds = New Set<Id>();
+        List <Case> casesToWork = New List<Case>();
+        List <Team_Member__c> teamMembers;
+        for(Case cs : triggerNew){
+        System.debug('Caso: '+cs);
+        System.debug('Valdiacion: '+ cs.Subject != 'Inconvenientes con cargos tasados y facturados');
+            if(cs.Subject != 'Inconvenientes con cargos tasados y facturados' && (triggerOldMap == null || (cs.OwnerId != triggerOldMap.get(cs.Id).OwnerId && string.valueOf(cs.OwnerId).startsWith('005')))){
+                ownerIds.add(cs.OwnerId);
+                casesToWork.add(cs);
+            }else if (cs.Subject != 'Inconvenientes con cargos tasados y facturados' && (cs.Owner_Team__c != null && string.valueOf(cs.OwnerId).startsWith('00G'))){
+                cs.Owner_Team__c = null;
+            }
+        }
+        if(casesToWork.size() > 0){
+            Map<id,id> teamMemberOwnerMap = New Map<Id,Id>();
+            teamMembers = [SELECT id,Work_Team__c,Is_Active__c,User_member__c FROM Team_Member__c WHERE User_member__c IN:ownerIds AND Is_Active__c = true];
+            for(Team_Member__c tm: teamMembers){
+                teamMemberOwnerMap.put(tm.User_member__c,tm.Work_Team__c);
+            }
+            for(Case cases :casesToWork){
+                cases.Owner_Team__c = teamMemberOwnerMap.get(cases.OwnerId);
+            }
+        }
+    }
 }

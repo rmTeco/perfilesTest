@@ -44,7 +44,6 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <deprecated>false</deprecated>
-    <description>Defines a declarative calculation procedure consisting of a series of mathematical steps performed on inputs, matrix lookups and user-defined variables. Vlocity Calculation Procedures can be changed by authorized administrators who do not have the &quot;Customize Application&quot; permission and without writing Apex code.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
@@ -89,14 +88,8 @@
     <label>Vlocity Calculation Procedure</label>
     <listViews>
         <fullName>vlocity_cmt__All</fullName>
-        <columns>NAME</columns>
-        <columns>CREATEDBY_USER</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>UPDATEDBY_USER</columns>
-        <columns>LAST_UPDATE</columns>
         <filterScope>Everything</filterScope>
-        <label>Eze All</label>
-        <language>en_US</language>
+        <label>All</label>
     </listViews>
     <nameField>
         <label>Calculation Procedure Name</label>

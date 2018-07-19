@@ -34,9 +34,9 @@ public class ta_sales_nominationUtils{
                 String documentNumber = (String)activateNominatedService.get('numeroDocumento');
                 Date birthDate = Date.parse((String)activateNominatedService.get('fechaNacimiento'));
                 
-                List<Contact> contacts = [SELECT Id, BirthDate FROM Contact WHERE DocumentType__c = :documentType AND DocumentNumber__c = :documentNumber];
+                List<Contact> contacts = [SELECT Id, BirthDate, Gender__c FROM Contact WHERE DocumentType__c = :documentType AND DocumentNumber__c = :documentNumber];
                 
-                if(contacts.size() == 0){
+                if(contacts.size() == 0){ //it is a nonexistant contact
                     thisContact = new Contact(
                         BirthDate = birthDate,
                         DocumentNumber__c = documentNumber,
@@ -45,7 +45,7 @@ public class ta_sales_nominationUtils{
                         Gender__c = (String)activateNominatedService.get('genero'),
                         LastName = (String)activateNominatedService.get('apellido')
                     );
-                }else if(contacts.size() > 2){
+                }else if(contacts.size() > 2){ //if 3 or more contacts with same DNI need to find which is the right one
                     for(Contact con: contacts){
                         if(con.BirthDate == birthDate){
                             thisContact = con;
@@ -56,11 +56,33 @@ public class ta_sales_nominationUtils{
                     if(!previouslyExistingContact){
                         enviarSMS((String)activateNominatedService.get('nroLinea'));
                     }
-                }else{
+                }else if(contacts.size() == 2){ // 2 contacts with same DNI happens with male/female person
+                    String gender = (String)activateNominatedService.get('genero');
+                    if (contacts[0].Gender__c == gender) thisContact = contacts[0];
+                    else thisContact = contacts[1];
+                    previouslyExistingContact = true;
+                }else{ //only one contact matched
                     previouslyExistingContact = true;
                     thisContact = contacts[0];
                 }
-                
+                //--get fields that may have been modified
+                String checkName = (String)activateNominatedService.get('nombre');
+                if (!String.isEmpty(checkName)) {
+                    thisContact.FirstName = checkName;
+                }
+                String checkLastname = (String)activateNominatedService.get('apellido');
+                if (!String.isEmpty(checkLastname)) {
+                    thisContact.LastName = checkLastname;
+                }
+                String checkBDate = (String)activateNominatedService.get('fechaNacimiento');
+                if (!String.isEmpty(checkBDate)) {
+                    thisContact.Birthdate = Date.parse(checkBDate); 
+                }
+                String checkStreet = (String)activateNominatedService.get('calle');
+                if (!String.isEmpty(checkStreet)) {
+                    thisContact.MailingStreet = checkStreet;
+                }
+                system.debug('activateNominatedService......' + activateNominatedService);
                 upsert thisContact;
                 
                 //---------------ACCOUNT----------------

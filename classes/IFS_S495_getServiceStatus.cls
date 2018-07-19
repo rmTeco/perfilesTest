@@ -5,8 +5,12 @@
  * @Author: Alejandro Salord (Certa Consulting)
  * @Version: 1.0
  * @see: PFTA-8884
+ *
+ * @Version: 1.1
+ * @Author: Jose Rojas
+ * Se cambia el url de exposición del servicio 
  */
-@RestResource(urlMapping='/v1/integrationprocedure/getServiceStatus/*')
+@RestResource(urlMapping='/v1/integrationprocedure/obtener/EstadoLinea/*')
 global with sharing class IFS_S495_getServiceStatus {
     private static final Boolean K_DEBUG_ON = true; 
 

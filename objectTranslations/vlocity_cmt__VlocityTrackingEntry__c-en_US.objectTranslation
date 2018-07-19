@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
-        <label><!-- Criterios --></label>
-        <name>Criteria__c</name>
+        <label><!-- ElapsedTime --></label>
+        <name>ElapsedTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- ElementName --></label>
+        <name>ElementName__c</name>
+    </fields>
+    <fields>
+        <label><!-- ElementStepNumber --></label>
+        <name>ElementStepNumber__c</name>
+    </fields>
+    <fields>
+        <label><!-- ElementType --></label>
+        <name>ElementType__c</name>
+    </fields>
+    <fields>
+        <label><!-- OmniScriptId --></label>
+        <name>OmniScriptId__c</name>
+    </fields>
+    <fields>
+        <label><!-- OmniScriptType --></label>
+        <name>OmniScriptType__c</name>
     </fields>
     <fields>
         <label><!-- TrackedAction --></label>
@@ -11,6 +31,14 @@
     <fields>
         <label><!-- TrackedCard --></label>
         <name>TrackedCard__c</name>
+    </fields>
+    <fields>
+        <label><!-- TrackingEvent --></label>
+        <name>TrackingEvent__c</name>
+    </fields>
+    <fields>
+        <label><!-- User --></label>
+        <name>User__c</name>
     </fields>
     <fields>
         <label><!-- Context Id --></label>

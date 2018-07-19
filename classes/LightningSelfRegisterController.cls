@@ -193,6 +193,21 @@ return extraFields;
             return op;
         }
     }
+
+    @AuraEnabled
+    public static Boolean validateUsername(String email) {
+
+        List<User> usersList = [SELECT Id 
+                                FROM User 
+                                WHERE Username =: email];
+
+        system.debug('Username: ' + usersList);
+        if (usersList.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     
     @AuraEnabled
     public static OperationResponse createUser(String documentNumber, String email, String regUrl) {
