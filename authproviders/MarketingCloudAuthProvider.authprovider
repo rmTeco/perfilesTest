@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customMetadataTypeRecord>MC__mdt.MarketingCloudAuthProvider</customMetadataTypeRecord>
+    <executionUser>maxi.pastor@cloudgaia.com.perftec</executionUser>
+    <friendlyName>MarketingCloudAuthProvider</friendlyName>
+    <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
+    <plugin>MarketingCloud</plugin>
+    <providerType>Custom</providerType>
+    <sendAccessTokenInHeader>false</sendAccessTokenInHeader>
+    <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+</AuthProvider>

@@ -1,0 +1,5 @@
+<apex:page controller="MarketingCloudAuthProvider" >
+    <apex:form >
+        
+    </apex:form>
+</apex:page>

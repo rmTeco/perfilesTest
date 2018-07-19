@@ -1,0 +1,80 @@
+<aura:component controller="OSCompareController" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!-- START ATT -->
+    <aura:attribute name="OSNames" type="List" />
+    <aura:attribute name="OSNamesUnique" type="List" />
+    <aura:attribute name="OSElementsOrigin" type="List" />
+    <aura:attribute name="OSElementsTarget" type="List" />
+    <aura:attribute name="OriginVersions" type="List" />
+    <aura:attribute name="TargetVersions" type="List" />
+    <aura:attribute name="TargetOrgVersions" type="List" />
+    <aura:attribute name="Origin" type="Object" />
+    <aura:attribute name="Target" type="Object" />
+    <aura:attribute name="isTargetOrg" type="Boolean" Default="false" />
+    <!-- END ATT -->
+    <!--lightning:button variant="brand" label="Connect to SIT" onclick="{!c.authentication}" disabled="{!!v.isTargetOrg}" /-->
+    <div id="Container">
+        <div class="Container">
+            <div class="slds-form-element">
+                <lightning:select aura:id="Name" name="Name" label="Select an OS" onchange="{!c.selectedName}">
+                    <option value="none">choose one...</option>
+                    <aura:iteration var="os" items="{!v.OSNamesUnique}" indexVar="{!index}" >
+                        <option value="{!os}">{!os}</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div class="Left slds-form-element" style="padding-bottom:10px;">
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <lightning:select aura:id="origin" name="selectItem" label="Select version" onchange="{!c.selectedOrigin}">
+                            <option value="">choose one...</option>
+                            <aura:iteration var="origin" items="{!v.OriginVersions}" indexVar="index" >
+                                <option value="{!origin.Id}">{!origin.vlocity_cmt__Version__c}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                </div>
+            </div>
+            <aura:renderif isTrue="{!v.isTargetOrg}">
+                <div class="Right slds-form-element" style="padding-bottom:10px;">
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <lightning:select aura:id="selectTargetOrgOS" name="selectItemTargetOrg" label="Select SIT version to compare" onchange="{!c.selectedTargetOrg}">
+                                <option value="">choose one...</option>
+                                <aura:iteration var="targetOS" items="{!v.TargetOrgVersions}" indexVar="index" >
+                                    <option value="{!targetOS.Id}">{!targetOS.vlocity_cmt__Version__c}</option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </div>
+                    </div>
+                </div>
+                <aura:set attribute="else">
+                    <div class="Right slds-form-element" style="padding-bottom:10px;">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <lightning:select aura:id="selectTargetOS" name="selectItem" label="Select version to compare" onchange="{!c.selectedTarget}">
+                                    <option value="">choose one...</option>
+                                    <aura:iteration var="targetOS" items="{!v.TargetVersions}" indexVar="index" >
+                                        <option value="{!targetOS.Id}">{!targetOS.vlocity_cmt__Version__c}</option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </div>
+                </aura:set>
+            </aura:renderif>
+            <div class="slds-box">Convention:
+                <span style="border:solid 2px #ffff00;">different</span>
+                <span style="border:solid 2px #99ff33;margin-left:3px;">New</span>
+                <span style="border:solid 2px #ff0000;margin-left:3px;">Deleted</span>
+            </div>
+        </div>
+        <div class="Left" style="margin-top: 155px;">
+            <c:OSItem OSElements="{!v.OSElementsOrigin}" />
+        </div>
+        <div class="Right" style="margin-top: 155px;">
+            
+            <c:OSItem OSElements="{!v.OSElementsTarget}" />
+        </div>
+    </div>
+</aura:component>

@@ -1,0 +1,109 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" controller="KB_KnowledgeViewController" cache="false"  action="{!search}" docType="html-5.0">
+
+<style type="text/css">
+
+	.pbBody .card {
+        height: auto;
+    }
+	.pbBody .card-xs {
+        height: auto;
+    }
+    .pbBody .card-xs .card-footer {
+    	display: '';
+	}
+
+    #starRatingId body {
+    background-color: #999;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+#starRatingId main {
+    background-color: white;
+    width: 80%;
+    margin: 0 auto;
+    padding: 50px;
+    text-align: center;
+}
+
+#starRatingId table {
+    display: inline-block;
+}
+
+#starRatingId td {
+    padding: 1em;
+}
+
+#starts .rating{
+	font-size: 38px;
+	margin-left: 18px;
+}
+
+#congratulationsID {
+    margin-left: 28px; 
+    margin-top: -5px;
+}
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://resources.personal.com.ar/styles/v1/css/tpstyle.css"/>
+<link rel="stylesheet" type="text/css" href="https://www.personal.com.ar/css/customs/custom.home2.css"/>
+<link rel="stylesheet" type="text/css" href="https://resources.personal.com.ar/components/jquery/owl/owl.carousel.css"/>
+
+<apex:includeScript value="{!URLFOR($Resource.KB_jquery_3_3_1_min_js)}"/>
+<apex:includeScript value="{!URLFOR($Resource.KB_Pagination)}"/>
+<apex:includeScript value="{!URLFOR($Resource.KB_bootstrap_4_0,'/js/bootstrap.min.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.KB_bootstrap_4_0,'/css/bootstrap.min.css')}"/>
+
+<apex:stylesheet value="{!URLFOR($Resource.KB_Star_Rating,'/SimpleStarRating.css')}"/>
+
+<apex:includeScript value="/support/console/40.0/integration.js"/>   
+      
+	<apex:form >               
+		<apex:pageBlock > 
+
+			<apex:outputText value="{!articleSelected.KB_Body__c}" escape="false"/>
+
+            <apex:outputPanel rendered="{!(articleSelected.KB_Attachment__Name__s!=null)}" style="margin-left: 28px;">
+                <apex:outputText value="{!$Label.KB_Down_Load}"/>
+                <apex:outputLink value="{!URLFOR($Action.KB_Article__kav.FileFieldDownload, articleSelected.id, ['field'=$ObjectType.KB_Article__kav.fields.KB_Attachment__Name__s.name])}" target="_blank" style="text-decoration: underline;"> {!(articleSelected.KB_Attachment__Name__s)}</apex:outputLink>
+            </apex:outputPanel>
+
+			<div id="starts">
+			<apex:panelGrid rendered="{!(!voted)}" id="starID">
+	            <table id="starRatingId">
+	                <tr>
+	                	<td>
+	                		<h1><span class="rating" data-default-rating="0" ></span></h1>
+	                	</td>
+	                </tr>
+	            </table> 
+	            <div>
+	                <apex:includeScript value="{!URLFOR($Resource.KB_Star_Rating,'/SimpleStarRating.js')}"/>
+	                <script type="text/javascript">
+	                    $(document).ready(function () {            
+	            	        var ratings = document.getElementsByClassName('rating');
+	                        for (var i = 0; i < ratings.length; i++) {
+	                            var r = new SimpleStarRating(ratings[i]);
+	                            ratings[i].addEventListener('rate', function(e) {
+	                                console.log('Rating: ' + e.detail);
+	                                CallRatingMethod(e.detail);
+	                                
+	                            });
+	                        }
+	                    });
+	                </script>
+	                <apex:actionFunction name="CallRatingMethod" action="{!changeRating}" >
+	                    <apex:param name="ratingNumber" value="rating"/>
+	                </apex:actionFunction>
+	            </div>
+	        </apex:panelGrid>
+	        <apex:panelGrid rendered="{!voted}" id="votedID">
+
+	        	 <h1 id="congratulationsID" class="congratulationsID">{!$Label.KB_thank_you}</h1>
+
+	    	</apex:panelGrid>
+	    </div>
+		</apex:pageBlock>
+	</apex:form>	
+</apex:page>

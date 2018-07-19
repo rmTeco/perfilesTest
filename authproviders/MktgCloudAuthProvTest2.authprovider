@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <authorizeUrl>https://auth.exacttargetapis.com</authorizeUrl>
+    <consumerKey>3MVG9QBLg8QGkFeqMMSY.isbEes0PYBmcXVR7_3cAMpyMRomVyMAgpgJ2ASsj.GwY.JDV.5jQ2mHqaTpgC16I</consumerKey>
+    <consumerSecret>Eapp2eA/M2MWgiOgTVm0qvImjPy48bda</consumerSecret>
+    <defaultScopes>refresh_token offline_access</defaultScopes>
+    <friendlyName>MktgCloudAuthProvTest2</friendlyName>
+    <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
+    <providerType>OpenIdConnect</providerType>
+    <sendAccessTokenInHeader>true</sendAccessTokenInHeader>
+    <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <tokenUrl>https://auth.exacttargetapis.com/v1/requestToken</tokenUrl>
+</AuthProvider>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>LC</fullName>
+        <default>false</default>
+        <label>Local Compartido</label>
+    </customValue>
+    <customValue>
+        <fullName>LHE</fullName>
+        <default>false</default>
+        <label>Local en Hipermercado</label>
+    </customValue>
+    <customValue>
+        <fullName>LE</fullName>
+        <default>false</default>
+        <label>Local Exclusivo</label>
+    </customValue>
+    <customValue>
+        <fullName>LS</fullName>
+        <default>false</default>
+        <label>Local Shopping</label>
+    </customValue>
+    <customValue>
+        <fullName>ST</fullName>
+        <default>false</default>
+        <label>Stand</label>
+    </customValue>
+    <customValue>
+        <fullName>SHE</fullName>
+        <default>false</default>
+        <label>Stand en Hipermercado</label>
+    </customValue>
+    <customValue>
+        <fullName>SC</fullName>
+        <default>false</default>
+        <label>Stand Shopping</label>
+    </customValue>
+    <masterLabel>Type of facility</masterLabel>
+    <sorted>true</sorted>
+</GlobalValueSet>

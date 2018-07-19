@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <authorizeUrl>https://auth.exacttargetapis.com</authorizeUrl>
+    <consumerKey>n7rm00s37xzy2uht0u4uscub</consumerKey>
+    <consumerSecret>vCErlb4sVBc+7pG/W6QgcljeNjbVwyodcEEY92ILatc=</consumerSecret>
+    <friendlyName>MktgAPIProvicer</friendlyName>
+    <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
+    <plugin>Mkt_MC_AuthProvider</plugin>
+    <providerType>OpenIdConnect</providerType>
+    <sendAccessTokenInHeader>true</sendAccessTokenInHeader>
+    <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <tokenUrl>https://auth.exacttargetapis.com/v1/requestToken</tokenUrl>
+</AuthProvider>

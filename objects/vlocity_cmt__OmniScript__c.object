@@ -1,0 +1,1139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Represents a Vlocity OmniScript. Each Vlocity OmniScript is a declarative script that defines a task-based, guided user process enabling users to get work done efficiently and effectively. OmniScripts can be configured to pull data from Salesforce or any other data source via business services and can execute any business service to launch and interact with server-side business process engines.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>vlocity_cmt__AdditionalInformation__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Additional Information</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__CustomJavaScript__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Custom JavaScript</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__DataRaptorBundleId__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>DataRaptor Bundle</label>
+        <referenceTo>vlocity_cmt__DRBundle__c</referenceTo>
+        <relationshipLabel>Vlocity OmniScripts</relationshipLabel>
+        <relationshipName>VlocityOmniScripts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__DataRaptorBundleName__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>vlocity_cmt__DataRaptorBundleId__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DataRaptor Bundle Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__IsActive__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Please do not manually modify this field.</inlineHelpText>
+        <label>Active</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__IsProcedure__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>IsProcedure</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__IsReusable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Reusable</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__JSON_Output__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>JSON Output</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__Language__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Language</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Chinese (Simplified)</fullName>
+                    <default>false</default>
+                    <label>Chinese (Simplified)</label>
+                </value>
+                <value>
+                    <fullName>Chinese (Traditional)</fullName>
+                    <default>false</default>
+                    <label>Chinese (Traditional)</label>
+                </value>
+                <value>
+                    <fullName>Danish</fullName>
+                    <default>false</default>
+                    <label>Danish</label>
+                </value>
+                <value>
+                    <fullName>Dutch</fullName>
+                    <default>false</default>
+                    <label>Dutch</label>
+                </value>
+                <value>
+                    <fullName>English</fullName>
+                    <default>false</default>
+                    <label>English</label>
+                </value>
+                <value>
+                    <fullName>Finnish</fullName>
+                    <default>false</default>
+                    <label>Finnish</label>
+                </value>
+                <value>
+                    <fullName>French</fullName>
+                    <default>false</default>
+                    <label>French</label>
+                </value>
+                <value>
+                    <fullName>German</fullName>
+                    <default>false</default>
+                    <label>German</label>
+                </value>
+                <value>
+                    <fullName>Italian</fullName>
+                    <default>false</default>
+                    <label>Italian</label>
+                </value>
+                <value>
+                    <fullName>Japanese</fullName>
+                    <default>false</default>
+                    <label>Japanese</label>
+                </value>
+                <value>
+                    <fullName>Korean</fullName>
+                    <default>false</default>
+                    <label>Korean</label>
+                </value>
+                <value>
+                    <fullName>Norwegian</fullName>
+                    <default>false</default>
+                    <label>Norwegian</label>
+                </value>
+                <value>
+                    <fullName>Portuguese (Brazil)</fullName>
+                    <default>false</default>
+                    <label>Portuguese (Brazil)</label>
+                </value>
+                <value>
+                    <fullName>Russian</fullName>
+                    <default>false</default>
+                    <label>Russian</label>
+                </value>
+                <value>
+                    <fullName>Spanish</fullName>
+                    <default>false</default>
+                    <label>Spanish</label>
+                </value>
+                <value>
+                    <fullName>Spanish (Mexico)</fullName>
+                    <default>false</default>
+                    <label>Spanish (Mexico)</label>
+                </value>
+                <value>
+                    <fullName>Swedish</fullName>
+                    <default>false</default>
+                    <label>Swedish</label>
+                </value>
+                <value>
+                    <fullName>Thai</fullName>
+                    <default>false</default>
+                    <label>Thai</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__ProcedureKey__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>Procedure Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__PropertySet__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Property Set</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__SubType__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Sub Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>vlocity_cmt__Type__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Marriage License</fullName>
+                    <default>false</default>
+                    <label>Marriage License</label>
+                </value>
+                <value>
+                    <fullName>Birth Certificate</fullName>
+                    <default>false</default>
+                    <label>Birth Certificate</label>
+                </value>
+                <value>
+                    <fullName>Building Permit</fullName>
+                    <default>false</default>
+                    <label>Building Permit</label>
+                </value>
+                <value>
+                    <fullName>Gun Permit</fullName>
+                    <default>false</default>
+                    <label>Gun Permit</label>
+                </value>
+                <value>
+                    <fullName>Mental Health</fullName>
+                    <default>false</default>
+                    <label>Mental Health</label>
+                </value>
+                <value>
+                    <fullName>Renew</fullName>
+                    <default>false</default>
+                    <label>Renew</label>
+                </value>
+                <value>
+                    <fullName>Terminate</fullName>
+                    <default>false</default>
+                    <label>Terminate</label>
+                </value>
+                <value>
+                    <fullName>Amend</fullName>
+                    <default>false</default>
+                    <label>Amend</label>
+                </value>
+                <value>
+                    <fullName>Diagnosis</fullName>
+                    <default>false</default>
+                    <label>Diagnosis</label>
+                </value>
+                <value>
+                    <fullName>DiagnosisSettings</fullName>
+                    <default>false</default>
+                    <label>DiagnosisSettings</label>
+                </value>
+                <value>
+                    <fullName>DiagnosisMotives</fullName>
+                    <default>false</default>
+                    <label>DiagnosisMotives</label>
+                </value>
+                <value>
+                    <fullName>Search Client</fullName>
+                    <default>false</default>
+                    <label>Search Client</label>
+                </value>
+                <value>
+                    <fullName>DiagnosisMotivesNew</fullName>
+                    <default>false</default>
+                    <label>DiagnosisMotivesNew</label>
+                </value>
+                <value>
+                    <fullName>DiagnosisSymptomsNew</fullName>
+                    <default>false</default>
+                    <label>DiagnosisSymptomsNew</label>
+                </value>
+                <value>
+                    <fullName>General</fullName>
+                    <default>false</default>
+                    <label>General</label>
+                </value>
+                <value>
+                    <fullName>Line Assignment</fullName>
+                    <default>false</default>
+                    <label>Line Assignment</label>
+                </value>
+                <value>
+                    <fullName>Payment Method</fullName>
+                    <default>false</default>
+                    <label>Payment Method</label>
+                </value>
+                <value>
+                    <fullName>Delivery Method</fullName>
+                    <default>false</default>
+                    <label>Delivery Method</label>
+                </value>
+                <value>
+                    <fullName>Simulation</fullName>
+                    <default>false</default>
+                    <label>Simulation</label>
+                </value>
+                <value>
+                    <fullName>Sim Card Assignment</fullName>
+                    <default>false</default>
+                    <label>Sim Card Assignment</label>
+                </value>
+                <value>
+                    <fullName>Invoice</fullName>
+                    <default>false</default>
+                    <label>Invoice</label>
+                </value>
+                <value>
+                    <fullName>ProfileChanges</fullName>
+                    <default>false</default>
+                    <label>Profile Changes</label>
+                </value>
+                <value>
+                    <fullName>New Contact</fullName>
+                    <default>false</default>
+                    <label>New Contact</label>
+                </value>
+                <value>
+                    <fullName>New Account</fullName>
+                    <default>false</default>
+                    <label>New Account</label>
+                </value>
+                <value>
+                    <fullName>Identity Validation</fullName>
+                    <default>false</default>
+                    <label>Identity Validation</label>
+                </value>
+                <value>
+                    <fullName>New Client Process</fullName>
+                    <default>false</default>
+                    <label>New Client Process</label>
+                </value>
+                <value>
+                    <fullName>PasswordReset</fullName>
+                    <default>false</default>
+                    <label>Password Reset</label>
+                </value>
+                <value>
+                    <fullName>Technical Service - 1st Front</fullName>
+                    <default>false</default>
+                    <label>Technical Service - 1st Front</label>
+                </value>
+                <value>
+                    <fullName>Feedback</fullName>
+                    <default>false</default>
+                    <label>Feedback</label>
+                </value>
+                <value>
+                    <fullName>TaxConditionChanges</fullName>
+                    <default>false</default>
+                    <label>Tax Condition Changes</label>
+                </value>
+                <value>
+                    <fullName>Billing Group Changes</fullName>
+                    <default>false</default>
+                    <label>Billing Group Changes</label>
+                </value>
+                <value>
+                    <fullName>Installation Address</fullName>
+                    <default>false</default>
+                    <label>Installation Address</label>
+                </value>
+                <value>
+                    <fullName>Technical Service - Technician</fullName>
+                    <default>false</default>
+                    <label>Technical Service - Technician</label>
+                </value>
+                <value>
+                    <fullName>Technical Service - 2nd Front</fullName>
+                    <default>false</default>
+                    <label>Technical Service - 2nd Front</label>
+                </value>
+                <value>
+                    <fullName>Guided Flows</fullName>
+                    <default>false</default>
+                    <label>Guided Flows</label>
+                </value>
+                <value>
+                    <fullName>Technical Service</fullName>
+                    <default>false</default>
+                    <label>Technical Service</label>
+                </value>
+                <value>
+                    <fullName>NewOrderConf</fullName>
+                    <default>false</default>
+                    <label>NewOrderConf</label>
+                </value>
+                <value>
+                    <fullName>BillingCycleChanges</fullName>
+                    <default>false</default>
+                    <label>BillingCycleChanges</label>
+                </value>
+                <value>
+                    <fullName>CostForChanges</fullName>
+                    <default>false</default>
+                    <label>CostForChanges</label>
+                </value>
+                <value>
+                    <fullName>Massive Event - Create Case</fullName>
+                    <default>false</default>
+                    <label>Massive Event - Create Case</label>
+                </value>
+                <value>
+                    <fullName>Technical Service - Muleto</fullName>
+                    <default>false</default>
+                    <label>Technical Service - Muleto</label>
+                </value>
+                <value>
+                    <fullName>Technical Service - Entrega Muleto</fullName>
+                    <default>false</default>
+                    <label>Technical Service - Entrega Muleto</label>
+                </value>
+                <value>
+                    <fullName>Technical Service - Devolución Muleto</fullName>
+                    <default>false</default>
+                    <label>Technical Service - Devolución Muleto</label>
+                </value>
+                <value>
+                    <fullName>Logical Error Scenario</fullName>
+                    <default>false</default>
+                    <label>Logical Error Scenario</label>
+                </value>
+                <value>
+                    <fullName>Down-Down Scenario</fullName>
+                    <default>false</default>
+                    <label>Down-Down Scenario</label>
+                </value>
+                <value>
+                    <fullName>Stock Availability</fullName>
+                    <default>false</default>
+                    <label>Stock Availability</label>
+                </value>
+                <value>
+                    <fullName>Account Attributes</fullName>
+                    <default>false</default>
+                    <label>Account Attributes</label>
+                </value>
+                <value>
+                    <fullName>Random</fullName>
+                    <default>false</default>
+                    <label>Random</label>
+                </value>
+                <value>
+                    <fullName>SelfManagement</fullName>
+                    <default>false</default>
+                    <label>SelfManagement</label>
+                </value>
+                <value>
+                    <fullName>Baja CP</fullName>
+                    <default>false</default>
+                    <label>Baja CP</label>
+                </value>
+                <value>
+                    <fullName>Selección de Proceso CP</fullName>
+                    <default>false</default>
+                    <label>Selección de Proceso CP</label>
+                </value>
+                <value>
+                    <fullName>SVA - Diagnosis</fullName>
+                    <default>false</default>
+                    <label>SVA - Diagnosis</label>
+                </value>
+                <value>
+                    <fullName>Massive Event - Create Child Case</fullName>
+                    <default>false</default>
+                    <label>Massive Event - Create Child Case</label>
+                </value>
+                <value>
+                    <fullName>Buscador CP</fullName>
+                    <default>false</default>
+                    <label>Buscador CP</label>
+                </value>
+                <value>
+                    <fullName>Localization</fullName>
+                    <default>false</default>
+                    <label>Localization</label>
+                </value>
+                <value>
+                    <fullName>Membership Status</fullName>
+                    <default>false</default>
+                    <label>Membership Status</label>
+                </value>
+                <value>
+                    <fullName>SMS Validation</fullName>
+                    <default>false</default>
+                    <label>SMS Validation</label>
+                </value>
+                <value>
+                    <fullName>NewPackNewLine</fullName>
+                    <default>false</default>
+                    <label>NewPackNewLine</label>
+                </value>
+                <value>
+                    <fullName>NewPackExistingLine</fullName>
+                    <default>false</default>
+                    <label>NewPackExistingLine</label>
+                </value>
+                <value>
+                    <fullName>DataService_Diagnosis</fullName>
+                    <default>false</default>
+                    <label>DataService_Diagnosis</label>
+                </value>
+                <value>
+                    <fullName>RefundsForGeneralPurposesBO</fullName>
+                    <default>false</default>
+                    <label>RefundsForGeneralPurposesBO</label>
+                </value>
+                <value>
+                    <fullName>Socio</fullName>
+                    <default>false</default>
+                    <label>Socio</label>
+                </value>
+                <value>
+                    <fullName>Technical Service - Last Front</fullName>
+                    <default>false</default>
+                    <label>Technical Service - Last Front</label>
+                </value>
+                <value>
+                    <fullName>S155_SetScratchCardAsBlocked</fullName>
+                    <default>false</default>
+                    <label>S155_SetScratchCardAsBlocked</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Licensing &amp; Permitting</controllingFieldValue>
+                <valueName>Marriage License</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Licensing &amp; Permitting</controllingFieldValue>
+                <valueName>Birth Certificate</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Licensing &amp; Permitting</controllingFieldValue>
+                <valueName>Building Permit</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Licensing &amp; Permitting</controllingFieldValue>
+                <valueName>Gun Permit</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Licensing &amp; Permitting</controllingFieldValue>
+                <valueName>Mental Health</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contract</controllingFieldValue>
+                <valueName>Renew</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contract</controllingFieldValue>
+                <valueName>Terminate</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contract</controllingFieldValue>
+                <valueName>Amend</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Contract</controllingFieldValue>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Simulation</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Geo</controllingFieldValue>
+                <valueName>Localization</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>GP</controllingFieldValue>
+                <valueName>Socio</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Diagnosis</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>DiagnosisSettings</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>DiagnosisMotives</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>DiagnosisMotivesNew</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>DiagnosisSymptomsNew</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Technical Service - 1st Front</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Technical Service - Technician</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Technical Service - 2nd Front</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Technical Service</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Massive Event - Create Case</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Technical Service - Muleto</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Technical Service - Entrega Muleto</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Technical Service - Devolución Muleto</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Logical Error Scenario</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Down-Down Scenario</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>SelfManagement</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>SVA - Diagnosis</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Massive Event - Create Child Case</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>DataService_Diagnosis</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>TechCare</controllingFieldValue>
+                <valueName>Technical Service - Last Front</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Search Client</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>General</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Line Assignment</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Payment Method</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Delivery Method</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Sim Card Assignment</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Invoice</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Installation Address</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>NewOrderConf</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Stock Availability</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>Random</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>NewPackNewLine</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Sales</controllingFieldValue>
+                <valueName>NewPackExistingLine</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>ProfileChanges</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>PasswordReset</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>Feedback</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>TaxConditionChanges</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>Billing Group Changes</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>Guided Flows</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>BillingCycleChanges</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Care</controllingFieldValue>
+                <valueName>CostForChanges</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CustomerMaster</controllingFieldValue>
+                <valueName>New Contact</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CustomerMaster</controllingFieldValue>
+                <valueName>New Account</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CustomerMaster</controllingFieldValue>
+                <valueName>Identity Validation</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CustomerMaster</controllingFieldValue>
+                <valueName>New Client Process</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CustomerMaster</controllingFieldValue>
+                <valueName>SMS Validation</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Marketing</controllingFieldValue>
+                <valueName>Account Attributes</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Marketing</controllingFieldValue>
+                <valueName>Baja CP</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Marketing</controllingFieldValue>
+                <valueName>Selección de Proceso CP</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Marketing</controllingFieldValue>
+                <valueName>Buscador CP</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Marketing</controllingFieldValue>
+                <valueName>Membership Status</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__TestHTMLTemplates__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Test custom HTML templates</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Licensing &amp; Permitting</fullName>
+                    <default>false</default>
+                    <label>Licensing &amp; Permitting</label>
+                </value>
+                <value>
+                    <fullName>Contract</fullName>
+                    <default>false</default>
+                    <label>Contract</label>
+                </value>
+                <value>
+                    <fullName>TechCare</fullName>
+                    <default>false</default>
+                    <label>TechCare</label>
+                </value>
+                <value>
+                    <fullName>Sales</fullName>
+                    <default>false</default>
+                    <label>Sales</label>
+                </value>
+                <value>
+                    <fullName>Care</fullName>
+                    <default>false</default>
+                    <label>Care</label>
+                </value>
+                <value>
+                    <fullName>CustomerMaster</fullName>
+                    <default>false</default>
+                    <label>CustomerMaster</label>
+                </value>
+                <value>
+                    <fullName>Marketing</fullName>
+                    <default>false</default>
+                    <label>Marketing</label>
+                </value>
+                <value>
+                    <fullName>Geo</fullName>
+                    <default>false</default>
+                    <label>Geo</label>
+                </value>
+                <value>
+                    <fullName>GP</fullName>
+                    <default>false</default>
+                    <label>GP</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__Version__c</fullName>
+        <defaultValue>1</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Version</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Vlocity OmniScript</label>
+    <listViews>
+        <fullName>vlocity_cmt__All</fullName>
+        <columns>NAME</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>vlocity_cmt__TestHTMLTemplates__c</columns>
+        <columns>vlocity_cmt__IsActive__c</columns>
+        <columns>vlocity_cmt__Version__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>test</value>
+        </filters>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>vlocity_cmt__AllCustom</fullName>
+        <columns>NAME</columns>
+        <columns>vlocity_cmt__Type__c</columns>
+        <columns>vlocity_cmt__SubType__c</columns>
+        <columns>vlocity_cmt__IsActive__c</columns>
+        <columns>vlocity_cmt__Version__c</columns>
+        <columns>vlocity_cmt__Language__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>AllCustom</label>
+    </listViews>
+    <nameField>
+        <label>Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Vlocity OmniScript</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>vlocity_cmt__Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>vlocity_cmt__SubType__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>vlocity_cmt__IsActive__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>vlocity_cmt__Version__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>vlocity_cmt__Language__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>vlocity_cmt__Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>vlocity_cmt__SubType__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>vlocity_cmt__IsActive__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>vlocity_cmt__Version__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>vlocity_cmt__Language__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>vlocity_cmt__Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>vlocity_cmt__SubType__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>vlocity_cmt__IsActive__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>vlocity_cmt__Version__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>vlocity_cmt__Language__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>vlocity_cmt__Type__c</searchFilterFields>
+        <searchFilterFields>vlocity_cmt__SubType__c</searchFilterFields>
+        <searchFilterFields>vlocity_cmt__IsActive__c</searchFilterFields>
+        <searchFilterFields>vlocity_cmt__Version__c</searchFilterFields>
+        <searchFilterFields>vlocity_cmt__Language__c</searchFilterFields>
+        <searchResultsAdditionalFields>vlocity_cmt__Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>vlocity_cmt__SubType__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>vlocity_cmt__IsActive__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>vlocity_cmt__Version__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>vlocity_cmt__Language__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>vlocity_cmt__ActivateVersion</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Activate Version</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__BusinessProcessActivateVersionPage</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__CreateVersion</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Create Version</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__BusinessProcessClonePage</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__DeactivateVersion</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Deactivate Version</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__BusinessProcessDeactivateVersionPage</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__Designer</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Designer</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__OmniScriptDesigner</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__HorizontalModePreview</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Horizontal Mode Preview</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__OmniScriptHoriPreviewPage</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__ImportExportScripts</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Import / Export Scripts</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/jslibrary/1424969980000/sfdc/VFRemote.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/32.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/32.0/apex.js&quot;)}
+
+var selected = {!GETRECORDIDS($ObjectType.vlocity_cmt__OmniScript__c)};
+
+if(selected.length &gt; 0) {
+ selected = &apos;&amp;recs=&apos;+selected;
+}
+
+
+
+var result = sforce.connection.describeGlobal();
+var TOKEN_OBJ = &quot;OmniScript__c&quot;;
+var sobjects = result.getArray(&quot;sobjects&quot;);
+var ns = &quot;&quot;;
+
+for(var i=0; i&lt;sobjects.length; i++) {
+     var sobjName = sobjects[i].name;
+     //sforce.debug.log(&apos;Object Found: &apos; + sobjName);
+     //describeResult = sforce.connection.describeSObject(sobjName);
+//dont call this makes it reallt slow
+   //  sforce.debug.log(&apos;Is Custom: &apos; + describeResult.custom);
+
+     var str = sobjName.split(&quot;__&quot;);
+      //if there are 3 values there is a namespace
+     if (str.length == 3){
+         //Is it one of ours?
+         var sobj = str[1].valueOf() +&apos;__c&apos;;
+         if(sobj == TOKEN_OBJ) {
+            ns = str[0].valueOf();
+         } else{
+            //sforce.debug.log(sobjName + &apos; is not in my namespace&apos;);
+         }
+
+     }else{
+        //sforce.debug.log(sobjName + &apos; has no namespace&apos;);
+     }
+
+}
+if(ns != &quot;&quot;){
+    ns+= &apos;__&apos;;
+    //sforce.debug.log(&apos;I have a namespace called &apos; + ns);
+} else {
+    //alert(&apos;no namespace&apos;);
+}
+
+function showSimpleDialog(){
+   var sd = new SimpleDialog(&quot;Import Export&quot;+Dialogs.getNextId(), false);
+   sd.setTitle(&quot;Import/Export &lt;button style=&apos;float:right;&apos; class=&apos;btn&apos; onclick=&apos;window.parent.sd.hide(); return false;&apos;&gt;X&lt;/button&gt;&quot;);
+   sd.createDialog();
+   window.parent.sd = sd;
+   sd.setContentInnerHTML(&quot;&lt;iframe src=&apos;/apex/&quot;+ns+&quot;ImportExportOmni?wrapMassAction=1&amp;scontrolCaching=1&quot;+selected+&quot;&apos; style=&apos;border:none&apos; width=&apos;100%&apos;/&gt;&lt;/p&gt;&quot;);
+   sd.show();
+ }
+ showSimpleDialog(); //open the popup</url>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__Preview</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Preview</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__OmniScriptPreviewPage</page>
+        <protected>false</protected>
+    </webLinks>
+</CustomObject>

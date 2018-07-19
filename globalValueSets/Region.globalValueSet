@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>AMBA</fullName>
+        <default>false</default>
+        <label>AMBA</label>
+    </customValue>
+    <customValue>
+        <fullName>LITO</fullName>
+        <default>false</default>
+        <label>Litoral</label>
+    </customValue>
+    <customValue>
+        <fullName>MEDI</fullName>
+        <default>false</default>
+        <label>Mediterranea</label>
+    </customValue>
+    <customValue>
+        <fullName>SUR</fullName>
+        <default>false</default>
+        <label>Sur</label>
+    </customValue>
+    <description>Store the region division used in Telecom Argentina</description>
+    <masterLabel>Region</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSetTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <valueTranslation>
+        <masterLabel>Active</masterLabel>
+        <translation>Activo</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Extravio</masterLabel>
+        <translation><!-- Extravio --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Hurto</masterLabel>
+        <translation><!-- Hurto --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>In Activation</masterLabel>
+        <translation>En Activación</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Inactive</masterLabel>
+        <translation>Inactivo</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Installed</masterLabel>
+        <translation>Instalado</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Obsolete</masterLabel>
+        <translation>Obsoleto</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Preactive</masterLabel>
+        <translation>Preactivo</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Purchased</masterLabel>
+        <translation>Comprado</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Registered</masterLabel>
+        <translation>Registrado</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Robo</masterLabel>
+        <translation><!-- Robo --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Shipped</masterLabel>
+        <translation>Enviado</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Suspended</masterLabel>
+        <translation>Suspendido</translation>
+    </valueTranslation>
+</StandardValueSetTranslation>

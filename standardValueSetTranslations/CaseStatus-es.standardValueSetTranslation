@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSetTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <valueTranslation>
+        <masterLabel>Anulada</masterLabel>
+        <translation><!-- Anulada --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Aprobada Pendiente de Portación</masterLabel>
+        <translation><!-- Aprobada Pendiente de Portación --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Derivada</masterLabel>
+        <translation><!-- Derivada --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Devolución con falla</masterLabel>
+        <translation><!-- Devolución con falla --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Devolución destrucción total</masterLabel>
+        <translation><!-- Devolución destrucción total --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Devolución exitosa</masterLabel>
+        <translation><!-- Devolución exitosa --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>En autorización</masterLabel>
+        <translation><!-- En autorización --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>En espera de ejecución</masterLabel>
+        <translation><!-- En espera de ejecución --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>En espera del cliente</masterLabel>
+        <translation><!-- En espera del cliente --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>En presupuestación</masterLabel>
+        <translation><!-- En presupuestación --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>En verificación</masterLabel>
+        <translation><!-- En verificación --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Envío en curso</masterLabel>
+        <translation><!-- Envío en curso --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Expirada</masterLabel>
+        <translation><!-- Expirada --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Informada</masterLabel>
+        <translation><!-- Informada --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Migrada</masterLabel>
+        <translation><!-- Migrada --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>No aceptada</masterLabel>
+        <translation><!-- No aceptada --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>No se pudo realizar</masterLabel>
+        <translation><!-- No se pudo realizar --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Nueva</masterLabel>
+        <translation>Nuevo</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Pagada</masterLabel>
+        <translation><!-- Pagada --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Pendiente de contacto</masterLabel>
+        <translation>Pendiente</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Pendiente de retiro</masterLabel>
+        <translation><!-- Pendiente de retiro --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Pendiente evento masivo</masterLabel>
+        <translation><!-- Pendiente evento masivo --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Realizada exitosa</masterLabel>
+        <translation><!-- Realizada exitosa --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Rechazada</masterLabel>
+        <translation><!-- Rechazada --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Rechazada Pendiente ABD</masterLabel>
+        <translation><!-- Rechazada Pendiente ABD --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Resuelta Masiva</masterLabel>
+        <translation><!-- Resuelta Masiva --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Resuelta exitosa</masterLabel>
+        <translation>Resuelta exitosa</translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Retenida</masterLabel>
+        <translation><!-- Retenida --></translation>
+    </valueTranslation>
+    <valueTranslation>
+        <masterLabel>Sin devolución</masterLabel>
+        <translation><!-- Sin devolución --></translation>
+    </valueTranslation>
+</StandardValueSetTranslation>
