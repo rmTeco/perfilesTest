@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>PT - Admin Funcional Negocio</members>
-        <members>PT - Administrador Funcional Seguridad</members>
-        <members>PT - Ambientes</members>
-        <members>PT - Auditoria de Sistemas</members>
-        <members>PT - Copado Developer</members>
-        <members>PT - Deployer</members>
-        <members>PT - Developer DESA</members>
-        <members>PT - Gestión Operativa</members>
-        <members>PT - Reporting</members>
-        <members>PT - Seguridad Informática</members>
-        <name>Profile</name>
+        <members>TEST/TESTREPORTE</members>
+        <name>Report</name>
     </types>
     <version>42.0</version>
 </Package>
